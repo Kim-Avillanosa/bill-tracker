@@ -5,4 +5,8 @@ export class TimeSheetDto {
   summary: string;
   @ApiProperty({ required: true })
   entry_date: Date;
+
+  @ApiProperty({ required: true })
+  tags: string[];
+
 }

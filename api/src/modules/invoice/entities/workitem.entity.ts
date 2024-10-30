@@ -4,7 +4,7 @@ import { Invoice } from "./invoice.entity"; // Adjust the import path as needed
 @Entity()
 export class WorkItem {
   @PrimaryGeneratedColumn()
-  id: number;
+  id?: number;
 
   @Column()
   title: string;

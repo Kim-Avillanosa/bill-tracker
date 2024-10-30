@@ -20,8 +20,11 @@ export class TimeSheetService {
       id: clientId,
     });
 
-    const data = {
-      ...timeSheetDto,
+    const data : TimeSheet = {
+      tags : JSON.stringify(timeSheetDto.tags),
+      clientId : clientId,
+      summary : timeSheetDto.summary,
+      entry_date : timeSheetDto.entry_date,
       client: client,
     };
 

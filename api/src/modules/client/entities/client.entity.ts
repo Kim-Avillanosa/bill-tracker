@@ -1,4 +1,4 @@
-import { Invoice } from "src/modules/invoice/entities/invoice.entity";
+import { Invoice } from "../../invoice/entities/invoice.entity";
 import { TimeSheet } from "../../timesheet/entities/timesheet.entity";
 import { User } from "../../users/entities/user.entity";
 import {

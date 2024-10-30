@@ -11,6 +11,11 @@ export class InvoiceDTO {
   date: Date; // Use string with a date format and validate if necessary
 
 
+  @ApiProperty({ required: true })
+  @IsString()
+  @IsNotEmpty()
+  note: string;
+
   @ApiProperty({ type: [WorkItemDTO], required: true })
   @ValidateNested({ each: true })
   @Type(() => WorkItemDTO)

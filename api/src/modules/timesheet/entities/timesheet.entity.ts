@@ -21,6 +21,9 @@ export class TimeSheet {
   @Column({ default : "", nullable: false })
   summary: string;
  
+  @Column()
+  tags: string;
+
   @CreateDateColumn()
   created_at?: Date; // Creation date
 

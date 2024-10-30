@@ -26,7 +26,7 @@ export class InvoiceService {
         "clientId",
         "date",
         "invoiceNumber",
-        "description",
+        "note",
         "status",
         "workItems",
         "updatedAt",
@@ -75,6 +75,8 @@ export class InvoiceService {
         "hours_per_day",
         "created_at",
         "updated_at",
+        "userId",
+        "user",
       ],
       where: {
         id: invoice.clientId,
@@ -91,7 +93,6 @@ export class InvoiceService {
 
     const workItemsParsed = invoice.workItems.map((item) => {
       const workItem: WorkItem = {
-        id: 0,
         title : item.title,
         rate: currentClient.hourly_rate,
         description: item.description,
@@ -103,7 +104,7 @@ export class InvoiceService {
 
     const payload: Invoice = {
       id: 0,
-      description: "Sample description",
+      note: invoice.note,
       clientId : currentClient.id,
       client : currentClient,
       invoiceNumber: `${currentClient.code}${currentYear}-${formattedId}`,

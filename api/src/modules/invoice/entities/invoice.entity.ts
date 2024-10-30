@@ -9,7 +9,7 @@ import {
   JoinColumn,
 } from "typeorm";
 import { WorkItem } from "./workitem.entity"; // Adjust the import path as needed
-import { Client } from "src/modules/client/entities/client.entity";
+import { Client } from "../../client/entities/client.entity";
 
 @Entity()
 export class Invoice {
@@ -23,7 +23,7 @@ export class Invoice {
   date: Date;
 
   @Column()
-  description: string;
+  note: string;
 
   @OneToMany(() => WorkItem, (workItem) => workItem.invoice, { cascade: true })
   workItems: WorkItem[];
