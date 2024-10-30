@@ -25,6 +25,12 @@ export class Client {
   @Column({ default : "", nullable: false })
   name: string;
 
+  @Column({ type: "decimal", precision: 10, scale: 2 })
+  hourly_rate: number;
+
+  @Column()
+  hours_per_day: number;
+
   @Column({ nullable: true })
   address: string;
 
