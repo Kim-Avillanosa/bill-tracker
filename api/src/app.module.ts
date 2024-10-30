@@ -16,12 +16,14 @@ import { join } from "path";
 import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler";
 import { APP_GUARD } from "@nestjs/core";
 import { ClientModule } from "./modules/client/client.module";
+import { TimeSheetModule } from "./modules/timesheet/timesheet.module";
 
 @Module({
   // add orm module to create persistence instance
   imports: [
     ConfigModule.forRoot(),
     ClientModule,
+    TimeSheetModule,
     UsersModule,
     CliModule,
     AuthModule,

@@ -1,3 +1,4 @@
+import { TimeSheet } from "../../timesheet/entities/timesheet.entity";
 import { User } from "../../users/entities/user.entity";
 import {
   Column,
@@ -46,4 +47,8 @@ export class Client {
   @ManyToOne(() => User, (user) => user.clients)
   @JoinColumn({ name: "userId" })
   user: User;
+
+
+  @OneToMany(() => TimeSheet, (timesheet) => timesheet.client)
+  timesheets: TimeSheet[];
 }
