@@ -1,11 +1,13 @@
 
 import { Exclude } from 'class-transformer';
+import { Client } from '../../client/entities/client.entity';
 import {
   Column,
   Entity,
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
 } from 'typeorm';
 import { EncryptionTransformer } from 'typeorm-encrypted';
 
@@ -36,4 +38,6 @@ export class User {
   @UpdateDateColumn()
   updated_at?: Date; // Last updated date
 
+  @OneToMany(() => Client, (credit) => credit.user)
+  clients: Client[];
 }

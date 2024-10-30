@@ -15,11 +15,13 @@ import { ServeStaticModule } from "@nestjs/serve-static";
 import { join } from "path";
 import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler";
 import { APP_GUARD } from "@nestjs/core";
+import { ClientModule } from "./modules/client/client.module";
 
 @Module({
   // add orm module to create persistence instance
   imports: [
     ConfigModule.forRoot(),
+    ClientModule,
     UsersModule,
     CliModule,
     AuthModule,
