@@ -21,11 +21,11 @@ export const ormConfig: TypeOrmModuleOptions & DataSourceOptions = {
   username: configService.get<string>('TYPEORM_DATABASE_USERNAME'),
   password: configService.get<string>('TYPEORM_DATABASE_PASSWORD'),
   database: configService.get<string>('TYPEORM_DATABASE_NAME'),
-  logging: false,
+  logging: true,
   synchronize: true,
   entities: [__dirname + '/../**/*.entity{.ts,.js}'], // maps all entities
   migrations: [__dirname + '/../db/migrations/**/*.ts'], // maps migrations path
-  migrationsRun: true, // executes pending migrations on run
+  // migrationsRun: true, // executes pending migrations on run
   migrationsTableName: 'migrations',
   // ssl: configService.get<string>('TYPEORM_SSL_OPTIONS'),
 };
