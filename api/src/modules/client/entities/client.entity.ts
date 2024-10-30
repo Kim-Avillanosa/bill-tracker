@@ -1,3 +1,4 @@
+import { Invoice } from "src/modules/invoice/entities/invoice.entity";
 import { TimeSheet } from "../../timesheet/entities/timesheet.entity";
 import { User } from "../../users/entities/user.entity";
 import {
@@ -23,7 +24,13 @@ export class Client {
   id?: number;
 
   @Column({ default : "", nullable: false })
+  email: string;
+
+  @Column({ default : "", nullable: false })
   name: string;
+
+  @Column({ default : "", nullable: false })
+  code: string;
 
   @Column({ type: "decimal", precision: 10, scale: 2 })
   hourly_rate: number;
@@ -54,6 +61,8 @@ export class Client {
   @JoinColumn({ name: "userId" })
   user: User;
 
+  @OneToMany(() => Invoice, (invoice) => invoice.client)
+  invoices: Invoice[];
 
   @OneToMany(() => TimeSheet, (timesheet) => timesheet.client)
   timesheets: TimeSheet[];

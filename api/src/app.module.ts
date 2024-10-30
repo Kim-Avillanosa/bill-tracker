@@ -17,11 +17,13 @@ import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler";
 import { APP_GUARD } from "@nestjs/core";
 import { ClientModule } from "./modules/client/client.module";
 import { TimeSheetModule } from "./modules/timesheet/timesheet.module";
+import { InvoiceModule } from "./modules/invoice/invoice.module";
 
 @Module({
   // add orm module to create persistence instance
   imports: [
     ConfigModule.forRoot(),
+    InvoiceModule,
     ClientModule,
     TimeSheetModule,
     UsersModule,

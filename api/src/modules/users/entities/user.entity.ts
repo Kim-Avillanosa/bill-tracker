@@ -28,6 +28,24 @@ export class User {
   @Exclude()
   password: string;
 
+  @Column({ nullable: false })
+  name : string
+
+  @Column({ nullable: false })
+  address : string
+
+  @Column({ nullable: false })
+  bank_name : string
+
+  @Column({ nullable: false })
+  bank_swift_code : string
+
+  @Column({ nullable: false })
+  bank_account_number : string
+
+  @Column({ nullable: false })
+  bank_account_name : string
+
   //primary key for every tables
   @PrimaryGeneratedColumn()
   id?: number;
