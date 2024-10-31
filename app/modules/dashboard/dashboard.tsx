@@ -6,7 +6,7 @@ const Dashboard: React.FC = () => {
         <Page title="BidBox">
             <SecuredLayout>
                 <h1>
-                    <strong>🏷️ Auction Dashboard</strong>
+                    <strong>Dashboard</strong>
                 </h1>
             </SecuredLayout>
         </Page>
