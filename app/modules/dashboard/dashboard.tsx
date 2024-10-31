@@ -2,6 +2,7 @@ import { Page, SecuredLayout } from "@/shared/components";
 import DashboardOptions from "./dashboardOptions";
 import { useState } from "react";
 import ClientTable from "../clients/ClientTable";
+import TimesheetContainer from "../timesheet/TimesheetContainer";
 
 type OfferStatuses = "TIMESHEETS" | "CLIENTS" | "INVOICE";
 
@@ -11,7 +12,7 @@ const Dashboard: React.FC = () => {
   const renderCurrentView = () => {
     switch (currentStatus) {
       case "TIMESHEETS":
-        return <>Timesheets</>;
+        return <TimesheetContainer />;
 
       case "INVOICE":
         return <>Invoice</>;

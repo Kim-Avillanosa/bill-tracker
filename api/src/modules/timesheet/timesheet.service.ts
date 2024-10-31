@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import { Between, Repository } from "typeorm";
 import { BadRequestException } from "@nestjs/common";
 import { TimeSheet } from "./entities/timesheet.entity";
 import { TimeSheetDto } from "./dto/timesheet.dto";
@@ -20,11 +20,11 @@ export class TimeSheetService {
       id: clientId,
     });
 
-    const data : TimeSheet = {
-      tags : JSON.stringify(timeSheetDto.tags),
-      clientId : clientId,
-      summary : timeSheetDto.summary,
-      entry_date : timeSheetDto.entry_date,
+    const data: TimeSheet = {
+      tags: JSON.stringify(timeSheetDto.tags),
+      clientId: clientId,
+      summary: timeSheetDto.summary,
+      entry_date: timeSheetDto.entry_date,
       client: client,
     };
 
@@ -33,16 +33,29 @@ export class TimeSheetService {
     return this.timeSheetRepository.save(data);
   }
 
-  findOne(id: number): Promise<TimeSheet[]> {
+  findAll(id: number, startDate: Date, endDate: Date): Promise<TimeSheet[]> {
     return this.timeSheetRepository.find({
-      select: ["id", "summary", "entry_date", "created_at", "updated_at"],
+      select: [
+        "id",
+        "summary",
+        "entry_date",
+        "created_at",
+        "updated_at",
+        "client",
+        "tags"
+      ],
+      relations: ["client"],
       where: {
         clientId: id,
+        entry_date: Between(startDate, endDate),
       },
     });
   }
 
-  async updateTimesheet(id: number, timesheetDto: TimeSheetDto): Promise<TimeSheet> {
+  async updateTimesheet(
+    id: number,
+    timesheetDto: TimeSheetDto,
+  ): Promise<TimeSheet> {
     const timeSheet = await this.timeSheetRepository.findOneBy({ id });
     if (!timeSheet) {
       throw new NotFoundException(`Client with id ${id} not found`);

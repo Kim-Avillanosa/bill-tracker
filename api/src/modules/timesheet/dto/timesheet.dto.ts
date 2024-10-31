@@ -8,5 +8,4 @@ export class TimeSheetDto {
 
   @ApiProperty({ required: true })
   tags: string[];
-
 }

@@ -36,20 +36,20 @@ const ClientTable: React.FC = () => {
     }
   };
 
-  useEffect(() => {
-    const fetchClients = async () => {
-      try {
-        const response = await getClientList();
-        setClients(response.data);
-        setLoading(false);
-      } catch {
-        setError("Failed to load clients.");
-        setLoading(false);
-      }
-    };
+  const fetchClients = async () => {
+    try {
+      const response = await getClientList();
+      setClients(response.data);
+      setLoading(false);
+    } catch {
+      setError("Failed to load clients.");
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchClients();
-  }, [isOpen, handleDeleteClient]);
+  }, [isOpen]);
 
   if (loading) {
     return (
