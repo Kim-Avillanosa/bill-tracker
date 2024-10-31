@@ -23,7 +23,7 @@ import {
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
   @Controller("client")
-  @ApiTags("client")
+  @ApiTags("Client")
   export class ClientController {
     constructor(
       private readonly clientService: ClientService,

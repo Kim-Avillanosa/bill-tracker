@@ -22,32 +22,32 @@ import { TimeSheetDto } from "./dto/timesheet.dto";
   @UseInterceptors(ClassSerializerInterceptor)
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
-  @Controller("timesheet")
-  @ApiTags("timesheet")
+  @Controller("client")
+  @ApiTags("Time sheet")
   export class TimeSheetController {
     constructor(
       private readonly timesheetService: TimeSheetService,
       private readonly jwtUtil: JWTUtil,
     ) {}
   
-    @Post(":clientId/add")
-    add(@Param('clientId') clientId: number, @Body() createClientDto: TimeSheetDto) {
+    @Post(":id/timesheet/add")
+    add(@Param('id') id: number, @Body() createClientDto: TimeSheetDto) {
  
-      return this.timesheetService.createTimeSheet(clientId, {
+      return this.timesheetService.createTimeSheet(id, {
         ...createClientDto,
       });
     }
-    @Get(':clientId/list')
-    findOne(@Param('clientId') clientId: number) {
-      return this.timesheetService.findOne(clientId);
+    @Get(':id/timesheet/list')
+    findOne(@Param('id') id: number) {
+      return this.timesheetService.findOne(id);
     }
 
-    @Patch(':id')
+    @Patch('timesheet/:id')
     updateClient(@Param('id') id: number, @Body() updateClientDto: TimeSheetDto) {
       return this.timesheetService.updateTimesheet(+id, updateClientDto);
     }
   
-    @Delete(':id')
+    @Delete('timesheet/:id')
     deleteClient(@Param('id') id: string) {
       return this.timesheetService.deleteTimesheet(+id);
     }

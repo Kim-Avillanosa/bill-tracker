@@ -23,7 +23,7 @@ import { InvoiceDTO } from "./dto/invoice.dto";
 @ApiBearerAuth()
 @UseGuards(AuthGuard)
 @Controller("invoice")
-@ApiTags("invoice")
+@ApiTags("Invoice")
 export class InvoiceController {
   constructor(
     private readonly invoiceService: InvoiceService,
