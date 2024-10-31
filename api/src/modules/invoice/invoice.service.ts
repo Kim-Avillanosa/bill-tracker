@@ -152,6 +152,9 @@ export class InvoiceService {
         "name",
         "code",
         "hourly_rate",
+        "headline_color",
+        "banner_color",
+        "text_color",
         "hours_per_day",
         "created_at",
         "updated_at",
@@ -202,9 +205,9 @@ export class InvoiceService {
     const filePath = `./public/invoices/${filename}`;
     const stream = fs.createWriteStream(filePath);
 
-    const bannerColor = "#1e90ff";
-    const headlineColor = "#ffffff";
-    const textColor = "#1e272e";
+    const bannerColor = currentClient.banner_color;
+    const headlineColor = currentClient.headline_color;
+    const textColor = currentClient.text_color;
 
     doc.pipe(stream);
     doc

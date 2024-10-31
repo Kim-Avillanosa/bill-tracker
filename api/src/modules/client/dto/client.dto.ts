@@ -22,4 +22,14 @@ export class ClientDto {
 
   @ApiProperty({ required: true })
   category: ClientCategory;
+
+
+  @ApiProperty({ required: false })
+  banner_color: string;
+
+  @ApiProperty({ required: false })
+  headline_color: string;
+
+  @ApiProperty({ required: false })
+  text_color: string;
 }

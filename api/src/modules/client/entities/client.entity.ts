@@ -44,6 +44,15 @@ export class Client {
   @Column({ nullable: true })
   address: string;
 
+  @Column({ default : "#1e90ff", nullable: true })
+  banner_color: string;
+
+  @Column({ default : "#ffffff", nullable: true })
+  headline_color: string;
+
+  @Column({ default : "#1e272e", nullable: true })
+  text_color: string;
+
   @CreateDateColumn()
   created_at?: Date; // Creation date
 
