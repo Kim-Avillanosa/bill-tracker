@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from "typeorm";
 import { Invoice } from "./invoice.entity"; // Adjust the import path as needed
 
 @Entity()
@@ -21,6 +21,13 @@ export class WorkItem {
   @Column("decimal", { precision: 10, scale: 2 })
   rate: number;
 
+  @Column()
+  invoiceId?: number;
+
+
   @ManyToOne(() => Invoice, (invoice) => invoice.workItems)
+  @JoinColumn({ name: "invoiceId" })
   invoice?: Invoice;
+
+  
 }

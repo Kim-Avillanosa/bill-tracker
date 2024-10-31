@@ -30,6 +30,9 @@ export class Client {
   name: string;
 
   @Column({ default : "", nullable: false })
+  symbol: string;
+
+  @Column({ default : "", nullable: false })
   code: string;
 
   @Column({ type: "decimal", precision: 10, scale: 2 })

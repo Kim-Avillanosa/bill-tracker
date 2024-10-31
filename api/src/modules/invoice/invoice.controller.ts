@@ -30,12 +30,17 @@ export class InvoiceController {
     private readonly jwtUtil: JWTUtil,
   ) {}
 
-  @Post("generate")
+  @Post("write")
   add(@Body() invoiceDTO: InvoiceDTO, @Req() req) {
     const authHeader = req.headers.authorization;
     const token = this.jwtUtil.decode(authHeader);
     return this.invoiceService.generateInvoice(token.sub, {
       ...invoiceDTO,
     });
+  }
+
+  @Post(":id/generate")
+  generate(@Param('id') id: number) {
+    return this.invoiceService.generatePdfInvoice(id);
   }
 }

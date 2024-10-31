@@ -9,6 +9,9 @@ export class ClientDto {
   code: string;
 
   @ApiProperty({ required: true })
+  symbol: string;
+
+  @ApiProperty({ required: true })
   address: string;
 
   @ApiProperty({ required: true })

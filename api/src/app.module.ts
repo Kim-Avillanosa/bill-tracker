@@ -46,10 +46,12 @@ import { InvoiceModule } from "./modules/invoice/invoice.module";
         return ormConfig;
       },
     }),
-    ServeStaticModule.forRoot({
-      rootPath: join(__dirname, "docs"),
-      serveRoot: "/swagger",
-    }),
+    ServeStaticModule.forRoot(
+      {
+        rootPath: join(__dirname, "docs"),
+        serveRoot: "/swagger",
+      }
+    ),
   ],
   controllers: [AppController],
   providers: [
