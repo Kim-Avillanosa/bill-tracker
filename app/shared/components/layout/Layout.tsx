@@ -1,4 +1,3 @@
-import { Toaster } from "react-hot-toast";
 import { ReactNode } from "react";
 import ErrorBoundary from "./ErrorBoundary";
 import OnLoadAnimator from "./OnLoadAnimator";

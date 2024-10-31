@@ -10,7 +10,7 @@ interface AuthStoreProps {
 
 const useAuthStore = create<AuthStoreProps>()(
   persist(
-    (set, get) => ({
+    (set) => ({
       token: "",
       setAccount: (user, token) => {
         set({ currentAccount: user, token: token });

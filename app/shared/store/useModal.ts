@@ -1,5 +1,4 @@
 import { create } from "zustand";
-import { persist, createJSONStorage } from "zustand/middleware";
 import { ReactNode } from "react";
 
 interface AppModalProps {
@@ -14,7 +13,7 @@ interface ModalStoreProps {
   openModal: (options: AppModalProps) => void;
 }
 
-const useModalStore = create<ModalStoreProps>()((set, get) => ({
+const useModalStore = create<ModalStoreProps>()((set) => ({
   isOpen: false,
   openModal: (options: AppModalProps) => {
     set({

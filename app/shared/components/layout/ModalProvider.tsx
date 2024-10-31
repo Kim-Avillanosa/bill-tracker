@@ -1,6 +1,5 @@
 import useModalStore from "@/shared/store/useModal";
-import { useState } from "react";
-import { Modal, Button } from "react-bootstrap";
+import { Modal } from "react-bootstrap";
 
 const ModalProvider: React.FC = () => {
   const { properties, isOpen, dismiss } = useModalStore();
