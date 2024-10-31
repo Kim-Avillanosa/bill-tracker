@@ -1,16 +1,40 @@
 import { Page, SecuredLayout } from "@/shared/components";
+import DashboardOptions from "./dashboardOptions";
+import { useState } from "react";
+import ClientTable from "../clients/ClientTable";
 
+type OfferStatuses = "TIMESHEETS" | "CLIENTS" | "INVOICE";
 
 const Dashboard: React.FC = () => {
-    return (
-        <Page title="BidBox">
-            <SecuredLayout>
-                <h1>
-                    <strong>Dashboard</strong>
-                </h1>
-            </SecuredLayout>
-        </Page>
-    );
+  const [currentStatus, setStatus] = useState<OfferStatuses>("TIMESHEETS");
+
+  const renderCurrentView = () => {
+    switch (currentStatus) {
+      case "TIMESHEETS":
+        return <>Timesheets</>;
+
+      case "INVOICE":
+        return <>Invoice</>;
+
+      case "CLIENTS":
+        return <ClientTable />;
+
+      default:
+        return <>Timesheets</>;
+    }
+  };
+
+  return (
+    <Page title="Bill Tracker">
+      <SecuredLayout>
+        <h1>
+          <strong>Dashboard</strong>
+        </h1>
+        <DashboardOptions setStatus={(status) => setStatus(status)} />{" "}
+        {renderCurrentView()}
+      </SecuredLayout>
+    </Page>
+  );
 };
 
 export default Dashboard;

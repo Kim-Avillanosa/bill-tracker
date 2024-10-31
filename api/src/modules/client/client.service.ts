@@ -32,7 +32,24 @@ export class ClientService {
 
   findOne(id: number): Promise<Client[]> {
     return this.clientRepository.find({
-      select: ["id", "name", "address", "code", "timesheets", "created_at", "updated_at"],
+      select: [
+        "id",
+        "email",
+        "address",
+        "name",
+        "code",
+        "hourly_rate",
+        "headline_color",
+        "banner_color",
+        "text_color",
+        "hours_per_day",
+        "created_at",
+        "updated_at",
+        "symbol",
+        "userId",
+        "user",
+        "category"
+      ],
       where: {
         userId: id,
       },
