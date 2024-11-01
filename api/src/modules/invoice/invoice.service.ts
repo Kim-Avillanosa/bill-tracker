@@ -123,7 +123,7 @@ export class InvoiceService {
     return this.invoiceRepository.save(payload);
   }
 
-  async generatePdfInvoice(invoiceId: number): Promise<string> {
+  async generatePdfInvoice(invoiceId: number, host: string): Promise<string> {
     const invoice = await this.invoiceRepository.findOne({
       select: [
         "client",
@@ -271,7 +271,6 @@ export class InvoiceService {
       return sum + item.hours;
     }, 0);
 
-
     const rows = workItems.map((item) => {
       return [
         item.title,
@@ -286,7 +285,7 @@ export class InvoiceService {
 
     const table = {
       title: "Overview",
-      subtitle : `Total Hours: ${totalHours}, Total Amount ${currentClient.symbol} ${totalAmount}`,
+      subtitle: `Total Hours: ${totalHours}, Total Amount ${currentClient.symbol} ${totalAmount}`,
       headers: ["Item", "Description", "Hours", "Rate", "Amount"],
       rows: rows,
     };
@@ -322,6 +321,8 @@ export class InvoiceService {
       .fill(bannerColor); // Change to your desired footer color
 
     doc.end();
+
+    const invoicePath = `${host}/public/invoices/${filename}`;
 
     return new Promise((resolve, reject) => {
       stream.on("finish", () => resolve(filePath));

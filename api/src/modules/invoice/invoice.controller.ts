@@ -1,14 +1,11 @@
 import {
   Controller,
-  Get,
   Post,
   Body,
   UseGuards,
   Req,
   UseInterceptors,
-  Patch,
   Param,
-  Delete,
 } from "@nestjs/common";
 import { JWTUtil } from "../../jwt/jwt.service";
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
@@ -17,7 +14,7 @@ import { ClassSerializerInterceptor } from "@nestjs/common";
 import { SkipThrottle } from "@nestjs/throttler";
 import { InvoiceService } from "./invoice.service";
 import { InvoiceDTO } from "./dto/invoice.dto";
-
+import { Request } from "express";
 @SkipThrottle()
 @UseInterceptors(ClassSerializerInterceptor)
 @ApiBearerAuth()
@@ -40,7 +37,10 @@ export class InvoiceController {
   }
 
   @Post(":id/generate")
-  generate(@Param('id') id: number) {
-    return this.invoiceService.generatePdfInvoice(id);
+  generate(@Req() req: Request, @Param("id") id: number) {
+    return this.invoiceService.generatePdfInvoice(
+      id,
+      `${req.protocol}://${req.get("Host")}`,
+    );
   }
 }

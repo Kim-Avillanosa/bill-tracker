@@ -30,7 +30,7 @@ export class ClientService {
     return this.clientRepository.save(data);
   }
 
-  findOne(id: number): Promise<Client[]> {
+  findAll(id: number): Promise<Client[]> {
     return this.clientRepository.find({
       select: [
         "id",
@@ -48,10 +48,36 @@ export class ClientService {
         "symbol",
         "userId",
         "user",
-        "category"
+        "category",
       ],
       where: {
         userId: id,
+      },
+    });
+  }
+
+  findOne(id: number): Promise<Client> {
+    return this.clientRepository.findOne({
+      select: [
+        "id",
+        "email",
+        "address",
+        "name",
+        "code",
+        "hourly_rate",
+        "headline_color",
+        "banner_color",
+        "text_color",
+        "hours_per_day",
+        "created_at",
+        "updated_at",
+        "symbol",
+        "userId",
+        "user",
+        "category",
+      ],
+      where: {
+        id: id,
       },
     });
   }

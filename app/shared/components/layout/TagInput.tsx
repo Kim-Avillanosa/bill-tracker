@@ -52,8 +52,8 @@ const TagInput: React.FC<TagInputProps> = ({ tags, onChange }) => {
         {tags.map((tag, index) => (
           <Badge
             key={index}
-            className="m-1 d-flex align-items-center"
-            bg="warning"
+            className="m-1 d-flex align-items-center "
+            bg="light"
             text="dark"
           >
             {tag}

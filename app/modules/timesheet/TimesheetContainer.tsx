@@ -24,22 +24,8 @@ const TimesheetContainer: React.FC = () => {
     <div className="mt-5">
       <Container>
         <Row>
-          <Col xs={"auto"}>
-            <ClientSelect onChange={(id) => setClientId(id)} />
-          </Col>
-          <Col xs={"auto"}>
-            <DateRangePicker
-              onChange={(start, end) =>
-                setRange({
-                  startDate: start?.toDateString() || "",
-                  endDate: end?.toDateString() || "",
-                })
-              }
-            />
-          </Col>
           <Col>
             <Button
-              className="float-end"
               hidden={!clientId}
               variant="outline-dark"
               onClick={() => {
@@ -59,8 +45,22 @@ const TimesheetContainer: React.FC = () => {
               📅 New Timesheet entry
             </Button>
           </Col>
+          <Col xs={"auto"}>
+            <ClientSelect onChange={(id) => setClientId(id)} />
+          </Col>
+          <Col xs={"auto"}>
+            <DateRangePicker
+              onChange={(start, end) =>
+                setRange({
+                  startDate: start?.toDateString() || "",
+                  endDate: end?.toDateString() || "",
+                })
+              }
+            />
+          </Col>
         </Row>
       </Container>
+
       {clientId > 0 && range.startDate && range.endDate && (
         <div className="mt-5">
           <TimesheetTable
@@ -70,34 +70,6 @@ const TimesheetContainer: React.FC = () => {
           />
         </div>
       )}
-      <Container className="float-end">
-        <Row className="mt-3">
-          <Col xs={"auto"}>
-            <div className="float-end">
-              <Button
-                hidden={!clientId}
-                variant="success"
-                size="sm"
-                onClick={() => {
-                  openModal({
-                    title: "New timesheet entry",
-                    content: (
-                      <TimesheetForm
-                        clientId={clientId}
-                        onSuccess={() => {
-                          dismiss();
-                        }}
-                      />
-                    ),
-                  });
-                }}
-              >
-                🏷️ Write my invoice
-              </Button>
-            </div>
-          </Col>
-        </Row>
-      </Container>
     </div>
   );
 };

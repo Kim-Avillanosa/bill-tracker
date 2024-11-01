@@ -132,7 +132,6 @@ const TimesheetForm: React.FC<TimesheetFormProps> = ({
           </div>
         )}
       </FormGroup>
-
       <Button
         variant="light"
         type="submit"

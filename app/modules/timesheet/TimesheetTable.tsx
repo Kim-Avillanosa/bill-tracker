@@ -1,10 +1,20 @@
 import useTimesheets from "@/services/useTimesheets";
 import DeleteButton from "@/shared/components/layout/DeleteButton";
 import useModalStore from "@/shared/store/useModal";
-import React, { useCallback, useEffect, useState } from "react";
-import { Alert, Badge, Button, Container, Table } from "react-bootstrap";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import {
+  Alert,
+  Badge,
+  Button,
+  Col,
+  Container,
+  Row,
+  Table,
+} from "react-bootstrap";
 import TimesheetForm from "./TimesheetForm";
 import { safeJsonParse } from "@/lib/safeJsonParse";
+import TimesheetCheckout from "./TimesheetCheckout";
+import useClient from "@/services/useClient";
 
 interface Props {
   clientId: number;
@@ -14,11 +24,36 @@ interface Props {
 
 const TimesheetTable: React.FC<Props> = ({ clientId, startDate, endDate }) => {
   const { listTimesheets, deleteTimesheet } = useTimesheets();
+  const { getClient } = useClient();
+
   const [timesheets, setTimesheets] = useState<Models.Timesheet[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-
   const { isOpen, dismiss, openModal } = useModalStore();
+
+  const [currentClient, setCurrentClient] = useState<
+    Models.Client | undefined
+  >();
+
+  useEffect(() => {
+    let isMounted = true;
+    const fetchClient = async () => {
+      try {
+        const response = await getClient(clientId);
+        if (isMounted && response) {
+          setCurrentClient(response.data);
+        }
+      } catch (error) {
+        console.error("Failed to fetch client:", error);
+      }
+    };
+
+    fetchClient();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [clientId]);
 
   const fetchTimesheets = useCallback(async () => {
     setLoading(true);
@@ -58,6 +93,14 @@ const TimesheetTable: React.FC<Props> = ({ clientId, startDate, endDate }) => {
     );
   }
 
+  if (!currentClient) {
+    return (
+      <Container className="text-center mt-5">
+        <Alert variant="primary">Client not found</Alert>
+      </Container>
+    );
+  }
+
   return (
     <Container>
       <div
@@ -78,10 +121,10 @@ const TimesheetTable: React.FC<Props> = ({ clientId, startDate, endDate }) => {
           >
             <tr>
               <th className="border border-gray-300 p-2">ID</th>
+              <th className="border border-gray-300 p-2">Client Name</th>
               <th className="border border-gray-300 p-2">Summary</th>
               <th className="border border-gray-300 p-2">Entry Date</th>
               <th className="border border-gray-300 p-2">Tags</th>
-              <th className="border border-gray-300 p-2">Client Name</th>
               <th className="border border-gray-300 p-2">Actions</th>
             </tr>
           </thead>
@@ -91,6 +134,10 @@ const TimesheetTable: React.FC<Props> = ({ clientId, startDate, endDate }) => {
               return (
                 <tr key={timesheet.id}>
                   <td className="border border-gray-300 p-2">{timesheet.id}</td>
+                  <td className="border border-gray-300 p-2">
+                    {timesheet.client.name}
+                    <Badge>{timesheet.client.code}</Badge>
+                  </td>
                   <td className="border border-gray-300 p-2">
                     {timesheet.summary}
                   </td>
@@ -104,9 +151,7 @@ const TimesheetTable: React.FC<Props> = ({ clientId, startDate, endDate }) => {
                       </Badge>
                     ))}
                   </td>
-                  <td className="border border-gray-300 p-2">
-                    {timesheet.client.name}
-                  </td>
+
                   <td className="border border-gray-300 p-2">
                     <Button
                       onClick={() => {
@@ -145,6 +190,35 @@ const TimesheetTable: React.FC<Props> = ({ clientId, startDate, endDate }) => {
           </tbody>
         </Table>
       </div>
+
+      <Container>
+        <Row className="mt-3">
+          <Col />
+          <Col xs={"auto"}>
+            <div className="float-end">
+              <Button
+                className="ml-3"
+                hidden={!clientId}
+                variant="dark"
+                size="lg"
+                onClick={() => {
+                  openModal({
+                    title: `Preparing invoice for: ${currentClient.name}`,
+                    content: (
+                      <TimesheetCheckout
+                        client={currentClient}
+                        timesheets={timesheets}
+                      />
+                    ),
+                  });
+                }}
+              >
+                🏷️ Prepare invoice
+              </Button>
+            </div>
+          </Col>
+        </Row>
+      </Container>
     </Container>
   );
 };

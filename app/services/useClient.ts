@@ -21,7 +21,11 @@ const useClient = () => {
   };
 
   const getClientList = () => {
-    return client.get("/client/list");
+    return client.get<Models.Client[]>("/client/list");
+  };
+
+  const getClient = (id: number) => {
+    return client.get<Models.Client>(`/client/${id}`);
   };
 
   const updateClient = (id: string, data: Partial<ClientData>) => {
@@ -34,6 +38,7 @@ const useClient = () => {
 
   return {
     addClient,
+    getClient,
     getClientList,
     updateClient,
     deleteClient,
