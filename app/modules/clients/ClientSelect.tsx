@@ -18,7 +18,7 @@ const ClientSelect: React.FC<ClientSelectProps> = ({ onChange }) => {
         const response = await getClientList();
         // Assuming response.data is an array of clients
         setClients(response.data); // Assuming response.data is already typed as Client[]
-      } catch (error) {
+      } catch {
         toast.error("Failed to load clients");
       } finally {
         setLoading(false);
