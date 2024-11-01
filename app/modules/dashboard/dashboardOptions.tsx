@@ -48,9 +48,6 @@ const DashboardOptions: React.FC<DashboardOptionsProps> = ({ setStatus }) => {
         </Button>
       </div>
       <div>
-        <Button variant="success" className="m-1">
-          Timesheet Entry 📅
-        </Button>
         <Button
           onClick={() =>
             openModal({

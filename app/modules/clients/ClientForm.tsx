@@ -221,7 +221,7 @@ const ClientForm: React.FC<ClientFormProps> = ({ initialData, isUpdate = false }
                     {formik.touched.text_color && <div className="text-danger">{formik.errors.text_color}</div>}
                 </FormGroup>
                 <div className="text-center m-3">
-                    <Button className="w-50" type="submit">
+                    <Button variant="light" className="w-100" type="submit">
                         {isUpdate ? "Update Client" : "Add Client"}
                     </Button>
                 </div>

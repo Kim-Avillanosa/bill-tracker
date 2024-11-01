@@ -65,7 +65,7 @@ const RegistrationForm = () => {
   });
 
   return (
-    <div className="container mt-5 w-50">
+    <div className="container mt-5 w-50 pb-5">
       <h1 className="text-center">
         <strong style={{ fontSize: 60 }}>Bill tracker 💸</strong>
       </h1>
@@ -272,15 +272,15 @@ const RegistrationForm = () => {
           </FormGroup>
         </div>
 
-        <div className="text-center m-3">
-          <Button className="w-25" color="primary" type="submit">
+        <div className="text-center mt-3">
+          <Button className="w-100" color="primary" type="submit">
             Register
           </Button>
         </div>
 
-        <div className="text-center m-3">
+        <div className="text-center mt-3">
           <Link href={"/"}>
-            <Button className="w-25" variant="outline-dark">
+            <Button className="w-100" variant="outline-dark">
               Login
             </Button>
           </Link>

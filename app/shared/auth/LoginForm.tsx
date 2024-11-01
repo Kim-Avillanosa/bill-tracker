@@ -99,15 +99,15 @@ const LoginForm = () => {
                         <div className="text-danger">{formik.errors.password}</div>
                     )}
                 </FormGroup>
-                <div className="text-center  m-3">
-                    <Button className="w-25" type="submit">
+                <div className="text-center mt-3">
+                    <Button className="w-100" type="submit">
                         Login
                     </Button>
                 </div>
 
-                <div className="text-center m-3">
+                <div className="text-center mt-2">
                     <Link href={"/register"}>
-                        <Button className="w-25" variant="outline-dark">
+                        <Button className="w-100" variant="outline-dark">
                             Register
                         </Button>
                     </Link>

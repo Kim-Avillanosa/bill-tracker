@@ -11,24 +11,27 @@ import {
 
 @Entity()
 export class TimeSheet {
-  //primary key for every tables
   @PrimaryGeneratedColumn()
   id?: number;
 
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP', nullable: false })
-  entry_date: Date; 
+  @Column({
+    type: "timestamp",
+    default: () => "CURRENT_TIMESTAMP",
+    nullable: false,
+  })
+  entry_date: Date;
 
-  @Column({ default : "", nullable: false })
+  @Column({ default: "", nullable: false })
   summary: string;
- 
-  @Column()
+
+  @Column({ type: "text", nullable: false })
   tags: string;
 
   @CreateDateColumn()
-  created_at?: Date; // Creation date
+  created_at?: Date;
 
   @UpdateDateColumn()
-  updated_at?: Date; // Last updated date
+  updated_at?: Date;
 
   @Column()
   clientId: number;

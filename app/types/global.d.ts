@@ -23,7 +23,7 @@ declare global {
 
       interface Timesheet {
         id: number;
-        tags: string; // Store as string (JSON format) to be parsed later
+        tags: string; 
         summary: string;
         entry_date: string; // ISO format date string
         client: Client;

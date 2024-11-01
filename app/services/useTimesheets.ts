@@ -18,25 +18,45 @@ interface Client {
   category: string;
 }
 
-
 const useTimesheets = () => {
   const { client } = useAxiosClient();
 
-  const addTimesheet = (clientId: number, timesheetData: {
-    tags: string[]; // Array of tags
-    summary: string;
-    entry_date: string;
-  }) => {
+  const addTimesheet = (
+    clientId: number,
+    timesheetData: {
+      tags: string[];
+      summary: string;
+      entry_date: string;
+    }
+  ) => {
     return client.post(`/client/${clientId}/timesheet/add`, {
-      tags: JSON.stringify(timesheetData.tags), // Convert array to JSON string
+      tags: timesheetData.tags, // Use the formatted string
       summary: timesheetData.summary,
       entry_date: timesheetData.entry_date,
     });
   };
 
-  const listTimesheets = (clientId: number, startDate?: string, endDate?: string) => {
+  const updateTimesheet = (
+    id: number,
+    timesheetData: {
+      tags: string[]; // Array of tags
+      summary: string;
+      entry_date: string;
+    }
+  ) => {
+    return client.patch(`/client/timesheet/${id}`, {
+      ...timesheetData,
+      tags: timesheetData.tags, // Convert array to JSON string if provided
+    });
+  };
+
+  const listTimesheets = (
+    clientId: number,
+    startDate?: string,
+    endDate?: string
+  ) => {
     const params: Record<string, string> = {};
-    
+
     if (startDate) {
       params.startDate = startDate;
     }
@@ -45,16 +65,12 @@ const useTimesheets = () => {
       params.endDate = endDate;
     }
 
-    return client.get<Models.Timesheet[]>(`/client/${clientId}/timesheet/list`, {
-      params,
-    });
-  };
-
-  const updateTimesheet = (id: number, timesheetData: Partial<Omit<Models.Timesheet, 'id' | 'client' | 'created_at' | 'updated_at'>>) => {
-    return client.patch(`/client/timesheet/${id}`, {
-      ...timesheetData,
-      tags: timesheetData.tags ? JSON.stringify(timesheetData.tags) : undefined, // Convert array to JSON string if provided
-    });
+    return client.get<Models.Timesheet[]>(
+      `/client/${clientId}/timesheet/list`,
+      {
+        params,
+      }
+    );
   };
 
   const deleteTimesheet = (id: number) => {

@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Between, Repository } from "typeorm";
 import { BadRequestException } from "@nestjs/common";
@@ -32,7 +36,6 @@ export class TimeSheetService {
 
     return this.timeSheetRepository.save(data);
   }
-
   findAll(id: number, startDate: Date, endDate: Date): Promise<TimeSheet[]> {
     return this.timeSheetRepository.find({
       select: [
@@ -42,7 +45,7 @@ export class TimeSheetService {
         "created_at",
         "updated_at",
         "client",
-        "tags"
+        "tags",
       ],
       relations: ["client"],
       where: {
@@ -58,11 +61,26 @@ export class TimeSheetService {
   ): Promise<TimeSheet> {
     const timeSheet = await this.timeSheetRepository.findOneBy({ id });
     if (!timeSheet) {
-      throw new NotFoundException(`Client with id ${id} not found`);
+      throw new NotFoundException(`Timesheet with id ${id} not found`);
     }
 
-    Object.assign(timeSheet, timesheetDto);
-    return this.timeSheetRepository.save(timeSheet);
+    // Create an object to update
+    const updatedData: Partial<TimeSheet> = {
+      ...timesheetDto,
+      tags: JSON.stringify(timesheetDto.tags), // Convert tags to JSON if necessary
+      updated_at: new Date(), // Update the timestamp
+    };
+
+    // Avoid updating the id field directly
+    Object.assign(timeSheet, updatedData);
+
+    try {
+      return await this.timeSheetRepository.save(timeSheet);
+    } catch (error) {
+      throw new InternalServerErrorException(
+        `Failed to update timesheet: ${error.message}`,
+      );
+    }
   }
 
   async deleteTimesheet(id: number): Promise<void> {
