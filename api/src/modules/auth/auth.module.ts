@@ -14,7 +14,7 @@ import { User } from "../users/entities/user.entity";
       global: true,
       secret: jwtConstants.secret,
       signOptions: {
-        expiresIn: '1h', // for this sample i had changed the expiration to one hour
+        expiresIn: '30d', // for this sample i had changed the expiration to one hour
       },
     }),
   ],
