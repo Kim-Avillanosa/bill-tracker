@@ -18,10 +18,19 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.VPS_SSH_KEY }}
 
-      - name: Deploy to VPS
+      - name: Deploy API to VPS
         run: |
           ssh -o StrictHostKeyChecking=no root@88.222.245.88 << 'EOF'
-            cd /portfolio.v4/cms/portfolio
+            cd /bill-tracker/api
+            git pull origin main
+            docker-compose down
+            docker-compose up -d --build
+          EOF
+
+      - name: Deploy App to VPS
+        run: |
+          ssh -o StrictHostKeyChecking=no root@88.222.245.88 << 'EOF'
+            cd /bill-tracker/app
             git pull origin main
             docker-compose down
             docker-compose up -d --build
