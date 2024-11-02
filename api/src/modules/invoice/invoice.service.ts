@@ -10,7 +10,7 @@ import { WorkItem } from "./entities/workitem.entity";
 import * as fs from "fs";
 const PDFDocument = require("pdfkit-table");
 import { formatDate } from "src/lib/formatDate";
-import { join } from "path";
+import path, { join } from "path";
 
 type FileResults = {
   invoice: string;
@@ -231,10 +231,10 @@ export class InvoiceService {
 
     const doc = new PDFDocument();
     const filename = `${invoice.invoiceNumber}.pdf`;
-    const filePath = `./public/invoices/${filename}`;
+    const filePath = path.join(__dirname, "public", "invoices", filename);
 
     const excelFile = `${invoice.invoiceNumber}.csv`;
-    const excelFilePath = `./public/invoices/${excelFile}`;
+    const excelFilePath = path.join(__dirname, "public", "invoices", excelFile);
 
     const stream = fs.createWriteStream(filePath);
 
@@ -391,7 +391,7 @@ export class InvoiceService {
     this.invoiceRepository.save(invoice);
 
     // Write CSV content to a file
-    // fs.writeFileSync(excelFilePath, csvContent);
+    fs.writeFileSync(excelFilePath, csvContent);
 
     const invoicePath = `${host}/files/${filename}`;
 
