@@ -22,7 +22,7 @@ services:
       - THROTTLE_LIMIT=2
     depends_on:
       - mysql
-    command: sh -c "npm install && npm run update-db &&  npm run start:dev"
+    command: sh -c "npm install && npm run start:dev"
 
   mysql:
     image: mysql:8.0
