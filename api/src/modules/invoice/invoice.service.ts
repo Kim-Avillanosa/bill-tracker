@@ -10,7 +10,8 @@ import { WorkItem } from "./entities/workitem.entity";
 import * as fs from "fs";
 const PDFDocument = require("pdfkit-table");
 import { formatDate } from "src/lib/formatDate";
-import path, { join } from "path";
+import * as path from "path";
+
 
 type FileResults = {
   invoice: string;
