@@ -34,13 +34,16 @@ jobs:
             # Check if the directory is a git repository
             if [ ! -d .git ]; then
               # Clone the repository if not a git repository
-              git clone https://github.com/Kim-Avillanosa/bill-tracker.git .  # Replace <repository-url> with the actual repository URL
+              git clone https://github.com/Kim-Avillanosa/bill-tracker.git .  # Replace with actual repository URL
             else
               # Pull the latest changes if it is a git repository
               git pull origin main || { echo "Git pull failed"; exit 1; }
             fi
 
+            # Bring down the services, keeping data intact
             docker-compose down || { echo "Docker-compose down failed"; exit 1; }
+            
+            # Start up the services with rebuild, ensuring MySQL data is retained
             docker-compose up -d --build || { echo "Docker-compose up failed"; exit 1; }
           EOF
 
@@ -56,12 +59,15 @@ jobs:
             # Check if the directory is a git repository
             if [ ! -d .git ]; then
               # Clone the repository if not a git repository
-              git clone https://github.com/Kim-Avillanosa/bill-tracker.git .  # Replace <repository-url> with the actual repository URL
+              git clone https://github.com/Kim-Avillanosa/bill-tracker.git .  # Replace with actual repository URL
             else
               # Pull the latest changes if it is a git repository
               git pull origin main || { echo "Git pull failed"; exit 1; }
             fi
 
+            # Bring down the services, keeping data intact
             docker-compose down || { echo "Docker-compose down failed"; exit 1; }
+
+            # Start up the services with rebuild, ensuring MySQL data is retained
             docker-compose up -d --build || { echo "Docker-compose up failed"; exit 1; }
           EOF
