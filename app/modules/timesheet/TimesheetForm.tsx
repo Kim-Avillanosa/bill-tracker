@@ -133,7 +133,7 @@ const TimesheetForm: React.FC<TimesheetFormProps> = ({
         )}
       </FormGroup>
       <Button
-        variant="light"
+        variant="success"
         type="submit"
         disabled={loading}
         className="w-100" // This class makes the button full-width

@@ -29,7 +29,7 @@ export class Invoice {
   workItems: WorkItem[];
 
   @Column({ default: "pending" })
-  status: "pending" | "paid" | "overdue";
+  status: "pending" | "released" | "received";
 
   @UpdateDateColumn()
   updatedAt?: Date;

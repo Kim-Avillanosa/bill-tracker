@@ -258,7 +258,7 @@ const ClientForm: React.FC<ClientFormProps> = ({
           )}
         </FormGroup>
         <div className="text-center m-3">
-          <Button variant="light" className="w-100" type="submit">
+          <Button variant="success" className="w-100" type="submit">
             {isUpdate ? "Update Client" : "Add Client"}
           </Button>
         </div>

@@ -5,7 +5,7 @@ import InvoiceDetails from "./InvoiceDetails";
 import useInvoice from "@/services/useInvoice";
 import toast from "react-hot-toast";
 import useModalStore from "@/shared/store/useModal";
-import QRCodeComponent from "@/shared/components/layout/QRCodeContainer";
+import InvoiceConfirmation from "./InvoiceConfirmation";
 
 const InvoiceSelectionForm = () => {
   const [selectedInvoiceId, setSelectedInvoiceId] = useState<
@@ -24,6 +24,15 @@ const InvoiceSelectionForm = () => {
     console.log("Selected Invoice ID:", invoiceId);
   };
 
+  const openFileImmediately = (fileUrl: string) => {
+    const newTab = window.open(fileUrl, "_blank");
+    if (newTab) {
+      newTab.focus(); // Focus the new tab
+    } else {
+      alert("Please allow popups for this site");
+    }
+  };
+
   return (
     <Container>
       <Row>
@@ -40,6 +49,8 @@ const InvoiceSelectionForm = () => {
             }}
           />
         </Col>
+      </Row>
+      <Row>
         {currentClient && selectedInvoiceId && (
           <Col>
             <InvoiceDetails
@@ -55,15 +66,18 @@ const InvoiceSelectionForm = () => {
           onClick={() => {
             toast.promise(
               generateInvoice(selectedInvoiceId).then((p) => {
+                const result: string = p.data;
+
                 dismiss();
 
+                openFileImmediately(result);
                 openModal({
-                  size: "xl",
-                  title: "Invoice has been generated!",
+                  size: "sm",
+                  title: "Confirmation",
                   content: (
-                    <QRCodeComponent
-                      title={currentClient?.name || ""}
-                      value="Google.com"
+                    <InvoiceConfirmation
+                      qrCodeSrc={result}
+                      invoiceLink={result}
                     />
                   ),
                 });

@@ -58,16 +58,16 @@ const InvoiceDetails: React.FC<InvoiceDetailsProps> = ({
   return (
     <Card className="mt-3 shadow-sm rounded border-0">
       <Card.Header className="bg-success text-white d-flex justify-content-between align-items-center">
-        <span>Invoice Details</span>
+        <strong>Invoice Details</strong>
         <Badge bg={"dark"}>{invoice.status.toUpperCase()}</Badge>
       </Card.Header>
       <Card.Body>
         <Card.Title className="text-secondary">
-          {invoice.invoiceNumber || `Invoice #${invoice.id}`}
+          <strong> {invoice.invoiceNumber || `Invoice #${invoice.id}`}</strong>
         </Card.Title>
         <Card.Subtitle className="mb-3 text-muted">
           <FaInfoCircle className="me-2" />
-          Billed to: {client.name}
+          {`Billed to: ${client.name} (${client.code})`}
         </Card.Subtitle>
         <Row className="mb-2">
           <Col>

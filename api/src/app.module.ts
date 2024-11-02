@@ -18,11 +18,13 @@ import { APP_GUARD } from "@nestjs/core";
 import { ClientModule } from "./modules/client/client.module";
 import { TimeSheetModule } from "./modules/timesheet/timesheet.module";
 import { InvoiceModule } from "./modules/invoice/invoice.module";
+import { FilesController } from "./modules/files/files.controller";
+import { FilesModule } from "./modules/files/files.module";
 
 @Module({
-  // add orm module to create persistence instance
   imports: [
     ConfigModule.forRoot(),
+    FilesModule,
     InvoiceModule,
     ClientModule,
     TimeSheetModule,
@@ -46,20 +48,10 @@ import { InvoiceModule } from "./modules/invoice/invoice.module";
         return ormConfig;
       },
     }),
-    ServeStaticModule.forRoot(
-      {
-        rootPath: join(__dirname, "docs"),
-        serveRoot: "/swagger",
-      },
-      {
-        rootPath: join(__dirname, "src", "public", "invoices"),
-        serveRoot: "/invoices",
-        serveStaticOptions: {
-          redirect: false,
-          index: false,
-        },
-      },
-    ),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, "docs"),
+      serveRoot: "/swagger",
+    }),
   ],
   controllers: [AppController],
   providers: [

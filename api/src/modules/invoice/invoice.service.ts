@@ -225,7 +225,7 @@ export class InvoiceService {
 
     const doc = new PDFDocument();
     const filename = `${invoice.invoiceNumber}.pdf`;
-    const filePath = `./src/public/invoices/${filename}`;
+    const filePath = `./public/invoices/${filename}`;
     const stream = fs.createWriteStream(filePath);
 
     const bannerColor = currentClient.banner_color;
@@ -286,6 +286,28 @@ export class InvoiceService {
 
     doc.moveDown(3);
 
+    const bankDetails = [
+      [
+        user.bank_name,
+        user.bank_swift_code,
+        user.bank_account_name,
+        user.bank_account_number,
+      ],
+    ];
+
+    const bankTable = {
+      title: "Bank Information",
+      subtitle: "Payment method : Fund Transfer",
+      headers: ["Bank", "Swift Code", "Account Name", "Account #"],
+      rows: bankDetails,
+    };
+
+    await doc.table(bankTable, {
+      width: 350,
+    });
+
+    doc.moveDown(3);
+
     const totalAmount = workItems.reduce((sum, item) => {
       return sum + item.hours * currentClient.hourly_rate;
     }, 0);
@@ -319,37 +341,22 @@ export class InvoiceService {
 
     doc.moveDown(3);
 
-    const bankDetails = [
-      [
-        user.bank_name,
-        user.bank_swift_code,
-        user.bank_account_name,
-        user.bank_account_number,
-      ],
-    ];
-
-    const bankTable = {
-      title: "Bank Information",
-      subtitle: "Payment method : Fund Transfer",
-      headers: ["Bank", "Swift Code", "Account Name", "Account #"],
-      rows: bankDetails,
-    };
-
-    await doc.table(bankTable, {
-      width: 350,
-    });
-
     doc
       .rect(0, doc.page.height - 120, doc.page.width, 120) // Rectangle from the bottom-left corner spanning the full width of the page
       .fill(bannerColor); // Change to your desired footer color
 
+    doc.moveDown();
+
     doc.end();
 
-    const zz = join(__dirname, "src", "public", "invoices");
-    const invoicePath = `${host}/public/invoices/${filename}`;
+    invoice.status = "released";
+
+    this.invoiceRepository.save(invoice);
+
+    const invoicePath = `${host}/files/${filename}`;
 
     return new Promise((resolve, reject) => {
-      stream.on("finish", () => resolve(zz));
+      stream.on("finish", () => resolve(invoicePath));
       stream.on("error", (err) => reject(err));
     });
   }
