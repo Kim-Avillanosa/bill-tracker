@@ -28,8 +28,18 @@ jobs:
             # Check if the directory exists; if not, create it
             [ ! -d /bill-tracker/api ] && mkdir -p /bill-tracker/api
             
+            # Navigate to the directory
             cd /bill-tracker/api || { echo "Failed to change directory"; exit 1; }
-            git pull origin main || { echo "Git pull failed"; exit 1; }
+
+            # Check if the directory is a git repository
+            if [ ! -d .git ]; then
+              # Clone the repository if not a git repository
+              git clone https://github.com/Kim-Avillanosa/bill-tracker.git .  # Replace <repository-url> with the actual repository URL
+            else
+              # Pull the latest changes if it is a git repository
+              git pull origin main || { echo "Git pull failed"; exit 1; }
+            fi
+
             docker-compose down || { echo "Docker-compose down failed"; exit 1; }
             docker-compose up -d --build || { echo "Docker-compose up failed"; exit 1; }
           EOF
@@ -40,8 +50,18 @@ jobs:
             # Check if the directory exists; if not, create it
             [ ! -d /bill-tracker/app ] && mkdir -p /bill-tracker/app
             
+            # Navigate to the directory
             cd /bill-tracker/app || { echo "Failed to change directory"; exit 1; }
-            git pull origin main || { echo "Git pull failed"; exit 1; }
+
+            # Check if the directory is a git repository
+            if [ ! -d .git ]; then
+              # Clone the repository if not a git repository
+              git clone <repository-url> .  # Replace <repository-url> with the actual repository URL
+            else
+              # Pull the latest changes if it is a git repository
+              git pull origin main || { echo "Git pull failed"; exit 1; }
+            fi
+
             docker-compose down || { echo "Docker-compose down failed"; exit 1; }
             docker-compose up -d --build || { echo "Docker-compose up failed"; exit 1; }
           EOF
