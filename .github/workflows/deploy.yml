@@ -11,66 +11,30 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3  # Use a specific version
 
       - name: Install SSH key
         uses: webfactory/ssh-agent@v0.5.3
         with:
           ssh-private-key: ${{ secrets.VPS_SSH_KEY }}
 
-      - name: Test SSH connection
-        run: |
-          ssh -o StrictHostKeyChecking=no root@88.222.245.88 'echo "SSH connection successful!"'
-
-      - name: Deploy API to VPS
+      - name: Deploy to VPS
         run: |
           ssh -o StrictHostKeyChecking=no root@88.222.245.88 << 'EOF'
-            # Check if the directory exists; if not, create it
-            if [ ! -d /bill-tracker/api ]; then
-              mkdir -p /bill-tracker/api
+            set -e  # Exit immediately if a command exits with a non-zero status
+            if [ ! -d "/bill-tracker/.git" ]; then
+              git clone https://github.com/Kim-Avillanosa/bill-tracker.git /bill-tracker  # Replace with your repo URL
             fi
+            cd /bill-tracker
+            git pull origin main
             
-            # Navigate to the directory
-            cd /bill-tracker/api || { echo "Failed to change directory"; exit 1; }
-
-            # Check if the directory is a git repository
-            if [ ! -d .git ]; then
-              # Clone the repository if not a git repository
-              git clone https://github.com/Kim-Avillanosa/bill-tracker.git . || { echo "Git clone failed"; exit 1; }
-            else
-              # Pull the latest changes if it is a git repository
-              git pull origin main || { echo "Git pull failed"; exit 1; }
-            fi
-
-            # Check for docker-compose.yml
-            if [ ! -f docker-compose.yml ]; then
-              echo "docker-compose.yml not found in /bill-tracker/api"
-              exit 1
-            fi
-
-            # Shutdown any existing containers and rebuild
-            docker-compose down || { echo "Docker-compose down failed"; exit 1; }
-            docker-compose up -d --build || { echo "Docker-compose up failed"; exit 1; }
-          EOF
-
-      - name: Deploy App to VPS
-        run: |
-          ssh -o StrictHostKeyChecking=no root@88.222.245.88 << 'EOF'
-            # Check if the directory exists; if not, create it
-            if [ ! -d /bill-tracker/app ]; then
-              mkdir -p /bill-tracker/app
-            fi
+            # Deploy API
+            cd api
+            docker-compose down
+            docker-compose up -d --build
             
-            # Navigate to the directory
-            cd /bill-tracker/app || { echo "Failed to change directory"; exit 1; }
-
-            # Check for docker-compose.yml
-            if [ ! -f docker-compose.yml ]; then
-              echo "docker-compose.yml not found in /bill-tracker/app"
-              exit 1
-            fi
-
-            # Shutdown any existing containers and rebuild
-            docker-compose down || { echo "Docker-compose down failed"; exit 1; }
-            docker-compose up -d --build || { echo "Docker-compose up failed"; exit 1; }
+            # Deploy App
+            cd ../app
+            docker-compose down
+            docker-compose up -d --build
           EOF
