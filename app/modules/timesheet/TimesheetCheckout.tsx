@@ -91,6 +91,7 @@ const TimesheetCheckout: React.FC<Props> = ({ timesheets, client }) => {
     const generatedData: Models.WorkItem[] = timesheets
       .filter((timesheet) => checkedItems[timesheet.id])
       .map((timesheet) => ({
+        entry_date: timesheet.entry_date,
         title: timesheet.summary, // Using the summary as the title
         description: removeCharacters(timesheet.tags),
         tags: timesheet.tags.split(",").map((tag) => tag.trim()), // Split tags into an array

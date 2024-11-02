@@ -31,6 +31,7 @@ declare global {
     }
 
     type WorkItem = {
+      entry_date: string;
       title: string;
       description: string;
       tags: string[];

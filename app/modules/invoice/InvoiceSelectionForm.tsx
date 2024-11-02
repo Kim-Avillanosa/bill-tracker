@@ -6,6 +6,10 @@ import useInvoice from "@/services/useInvoice";
 import toast from "react-hot-toast";
 import useModalStore from "@/shared/store/useModal";
 import InvoiceConfirmation from "./InvoiceConfirmation";
+type FileResults = {
+  invoice: string;
+  timesheet: string;
+};
 
 const InvoiceSelectionForm = () => {
   const [selectedInvoiceId, setSelectedInvoiceId] = useState<
@@ -66,18 +70,19 @@ const InvoiceSelectionForm = () => {
           onClick={() => {
             toast.promise(
               generateInvoice(selectedInvoiceId).then((p) => {
-                const result: string = p.data;
+                const result: FileResults = p.data;
 
                 dismiss();
 
-                openFileImmediately(result);
+                openFileImmediately(result.invoice);
+                openFileImmediately(result.timesheet);
                 openModal({
                   size: "sm",
                   title: "Confirmation",
                   content: (
                     <InvoiceConfirmation
-                      qrCodeSrc={result}
-                      invoiceLink={result}
+                      qrCodeSrc={result.invoice}
+                      invoiceLink={result.invoice}
                     />
                   ),
                 });

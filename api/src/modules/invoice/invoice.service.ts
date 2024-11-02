@@ -12,6 +12,11 @@ const PDFDocument = require("pdfkit-table");
 import { formatDate } from "src/lib/formatDate";
 import { join } from "path";
 
+type FileResults = {
+  invoice: string;
+  timesheet: string;
+};
+
 @Injectable()
 export class InvoiceService {
   constructor(
@@ -121,6 +126,7 @@ export class InvoiceService {
 
     const workItemsParsed = invoice.workItems.map((item) => {
       const workItem: WorkItem = {
+        entry_date: item.entry_date,
         title: item.title,
         rate: currentClient.hourly_rate,
         description: item.description,
@@ -226,6 +232,10 @@ export class InvoiceService {
     const doc = new PDFDocument();
     const filename = `${invoice.invoiceNumber}.pdf`;
     const filePath = `./public/invoices/${filename}`;
+
+    const excelFile = `${invoice.invoiceNumber}.csv`;
+    const excelFilePath = `./public/invoices/${excelFile}`;
+
     const stream = fs.createWriteStream(filePath);
 
     const bannerColor = currentClient.banner_color;
@@ -328,6 +338,33 @@ export class InvoiceService {
 
     rows.push(["", "", "", "Total:", `${currentClient.symbol}${totalAmount}`]);
 
+    // Define CSV headers
+    const headers = [
+      "Date",
+      "Title",
+      "Description",
+      "Hours",
+      `Hourly Rate (${currentClient.symbol})`,
+      `Total (${currentClient.symbol})`,
+    ];
+
+    const timesheetRows = workItems.map((item) => {
+      return [
+        item.entry_date.toDateString(),
+        item.title,
+        `"${item.description}"`,
+        item.hours,
+        currentClient.hourly_rate,
+        item.hours * currentClient.hourly_rate,
+      ];
+    });
+
+    // Convert rows array to CSV format
+    const csvContent = [
+      headers.join(","), // Join headers with commas
+      ...timesheetRows.map((row) => row.join(",")), // Map each row array to a comma-separated string
+    ].join("\n"); // Join each line with newline characters
+
     const table = {
       title: "Overview",
       subtitle: `Total Hours: ${totalHours}, Total Amount ${currentClient.symbol} ${totalAmount}`,
@@ -353,10 +390,20 @@ export class InvoiceService {
 
     this.invoiceRepository.save(invoice);
 
+    // Write CSV content to a file
+    fs.writeFileSync(excelFilePath, csvContent);
+
     const invoicePath = `${host}/files/${filename}`;
 
+    const csv = `${host}/files/${excelFile}`;
+
+    const results: FileResults = {
+      invoice: invoicePath,
+      timesheet: csv,
+    };
+
     return new Promise((resolve, reject) => {
-      stream.on("finish", () => resolve(invoicePath));
+      stream.on("finish", () => resolve(JSON.stringify(results)));
       stream.on("error", (err) => reject(err));
     });
   }

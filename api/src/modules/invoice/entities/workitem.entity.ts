@@ -1,4 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from "typeorm";
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  JoinColumn,
+} from "typeorm";
 import { Invoice } from "./invoice.entity"; // Adjust the import path as needed
 
 @Entity()
@@ -6,6 +12,13 @@ export class WorkItem {
   @PrimaryGeneratedColumn()
   id?: number;
 
+  @Column({
+    type: "timestamp",
+    default: () => "CURRENT_TIMESTAMP",
+    nullable: false,
+  })
+  entry_date: Date;
+  
   @Column()
   title: string;
 
@@ -24,10 +37,7 @@ export class WorkItem {
   @Column()
   invoiceId?: number;
 
-
   @ManyToOne(() => Invoice, (invoice) => invoice.workItems)
   @JoinColumn({ name: "invoiceId" })
   invoice?: Invoice;
-
-  
 }
