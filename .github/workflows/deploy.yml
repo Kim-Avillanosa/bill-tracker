@@ -26,32 +26,30 @@ jobs:
         run: |
           ssh -o StrictHostKeyChecking=no root@88.222.245.88 << 'EOF'
             # Define directories
-            API_DIR=/bill-tracker/api
-            APP_DIR=/bill-tracker/app
+            REPO_DIR=/bill-tracker
 
-            # Clone or pull the API repository
-            if [ ! -d $API_DIR/.git ]; then
-              git clone https://github.com/Kim-Avillanosa/bill-tracker.git $API_DIR  # Replace with actual repository URL
+            # Check if the directory exists; if not, create it
+            [ ! -d $REPO_DIR ] && mkdir -p $REPO_DIR
+            
+            # Navigate to the repository directory
+            cd $REPO_DIR || { echo "Failed to change directory"; exit 1; }
+
+            # Check if the directory is a git repository
+            if [ ! -d .git ]; then
+              # Clone the repository if not a git repository
+              git clone https://github.com/Kim-Avillanosa/bill-tracker.git .  # Replace with actual repository URL
             else
-              cd $API_DIR
+              # Pull the latest changes if it is a git repository
               git pull origin main || { echo "Git pull failed"; exit 1; }
             fi
-            
-            # Bring down the services without affecting MySQL
-            cd $API_DIR
+
+            # Deploy API
+            cd api || { echo "Failed to change to API directory"; exit 1; }
             docker-compose down || { echo "Docker-compose down failed"; exit 1; }
             docker-compose up -d --build || { echo "Docker-compose up failed"; exit 1; }
 
-            # Clone or pull the App repository
-            if [ ! -d $APP_DIR/.git ]; then
-              git clone https://github.com/Kim-Avillanosa/bill-tracker.git $APP_DIR  # Replace with actual repository URL
-            else
-              cd $APP_DIR
-              git pull origin main || { echo "Git pull failed"; exit 1; }
-            fi
-            
-            # Bring down the services without affecting MySQL
-            cd $APP_DIR
+            # Deploy App
+            cd ../app || { echo "Failed to change to App directory"; exit 1; }
             docker-compose down || { echo "Docker-compose down failed"; exit 1; }
             docker-compose up -d --build || { echo "Docker-compose up failed"; exit 1; }
           EOF
