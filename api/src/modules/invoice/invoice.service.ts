@@ -391,7 +391,7 @@ export class InvoiceService {
     this.invoiceRepository.save(invoice);
 
     // Write CSV content to a file
-    fs.writeFileSync(excelFilePath, csvContent);
+    // fs.writeFileSync(excelFilePath, csvContent);
 
     const invoicePath = `${host}/files/${filename}`;
 
