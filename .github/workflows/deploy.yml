@@ -31,11 +31,11 @@ jobs:
 
             # Deploy API
             cd /bill-tracker/api
-            docker-compose down
+            docker-compose down || true  # Ignore errors from down
             docker-compose up -d --build
             
             # Deploy App
             cd /bill-tracker/app
-            docker-compose down
+            docker-compose down || true  # Ignore errors from down
             docker-compose up -d --build
           EOF
