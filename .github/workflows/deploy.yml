@@ -43,6 +43,13 @@ jobs:
               git pull origin main || { echo "Git pull failed"; exit 1; }
             fi
 
+            # Check if MySQL container is running
+            if [ "$(docker ps -q -f name=mysql)" ]; then
+              echo "MySQL container is already running. Restarting services..."
+            else
+              echo "MySQL container not found. Starting MySQL service..."
+            fi
+
             # Deploy API
             cd api || { echo "Failed to change to API directory"; exit 1; }
             docker-compose down || { echo "Docker-compose down failed"; exit 1; }
