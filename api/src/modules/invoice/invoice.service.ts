@@ -12,7 +12,6 @@ const PDFDocument = require("pdfkit-table");
 import { formatDate } from "src/lib/formatDate";
 import * as path from "path";
 
-
 type FileResults = {
   invoice: string;
   timesheet: string;
@@ -232,10 +231,10 @@ export class InvoiceService {
 
     const doc = new PDFDocument();
     const filename = `${invoice.invoiceNumber}.pdf`;
-    const filePath = path.join(__dirname, "public", "invoices", filename);
+    const filePath = path.join(filename);
 
     const excelFile = `${invoice.invoiceNumber}.csv`;
-    const excelFilePath = path.join(__dirname, "public", "invoices", excelFile);
+    const excelFilePath = path.join(excelFile);
 
     const stream = fs.createWriteStream(filePath);
 

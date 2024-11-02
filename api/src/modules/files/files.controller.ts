@@ -17,7 +17,7 @@ export class FilesController {
     @Param("filename") filename: string,
     @Res() res: Response,
   ) {
-    const filePath = path.join("public", "invoices", filename);
+    const filePath = path.join(filename);
 
     if (!fs.existsSync(filePath)) {
       throw new HttpException("File not found", HttpStatus.NOT_FOUND);
