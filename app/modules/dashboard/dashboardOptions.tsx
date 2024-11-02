@@ -1,6 +1,8 @@
 import { Button } from "react-bootstrap";
 import useModalStore from "@/shared/store/useModal";
 import { useState } from "react";
+import InvoiceSelect from "../invoice/InvoiceSelect";
+import InvoiceSelectionForm from "../invoice/InvoiceSelectionForm";
 
 type OfferStatuses = "TIMESHEETS" | "CLIENTS" | "INVOICE";
 
@@ -51,8 +53,9 @@ const DashboardOptions: React.FC<DashboardOptionsProps> = ({ setStatus }) => {
         <Button
           onClick={() =>
             openModal({
-              title: "Generate invoice",
-              content: <div>Test</div>,
+              size: "lg",
+              title: "Generate Invoice",
+              content: <InvoiceSelectionForm />,
             })
           }
           variant="success"

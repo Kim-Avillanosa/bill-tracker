@@ -10,6 +10,7 @@ import { WorkItem } from "./entities/workitem.entity";
 import * as fs from "fs";
 const PDFDocument = require("pdfkit-table");
 import { formatDate } from "src/lib/formatDate";
+import { join } from "path";
 
 @Injectable()
 export class InvoiceService {
@@ -37,8 +38,30 @@ export class InvoiceService {
         "updatedAt",
         "client",
       ],
+      relations: ["client", "workItems"],
       where: {
         id,
+      },
+    });
+  }
+
+  async findAll() {
+    return await this.invoiceRepository.find({
+      select: [
+        "client",
+        "clientId",
+        "date",
+        "id",
+        "invoiceNumber",
+        "note",
+        "status",
+        "updatedAt",
+        "workItems",
+        "client",
+      ],
+      relations: ["client", "workItems"],
+      order: {
+        id: "DESC",
       },
     });
   }
@@ -202,7 +225,7 @@ export class InvoiceService {
 
     const doc = new PDFDocument();
     const filename = `${invoice.invoiceNumber}.pdf`;
-    const filePath = `./public/invoices/${filename}`;
+    const filePath = `./src/public/invoices/${filename}`;
     const stream = fs.createWriteStream(filePath);
 
     const bannerColor = currentClient.banner_color;
@@ -322,10 +345,11 @@ export class InvoiceService {
 
     doc.end();
 
+    const zz = join(__dirname, "src", "public", "invoices");
     const invoicePath = `${host}/public/invoices/${filename}`;
 
     return new Promise((resolve, reject) => {
-      stream.on("finish", () => resolve(filePath));
+      stream.on("finish", () => resolve(zz));
       stream.on("error", (err) => reject(err));
     });
   }

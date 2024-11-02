@@ -28,11 +28,11 @@ const useClient = () => {
     return client.get<Models.Client>(`/client/${id}`);
   };
 
-  const updateClient = (id: string, data: Partial<ClientData>) => {
+  const updateClient = (id: number, data: Partial<ClientData>) => {
     return client.patch(`/client/${id}`, data);
   };
 
-  const deleteClient = (id: string) => {
+  const deleteClient = (id: number) => {
     return client.delete(`/client/${id}`);
   };
 

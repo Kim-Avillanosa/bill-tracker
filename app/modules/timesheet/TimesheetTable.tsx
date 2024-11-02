@@ -156,6 +156,7 @@ const TimesheetTable: React.FC<Props> = ({ clientId, startDate, endDate }) => {
                     <Button
                       onClick={() => {
                         openModal({
+                          size: "lg",
                           title: "Update timesheet",
                           content: (
                             <TimesheetForm
@@ -203,6 +204,7 @@ const TimesheetTable: React.FC<Props> = ({ clientId, startDate, endDate }) => {
                 size="lg"
                 onClick={() => {
                   openModal({
+                    size: "lg",
                     title: `Preparing invoice for: ${currentClient.name}`,
                     content: (
                       <TimesheetCheckout

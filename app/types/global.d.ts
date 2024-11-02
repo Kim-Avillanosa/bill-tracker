@@ -49,7 +49,7 @@ declare global {
       email: string;
       name: string;
       code: string;
-      hourly_rate: string;
+      hourly_rate: number;
       hours_per_day: number;
       address: string;
       created_at: string; // Alternatively, you could use Date if you prefer

@@ -6,28 +6,14 @@ import ClientForm from "./ClientForm";
 import DeleteButton from "@/shared/components/layout/DeleteButton";
 import toast from "react-hot-toast";
 
-type ClientData = {
-  id?: string;
-  name: string;
-  code: string;
-  symbol: string;
-  address: string;
-  hourly_rate: number;
-  hours_per_day: number;
-  category: string;
-  banner_color: string;
-  headline_color: string;
-  text_color: string;
-};
-
 const ClientTable: React.FC = () => {
   const { getClientList, deleteClient } = useClient();
-  const [clients, setClients] = useState<ClientData[]>([]);
+  const [clients, setClients] = useState<Models.Client[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const { isOpen, openModal } = useModalStore();
 
-  const handleDeleteClient = async (id: string) => {
+  const handleDeleteClient = async (id: number) => {
     try {
       await deleteClient(id);
       toast.success("Client deleted successfully");
@@ -76,6 +62,7 @@ const ClientTable: React.FC = () => {
         variant="outline-dark"
         onClick={() => {
           openModal({
+            size: "lg",
             title: "Add new client",
             content: <ClientForm />,
           });
@@ -110,6 +97,8 @@ const ClientTable: React.FC = () => {
                 <Button
                   onClick={() => {
                     openModal({
+                      size: "lg",
+
                       title: "Update client information",
                       content: (
                         <ClientForm initialData={client} isUpdate={true} />

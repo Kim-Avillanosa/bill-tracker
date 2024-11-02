@@ -3,6 +3,14 @@ import useAxiosClient from "./useAxiosClient";
 const useInvoice = () => {
   const { client } = useAxiosClient();
 
+  const fetchInvoices = () => {
+    return client.get<Models.Invoice[]>("/invoice/list");
+  };
+
+  const fetchInvoiceById = (invoiceId: number) => {
+    return client.get<Models.Invoice>(`/invoice/${invoiceId}`);
+  };
+
   const writeInvoice = (invoiceData: Models.InvoiceData) => {
     return client.post<Models.Invoice>("/invoice/write", invoiceData);
   };
@@ -11,7 +19,7 @@ const useInvoice = () => {
     return client.post(`/invoice/${invoiceId}/generate`);
   };
 
-  return { writeInvoice, generateInvoice };
+  return { fetchInvoices, fetchInvoiceById, writeInvoice, generateInvoice };
 };
 
 export default useInvoice;

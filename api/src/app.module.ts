@@ -50,7 +50,15 @@ import { InvoiceModule } from "./modules/invoice/invoice.module";
       {
         rootPath: join(__dirname, "docs"),
         serveRoot: "/swagger",
-      }
+      },
+      {
+        rootPath: join(__dirname, "src", "public", "invoices"),
+        serveRoot: "/invoices",
+        serveStaticOptions: {
+          redirect: false,
+          index: false,
+        },
+      },
     ),
   ],
   controllers: [AppController],

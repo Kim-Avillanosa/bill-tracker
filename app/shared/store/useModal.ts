@@ -2,11 +2,19 @@ import { create } from "zustand";
 import { ReactNode } from "react";
 
 interface AppModalProps {
+  size: "sm" | "lg" | "xl";
   content?: ReactNode;
   title: string;
 }
 
+const defaultProps: AppModalProps = {
+  size: "lg",
+  content: "no content",
+  title: "no title",
+};
+
 interface ModalStoreProps {
+  size: "sm" | "lg" | "xl";
   properties?: AppModalProps;
   isOpen: boolean;
   dismiss: () => void;
@@ -15,7 +23,8 @@ interface ModalStoreProps {
 
 const useModalStore = create<ModalStoreProps>()((set) => ({
   isOpen: false,
-  openModal: (options: AppModalProps) => {
+  size: "lg",
+  openModal: (options: AppModalProps = defaultProps) => {
     set({
       properties: options,
       isOpen: true,

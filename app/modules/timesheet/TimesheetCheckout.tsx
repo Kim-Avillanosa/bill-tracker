@@ -1,5 +1,5 @@
 import useModalStore from "@/shared/store/useModal";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   Container,
   Row,
@@ -20,9 +20,9 @@ interface Props {
 }
 
 const TimesheetCheckout: React.FC<Props> = ({ timesheets, client }) => {
-  const ratePerHour = parseFloat(client.hourly_rate);
+  const ratePerHour = client.hourly_rate;
 
-  const { generateInvoice, writeInvoice } = useInvoice();
+  const { writeInvoice } = useInvoice();
   const [hours, setHours] = useState<{ [key: number]: number }>(
     timesheets.reduce((acc, timesheet) => {
       acc[timesheet.id] = client.hours_per_day; // Default to client's daily hours
@@ -41,9 +41,37 @@ const TimesheetCheckout: React.FC<Props> = ({ timesheets, client }) => {
     }, {} as { [key: number]: boolean })
   );
 
+  const calculateTotals = useCallback(
+    (
+      updatedHours: { [key: number]: number },
+      updatedCheckedItems: { [key: number]: boolean }
+    ) => {
+      const totalSum = timesheets.reduce((acc, timesheet) => {
+        return (
+          acc +
+          (updatedCheckedItems[timesheet.id]
+            ? (updatedHours[timesheet.id] || 0) * ratePerHour
+            : 0)
+        );
+      }, 0);
+      setTotal(totalSum);
+
+      const totalHoursWorked = timesheets.reduce((acc, timesheet) => {
+        return (
+          acc +
+          (updatedCheckedItems[timesheet.id]
+            ? updatedHours[timesheet.id] || 0
+            : 0)
+        );
+      }, 0);
+      setTotalHours(totalHoursWorked);
+    },
+    [timesheets, setTotalHours, ratePerHour]
+  );
+
   useEffect(() => {
     calculateTotals(hours, checkedItems);
-  }, [hours, checkedItems]);
+  }, [hours, checkedItems, calculateTotals]);
 
   const handleHoursChange = (id: number, newHours: number) => {
     const updatedHours = { ...hours, [id]: newHours };
@@ -55,30 +83,6 @@ const TimesheetCheckout: React.FC<Props> = ({ timesheets, client }) => {
     setCheckedItems(updatedCheckedItems);
   };
 
-  const calculateTotals = (
-    updatedHours: { [key: number]: number },
-    updatedCheckedItems: { [key: number]: boolean }
-  ) => {
-    const totalSum = timesheets.reduce((acc, timesheet) => {
-      return (
-        acc +
-        (updatedCheckedItems[timesheet.id]
-          ? (updatedHours[timesheet.id] || 0) * ratePerHour
-          : 0)
-      );
-    }, 0);
-    setTotal(totalSum);
-
-    const totalHoursWorked = timesheets.reduce((acc, timesheet) => {
-      return (
-        acc +
-        (updatedCheckedItems[timesheet.id]
-          ? updatedHours[timesheet.id] || 0
-          : 0)
-      );
-    }, 0);
-    setTotalHours(totalHoursWorked);
-  };
   function removeCharacters(input: string): string {
     return input.replace(/[[\]"]/g, ""); // Removes [, ], and "
   }
@@ -99,10 +103,6 @@ const TimesheetCheckout: React.FC<Props> = ({ timesheets, client }) => {
         date: new Date().toDateString(),
         note: "This is an auto generated invoice for assistance please contact me at careers.kmavillanosa@gmail.com",
         workItems: generatedData,
-      }).then((x) => {
-        generateInvoice(x.data.id);
-
-        return Promise.resolve(x);
       }),
       {
         loading: "Please wait we are generating your invoice",
@@ -110,7 +110,7 @@ const TimesheetCheckout: React.FC<Props> = ({ timesheets, client }) => {
         error: "Invoice generation failed",
       }
     );
-    console.log(generatedData); // Replace this with your desired action
+    dismiss();
   };
 
   return (
@@ -195,6 +195,7 @@ const TimesheetCheckout: React.FC<Props> = ({ timesheets, client }) => {
                   variant="outline-dark"
                   onClick={() => {
                     openModal({
+                      size: "lg",
                       title: "Update timesheet",
                       content: (
                         <TimesheetForm
@@ -221,7 +222,7 @@ const TimesheetCheckout: React.FC<Props> = ({ timesheets, client }) => {
             variant="success"
             onClick={handleGenerate} // Use the handleGenerate function here
           >
-            GENERATE
+            I CONFIRM THAT THIS INVOICE IS COMPLETE
           </Button>
         </Col>
       </Row>

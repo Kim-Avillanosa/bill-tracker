@@ -30,6 +30,7 @@ const TimesheetContainer: React.FC = () => {
               variant="outline-dark"
               onClick={() => {
                 openModal({
+                  size: "lg",
                   title: "New timesheet entry",
                   content: (
                     <TimesheetForm
