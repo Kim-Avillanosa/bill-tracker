@@ -1,10 +1,9 @@
 import { Button } from "react-bootstrap";
 import useModalStore from "@/shared/store/useModal";
 import { useState } from "react";
-import InvoiceSelect from "../invoice/InvoiceSelect";
 import InvoiceSelectionForm from "../invoice/InvoiceSelectionForm";
 
-type OfferStatuses = "TIMESHEETS" | "CLIENTS" | "INVOICE";
+type OfferStatuses = "TIMESHEETS" | "CLIENTS";
 
 interface DashboardOptionsProps {
   setStatus: (status: OfferStatuses) => void;
@@ -37,16 +36,6 @@ const DashboardOptions: React.FC<DashboardOptionsProps> = ({ setStatus }) => {
           className="m-1"
         >
           👨‍💼 CLIENTS
-        </Button>
-        <Button
-          variant={currentStatus == "INVOICE" ? "outline-success" : "light"}
-          onClick={() => {
-            setlocalStatus("INVOICE");
-            setStatus("INVOICE");
-          }}
-          className="m-1"
-        >
-          💲 INVOICE
         </Button>
       </div>
       <div>
