@@ -11,7 +11,7 @@ services:
     environment:
       - NODE_ENV=development
       - "NEXT_PUBLIC_API=http://localhost:3005"
-    command: sh -c "npm install && npm run dev"
+    command: sh -c "npm install && npm run dev -- -p 3004"
 networks:
   default:
     name: bill-tracker-network
