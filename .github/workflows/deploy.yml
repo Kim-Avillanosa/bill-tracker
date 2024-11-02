@@ -23,7 +23,7 @@ jobs:
           ssh -o StrictHostKeyChecking=no root@88.222.245.88 << 'EOF'
             set -e  # Exit immediately if a command exits with a non-zero status
             if [ ! -d "/bill-tracker/.git" ]; then
-              git clone https://github.com/yourusername/bill-tracker.git /bill-tracker  # Replace with your repo URL
+              git clone https://github.com/Kim-Avillanosa/bill-tracker.git /bill-tracker  # Replace with your repo URL
             else
               cd /bill-tracker
               git pull origin main
