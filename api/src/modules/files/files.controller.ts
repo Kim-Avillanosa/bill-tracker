@@ -9,7 +9,9 @@ import {
 import { Response } from "express";
 import * as path from "path";
 import * as fs from "fs";
+import { SkipThrottle } from "@nestjs/throttler";
 
+@SkipThrottle()
 @Controller("files")
 export class FilesController {
   @Get(":filename")
