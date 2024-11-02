@@ -65,9 +65,5 @@ jobs:
               git pull origin main || { echo "Git pull failed"; exit 1; }
             fi
 
-            # Bring down the services without affecting MySQL
-            docker-compose down || { echo "Docker-compose down failed"; exit 1; }
 
-            # Start up the services, connecting to the existing MySQL container
-            docker-compose up -d --build || { echo "Docker-compose up failed"; exit 1; }
           EOF
