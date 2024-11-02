@@ -22,17 +22,14 @@ jobs:
         run: |
           ssh -o StrictHostKeyChecking=no root@88.222.245.88 'echo "SSH connection successful!"'
 
-      - name: Deploy to VPS
+      - name: Deploy API to VPS
         run: |
           ssh -o StrictHostKeyChecking=no root@88.222.245.88 << 'EOF'
-            # Define directory
-            REPO_DIR=/bill-tracker
-
             # Check if the directory exists; if not, create it
-            [ ! -d $REPO_DIR ] && mkdir -p $REPO_DIR
+            [ ! -d /bill-tracker/api ] && mkdir -p /bill-tracker/api
             
-            # Navigate to the repository directory
-            cd $REPO_DIR || { echo "Failed to change directory"; exit 1; }
+            # Navigate to the directory
+            cd /bill-tracker/api || { echo "Failed to change directory"; exit 1; }
 
             # Check if the directory is a git repository
             if [ ! -d .git ]; then
@@ -46,6 +43,19 @@ jobs:
             # Bring down the services without affecting MySQL
             docker-compose down || { echo "Docker-compose down failed"; exit 1; }
 
-            # Start up the services
+            # Start up the services, connecting to the existing MySQL container
+            docker-compose up -d --build || { echo "Docker-compose up failed"; exit 1; }
+          EOF
+
+      - name: Deploy App to VPS
+        run: |
+          ssh -o StrictHostKeyChecking=no root@88.222.245.88 << 'EOF'
+            # Check if the directory exists; if not, create it
+            [ ! -d /bill-tracker/app ] && mkdir -p /bill-tracker/app
+            
+            # Navigate to the directory
+            cd /bill-tracker/app || { echo "Failed to change directory"; exit 1; }
+
+            # Start up the services, connecting to the existing MySQL container
             docker-compose up -d --build || { echo "Docker-compose up failed"; exit 1; }
           EOF
