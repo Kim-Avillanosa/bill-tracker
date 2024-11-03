@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "vps-deploy": "npm install && npm run build && npm run start -- -p 3004",
+    "vps-deploy": "npm install && npm run build && npm run start:dev -- -p 3004",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
