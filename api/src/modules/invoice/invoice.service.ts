@@ -148,7 +148,11 @@ export class InvoiceService {
       throw new BadRequestException(`Specified client not available.`);
     }
 
-    const invoiceCount = await this.invoiceRepository.maximum("id");
+    const invoiceCount = await this.invoiceRepository.count({
+      where: {
+        clientId: currentClient.id,
+      },
+    });
 
     const formattedId: string = String(invoiceCount + 1).padStart(7, "0");
 

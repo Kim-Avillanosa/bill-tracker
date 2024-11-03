@@ -8,11 +8,15 @@ import {
   Container,
   FormControl,
   Button,
+  FormCheck,
+  Row,
+  Col,
 } from "react-bootstrap";
 import { toast } from "react-hot-toast";
 import useClient from "@/services/useClient";
 import useModalStore from "@/shared/store/useModal";
 import CurrencySelect from "@/shared/components/layout/CurrencySelect";
+import ColorPickerInput from "../../shared/components/layout/ColorPickerInput";
 
 export type ClientFormType = {
   id?: number;
@@ -22,13 +26,14 @@ export type ClientFormType = {
   address: string;
   hourly_rate: number;
   hours_per_day: number;
-  category: string;
+  category: "FULL_TIME" | "PART_TIME";
   banner_color: string;
   headline_color: string;
   text_color: string;
   current_currency_code: string;
   convert_currency_code: string;
 };
+
 type ClientFormProps = {
   initialData?: ClientFormType;
   isUpdate?: boolean;
@@ -39,7 +44,6 @@ const ClientForm: React.FC<ClientFormProps> = ({
   isUpdate = false,
 }) => {
   const { addClient, updateClient } = useClient();
-
   const { dismiss } = useModalStore();
 
   const formik = useFormik({
@@ -50,12 +54,12 @@ const ClientForm: React.FC<ClientFormProps> = ({
       address: initialData?.address || "",
       hourly_rate: initialData?.hourly_rate || 0,
       hours_per_day: initialData?.hours_per_day || 0,
-      category: initialData?.category || "",
+      category: initialData?.category || "FULL_TIME",
       banner_color: initialData?.banner_color || "",
       headline_color: initialData?.headline_color || "",
       text_color: initialData?.text_color || "",
-      current_currency_code: initialData?.current_currency_code || "", // Initialize new field
-      convert_currency_code: initialData?.convert_currency_code || "", // Initialize new field
+      current_currency_code: initialData?.current_currency_code || "",
+      convert_currency_code: initialData?.convert_currency_code || "",
     },
     validationSchema: Yup.object({
       name: Yup.string().required("Name is required"),
@@ -69,11 +73,11 @@ const ClientForm: React.FC<ClientFormProps> = ({
       headline_color: Yup.string().required("Headline color is required"),
       text_color: Yup.string().required("Text color is required"),
       current_currency_code: Yup.string().required(
-        "Current currency symbol is required"
-      ), // Validate new field
+        "Current currency code is required"
+      ),
       convert_currency_code: Yup.string().required(
-        "Convert currency symbol is required"
-      ), // Validate new field
+        "Convert currency code is required"
+      ),
     }),
     onSubmit: async (values) => {
       try {
@@ -93,119 +97,186 @@ const ClientForm: React.FC<ClientFormProps> = ({
   });
 
   return (
-    <Container className="">
+    <Container>
       <Form onSubmit={formik.handleSubmit}>
+        {/* Identification Group */}
         <FormGroup>
-          <FormLabel htmlFor="name">Name</FormLabel>
-          <FormControl
-            type="text"
-            name="name"
-            id="name"
-            placeholder="Enter client name"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.name}
-            isInvalid={formik.touched.name && Boolean(formik.errors.name)}
-          />
-          {formik.touched.name && (
-            <div className="text-danger">{formik.errors.name}</div>
-          )}
+          <Row>
+            <Col md={6}>
+              <FormLabel htmlFor="name">Name</FormLabel>
+              <FormControl
+                type="text"
+                name="name"
+                id="name"
+                placeholder="Enter client name"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.name}
+                isInvalid={formik.touched.name && Boolean(formik.errors.name)}
+              />
+              {formik.touched.name && (
+                <div className="text-danger">{formik.errors.name}</div>
+              )}
+            </Col>
+            <Col md={6}>
+              <FormLabel htmlFor="code">Code</FormLabel>
+              <FormControl
+                type="text"
+                name="code"
+                id="code"
+                placeholder="Enter client code"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.code}
+                isInvalid={formik.touched.code && Boolean(formik.errors.code)}
+              />
+              {formik.touched.code && (
+                <div className="text-danger">{formik.errors.code}</div>
+              )}
+            </Col>
+          </Row>
+          <Row className="mt-3">
+            <Col>
+              <FormGroup>
+                <FormLabel htmlFor="address">Address</FormLabel>
+                <FormControl
+                  type="text"
+                  name="address"
+                  id="address"
+                  placeholder="Enter client address"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  value={formik.values.address}
+                  isInvalid={
+                    formik.touched.address && Boolean(formik.errors.address)
+                  }
+                />
+                {formik.touched.address && (
+                  <div className="text-danger">{formik.errors.address}</div>
+                )}
+              </FormGroup>
+            </Col>
+          </Row>
         </FormGroup>
-        <FormGroup>
-          <FormLabel htmlFor="code">Code</FormLabel>
-          <FormControl
-            type="text"
-            name="code"
-            id="code"
-            placeholder="Enter client code"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.code}
-            isInvalid={formik.touched.code && Boolean(formik.errors.code)}
-          />
-          {formik.touched.code && (
-            <div className="text-danger">{formik.errors.code}</div>
-          )}
+        <hr />
+
+        {/* Financial Details Group */}
+        <FormGroup className="mt-3">
+          <Row>
+            <Col md={4}>
+              <FormLabel htmlFor="hourly_rate">Hourly Rate</FormLabel>
+              <FormControl
+                type="number"
+                name="hourly_rate"
+                id="hourly_rate"
+                placeholder="Enter hourly rate"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.hourly_rate}
+                isInvalid={
+                  formik.touched.hourly_rate &&
+                  Boolean(formik.errors.hourly_rate)
+                }
+              />
+              {formik.touched.hourly_rate && (
+                <div className="text-danger">{formik.errors.hourly_rate}</div>
+              )}
+            </Col>
+            <Col md={4}>
+              <FormLabel htmlFor="hours_per_day">Hours per Day</FormLabel>
+              <FormControl
+                type="number"
+                name="hours_per_day"
+                id="hours_per_day"
+                placeholder="Enter hours per day"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.hours_per_day}
+                isInvalid={
+                  formik.touched.hours_per_day &&
+                  Boolean(formik.errors.hours_per_day)
+                }
+              />
+              {formik.touched.hours_per_day && (
+                <div className="text-danger">{formik.errors.hours_per_day}</div>
+              )}
+            </Col>
+          </Row>
         </FormGroup>
-        <FormGroup>
-          <FormLabel htmlFor="symbol">Symbol</FormLabel>
-          <FormControl
-            type="text"
-            name="symbol"
-            id="symbol"
-            placeholder="Enter client symbol"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.symbol}
-            isInvalid={formik.touched.symbol && Boolean(formik.errors.symbol)}
-          />
-          {formik.touched.symbol && (
-            <div className="text-danger">{formik.errors.symbol}</div>
-          )}
+
+        <hr />
+
+        <FormGroup className="mt-3">
+          <Row>
+            <Col md={4}>
+              <FormLabel htmlFor="symbol">Symbol</FormLabel>
+              <FormControl
+                disabled={true}
+                type="text"
+                name="symbol"
+                id="symbol"
+                placeholder="Enter client symbol"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.symbol}
+                isInvalid={
+                  formik.touched.symbol && Boolean(formik.errors.symbol)
+                }
+              />
+              {formik.touched.symbol && (
+                <div className="text-danger">{formik.errors.symbol}</div>
+              )}
+            </Col>
+            <Col>
+              <CurrencySelect
+                id="current_currency_code"
+                name="current_currency_code"
+                label="Client's Currency"
+                formik={formik}
+                onCurrencyChanged={(currency) => {
+                  formik.setFieldValue("symbol", currency?.currencySymbol);
+                }}
+              />
+            </Col>
+            <Col>
+              <CurrencySelect
+                id="convert_currency_code"
+                name="convert_currency_code"
+                label="Convert Currency"
+                formik={formik}
+              />
+            </Col>
+          </Row>
         </FormGroup>
-        <FormGroup>
-          <FormLabel htmlFor="address">Address</FormLabel>
-          <FormControl
-            type="text"
-            name="address"
-            id="address"
-            placeholder="Enter client address"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.address}
-            isInvalid={formik.touched.address && Boolean(formik.errors.address)}
-          />
-          {formik.touched.address && (
-            <div className="text-danger">{formik.errors.address}</div>
-          )}
-        </FormGroup>
-        <FormGroup>
-          <FormLabel htmlFor="hourly_rate">Hourly Rate</FormLabel>
-          <FormControl
-            type="number"
-            name="hourly_rate"
-            id="hourly_rate"
-            placeholder="Enter hourly rate"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.hourly_rate}
-            isInvalid={
-              formik.touched.hourly_rate && Boolean(formik.errors.hourly_rate)
-            }
-          />
-          {formik.touched.hourly_rate && (
-            <div className="text-danger">{formik.errors.hourly_rate}</div>
-          )}
-        </FormGroup>
-        <FormGroup>
-          <FormLabel htmlFor="hours_per_day">Hours per Day</FormLabel>
-          <FormControl
-            type="number"
-            name="hours_per_day"
-            id="hours_per_day"
-            placeholder="Enter hours per day"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.hours_per_day}
-            isInvalid={
-              formik.touched.hours_per_day &&
-              Boolean(formik.errors.hours_per_day)
-            }
-          />
-          {formik.touched.hours_per_day && (
-            <div className="text-danger">{formik.errors.hours_per_day}</div>
-          )}
-        </FormGroup>
-        <FormGroup>
-          <FormLabel htmlFor="category">Category</FormLabel>
-          <FormControl
-            type="text"
+
+        <hr />
+
+        {/* Employment Details Group */}
+        <FormGroup className="d-flex align-content-between mt-3">
+          <FormLabel>Category</FormLabel>
+          <FormCheck
+            className="ms-3"
+            type="radio"
+            label="Full-Time"
             name="category"
-            id="category"
-            placeholder="Enter category"
+            id="categoryFullTime"
+            value="FULL_TIME"
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
-            value={formik.values.category}
+            checked={formik.values.category === "FULL_TIME"}
+            isInvalid={
+              formik.touched.category && Boolean(formik.errors.category)
+            }
+          />
+          <FormCheck
+            type="radio"
+            label="Part-Time"
+            name="category"
+            id="categoryPartTime"
+            value="PART_TIME"
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            checked={formik.values.category === "PART_TIME"}
             isInvalid={
               formik.touched.category && Boolean(formik.errors.category)
             }
@@ -214,76 +285,52 @@ const ClientForm: React.FC<ClientFormProps> = ({
             <div className="text-danger">{formik.errors.category}</div>
           )}
         </FormGroup>
-        <FormGroup>
-          <FormLabel htmlFor="banner_color">Banner Color</FormLabel>
-          <FormControl
-            type="text"
-            name="banner_color"
-            id="banner_color"
-            placeholder="Enter banner color"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.banner_color}
-            isInvalid={
-              formik.touched.banner_color && Boolean(formik.errors.banner_color)
-            }
-          />
-          {formik.touched.banner_color && (
-            <div className="text-danger">{formik.errors.banner_color}</div>
-          )}
-        </FormGroup>
-        <FormGroup>
-          <FormLabel htmlFor="headline_color">Headline Color</FormLabel>
-          <FormControl
-            type="text"
-            name="headline_color"
-            id="headline_color"
-            placeholder="Enter headline color"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.headline_color}
-            isInvalid={
-              formik.touched.headline_color &&
-              Boolean(formik.errors.headline_color)
-            }
-          />
-          {formik.touched.headline_color && (
-            <div className="text-danger">{formik.errors.headline_color}</div>
-          )}
-        </FormGroup>
-        <FormGroup>
-          <FormLabel htmlFor="text_color">Text Color</FormLabel>
-          <FormControl
-            type="text"
-            name="text_color"
-            id="text_color"
-            placeholder="Enter text color"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.text_color}
-            isInvalid={
-              formik.touched.text_color && Boolean(formik.errors.text_color)
-            }
-          />
-          {formik.touched.text_color && (
-            <div className="text-danger">{formik.errors.text_color}</div>
-          )}
-        </FormGroup>
-        <CurrencySelect
-          id="current_currency_code"
-          name="current_currency_code"
-          label="Client's Currency"
-          formik={formik}
-        />
 
-        <CurrencySelect
-          id="convert_currency_code"
-          name="convert_currency_code"
-          label="Desired currency to convert"
-          formik={formik}
-        />
+        <FormGroup className="mt-3">
+          <Row>
+            <Col>
+              <ColorPickerInput
+                label="Banner Color"
+                name="banner_color"
+                value={formik.values.banner_color}
+                onChange={(color) =>
+                  formik.setFieldValue("banner_color", color)
+                }
+                error={
+                  formik.touched.banner_color ? formik.errors.banner_color : ""
+                }
+              />
+            </Col>
+            <Col>
+              <ColorPickerInput
+                label="Headline Color"
+                name="headline_color"
+                value={formik.values.headline_color}
+                onChange={(color) =>
+                  formik.setFieldValue("headline_color", color)
+                }
+                error={
+                  formik.touched.headline_color
+                    ? formik.errors.headline_color
+                    : ""
+                }
+              />
+            </Col>
+            <Col>
+              <ColorPickerInput
+                label="Text Color"
+                name="text_color"
+                value={formik.values.text_color}
+                onChange={(color) => formik.setFieldValue("text_color", color)}
+                error={
+                  formik.touched.text_color ? formik.errors.text_color : ""
+                }
+              />
+            </Col>
+          </Row>
+        </FormGroup>
 
-        <Button type="submit" className="mt-3">
+        <Button type="submit" variant="success" className="mt-5 w-100">
           {isUpdate ? "Update Client" : "Add Client"}
         </Button>
       </Form>

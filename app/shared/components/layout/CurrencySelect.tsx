@@ -9,6 +9,7 @@ interface CurrencySelectProps {
   id: keyof ClientFormType; // Add id prop
   name: keyof ClientFormType; // Add name prop
   formik: FormikProps<ClientFormType>; // Specify the type for form values
+  onCurrencyChanged?: (currency: Models.Currency | undefined) => void;
 }
 
 const CurrencySelect: React.FC<CurrencySelectProps> = ({
@@ -16,6 +17,7 @@ const CurrencySelect: React.FC<CurrencySelectProps> = ({
   label,
   id,
   name,
+  onCurrencyChanged,
 }) => {
   return (
     <FormGroup>
@@ -24,7 +26,16 @@ const CurrencySelect: React.FC<CurrencySelectProps> = ({
         as="select"
         name={name}
         id={id}
-        onChange={(e) => formik.setFieldValue(name, e.target.value)}
+        onChange={(e) => {
+          formik.setFieldValue(name, e.target.value);
+
+          const currentSymbol = currencies.find(
+            (x) => x.symbol === e.target.value
+          );
+          if (currentSymbol && onCurrencyChanged) {
+            onCurrencyChanged(currentSymbol);
+          }
+        }}
         onBlur={formik.handleBlur}
         value={formik.values[name]}
         isInvalid={formik.touched[name] && Boolean(formik.errors[name])}

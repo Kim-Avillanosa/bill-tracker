@@ -2,7 +2,7 @@ import useInvoice from "@/services/useInvoice";
 import CurrencyConverterLabel from "@/shared/components/layout/CurrencyConverterLabel";
 import QRCodeComponent from "@/shared/components/layout/QRCodeContainer";
 import React, { useCallback, useEffect, useState } from "react";
-import { Card, Spinner, Alert, Row, Col, Badge, Button } from "react-bootstrap";
+import { Card, Spinner, Alert, Row, Col, Badge } from "react-bootstrap";
 import {
   FaDollarSign,
   FaCalendarAlt,

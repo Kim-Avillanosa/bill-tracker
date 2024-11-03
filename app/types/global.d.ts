@@ -1,5 +1,14 @@
 declare global {
   namespace Models {
+
+    type Currency = {
+      name: string;
+      symbol: string;
+      iso: string;
+      currencySymbol: string; // Added currencySymbol property
+    };
+
+    
     interface ApiBadRequest {
       message: string;
     }
