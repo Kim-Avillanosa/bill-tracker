@@ -136,7 +136,7 @@ const TimesheetTable: React.FC<Props> = ({ clientId, startDate, endDate }) => {
                   <td className="border border-gray-300 p-2">{timesheet.id}</td>
                   <td className="border border-gray-300 p-2">
                     {timesheet.client.name}
-                    <Badge>{timesheet.client.code}</Badge>
+                    <Badge className="ms-1">{timesheet.client.code}</Badge>
                   </td>
                   <td className="border border-gray-300 p-2">
                     {timesheet.summary}

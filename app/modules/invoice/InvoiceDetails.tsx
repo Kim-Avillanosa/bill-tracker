@@ -2,8 +2,16 @@ import useInvoice from "@/services/useInvoice";
 import CurrencyConverterLabel from "@/shared/components/layout/CurrencyConverterLabel";
 import QRCodeComponent from "@/shared/components/layout/QRCodeContainer";
 import React, { useCallback, useEffect, useState } from "react";
-import { Card, Spinner, Alert, Row, Col, Badge } from "react-bootstrap";
-import { FaDollarSign, FaCalendarAlt, FaInfoCircle } from "react-icons/fa";
+import { Card, Spinner, Alert, Row, Col, Badge, Button } from "react-bootstrap";
+import {
+  FaDollarSign,
+  FaCalendarAlt,
+  FaInfoCircle,
+  FaCheckCircle,
+  FaClock,
+  FaRegCheckCircle,
+} from "react-icons/fa";
+import ReceiveInvoiceButton from "./ReceiveInvoiceButton";
 
 interface InvoiceDetailsProps {
   invoiceId: number;
@@ -51,6 +59,19 @@ const InvoiceDetails: React.FC<InvoiceDetailsProps> = ({
     return <Alert variant="warning">No invoice selected.</Alert>;
   }
 
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case "pending":
+        return <FaClock />; // Clock icon for pending
+      case "released":
+        return <FaCheckCircle />; // Check circle icon for released
+      case "received":
+        return <FaRegCheckCircle />; // Regular check circle for received
+      default:
+        return null; // No icon for unknown status
+    }
+  };
+
   const calculateTotalAmount = (workitems: Models.WorkItem[]): number => {
     return workitems.reduce(
       (total, item) => total + client.hourly_rate * item.hours,
@@ -60,48 +81,69 @@ const InvoiceDetails: React.FC<InvoiceDetailsProps> = ({
 
   const totalAmount = calculateTotalAmount(invoice.workItems);
 
+  const getBadgeColor = (status: string) => {
+    switch (status) {
+      case "pending":
+        return "warning"; // Yellow badge for pending
+      case "released":
+        return "primary"; // Green badge for released
+      case "received":
+        return "success"; // Blue badge for received
+      default:
+        return "dark"; // Default dark badge for any other status
+    }
+  };
+
   return (
     <>
       <Row className="mt-3">
         <Col>
-          <Card className="shadow-sm rounded border-0">
-            <Card.Header className="bg-success text-white d-flex justify-content-between align-items-center">
+          <Card className="shadow-lg rounded border-0">
+            <Card.Header className="bg-dark text-white d-flex justify-content-between align-items-center">
               <strong>Invoice Details</strong>
-              <Badge bg={"dark"}>{invoice.status.toUpperCase()}</Badge>
+              <Badge bg={getBadgeColor(invoice.status)}>
+                {getStatusIcon(invoice.status)} {invoice.status.toUpperCase()}
+              </Badge>
             </Card.Header>
             <Card.Body>
-              <Card.Title className="text-secondary mb-3">
-                <strong>
-                  {invoice.invoiceNumber || `Invoice #${invoice.id}`}
-                </strong>
+              <Card.Title className=" text-center mb-5">
+                <h1>
+                  <strong>
+                    {invoice.invoiceNumber || `Invoice #${invoice.id}`}
+                  </strong>
+                </h1>
               </Card.Title>
-              <Card.Subtitle className="mb-4 text-muted">
-                <FaInfoCircle className="me-2" />
-                {`Billed to: ${client.name} (${client.code})`}
-              </Card.Subtitle>
-              <Row className="h-25">
+
+              <Row className="mt-3 mb-3">
                 {invoice.status === "released" && (
                   <>
-                    <Col className="p-5">
-                      <h6>Invoice</h6>
-                      <QRCodeComponent
-                        value={`${process.env.NEXT_PUBLIC_API}/files/${invoice.invoiceNumber}.pdf`}
-                      />
-                    </Col>
-                    <Col className="p-5">
-                      <h6>Timesheet</h6>
-                      <QRCodeComponent
-                        value={`${process.env.NEXT_PUBLIC_API}/files/${invoice.invoiceNumber}.pdf`}
-                      />
+                    <Col className="d-flex align-content-between  text-center">
+                      <div className="mx-3">
+                        <QRCodeComponent
+                          value={`${process.env.NEXT_PUBLIC_API}/files/${invoice.invoiceNumber}.pdf`}
+                        />
+                        <h6>Invoice</h6>
+                      </div>
+                      <div className="mx-3">
+                        <QRCodeComponent
+                          value={`${process.env.NEXT_PUBLIC_API}/files/${invoice.invoiceNumber}.csv`}
+                        />
+                        <h6>Timesheet</h6>
+                      </div>
                     </Col>
                   </>
                 )}
-              </Row>
-              <Row className="mt-3 mb-3">
                 <Col>
                   <Card.Text className="d-flex align-items-center">
+                    <FaInfoCircle className="me-2" />
+                    <strong>Billed to:</strong>
+                    <span className="ms-1">
+                      {`${client.name} (${client.code})`}
+                    </span>
+                  </Card.Text>
+                  <Card.Text className="d-flex align-items-center">
                     <FaDollarSign className="me-2 text-success" />
-                    <span>Converted amount: </span>
+                    <strong>Converted amount:</strong>
                     <CurrencyConverterLabel
                       initialAmount={totalAmount}
                       initialCurrency={client.current_currency_code}
@@ -113,10 +155,6 @@ const InvoiceDetails: React.FC<InvoiceDetailsProps> = ({
                     <strong>Amount:</strong>
                     <span className="ms-1">{`${client.current_currency_code} ${totalAmount}`}</span>
                   </Card.Text>
-                </Col>
-              </Row>
-              <Row>
-                <Col>
                   <Card.Text className="d-flex align-items-center">
                     <FaCalendarAlt className="me-2 text-info" />
                     <strong>Date:</strong>
@@ -127,6 +165,11 @@ const InvoiceDetails: React.FC<InvoiceDetailsProps> = ({
                 </Col>
               </Row>
             </Card.Body>
+            {invoice.status === "released" && (
+              <Card.Footer>
+                <ReceiveInvoiceButton invoiceId={invoiceId} />
+              </Card.Footer>
+            )}
           </Card>
         </Col>
       </Row>

@@ -30,6 +30,31 @@ export class InvoiceService {
     private workItemRepository: Repository<WorkItem>,
   ) {}
 
+  async releaseInvoice(id: number, referrenceNumber: string) {
+    const invoice = await this.invoiceRepository.findOne({
+      select: [
+        "id",
+        "clientId",
+        "date",
+        "invoiceNumber",
+        "note",
+        "status",
+        "workItems",
+        "updatedAt",
+        "client",
+      ],
+      relations: ["client", "workItems"],
+      where: {
+        id,
+      },
+    });
+
+    invoice.status = "received";
+    invoice.referrenceNumber = referrenceNumber;
+
+    return this.invoiceRepository.save(invoice);
+  }
+
   findOne(id: number): Promise<Invoice> {
     return this.invoiceRepository.findOne({
       select: [
@@ -42,6 +67,7 @@ export class InvoiceService {
         "workItems",
         "updatedAt",
         "client",
+        "referrenceNumber",
       ],
       relations: ["client", "workItems"],
       where: {
@@ -147,6 +173,7 @@ export class InvoiceService {
       date: invoice.date,
       workItems: workItemsParsed,
       status: "pending",
+      referrenceNumber: "",
     };
 
     this.invoiceRepository.create(payload);
@@ -167,6 +194,7 @@ export class InvoiceService {
         "updatedAt",
         "workItems",
         "client",
+        "referrenceNumber",
       ],
       relations: ["client"],
       where: {

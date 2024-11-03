@@ -125,7 +125,7 @@ const TimesheetCheckout: React.FC<Props> = ({ timesheets, client }) => {
               <span>
                 Rate per Hour:{" "}
                 <strong>
-                  {client.symbol} {client.hourly_rate}
+                  {client.current_currency_code} {client.hourly_rate}
                 </strong>
               </span>
             </div>
@@ -133,13 +133,15 @@ const TimesheetCheckout: React.FC<Props> = ({ timesheets, client }) => {
           <Card.Text>
             <div className="d-flex ">
               <span>Minimum working hours: </span>
-              <Badge bg="success">{client.hours_per_day} hours</Badge>
+              <Badge className="ms-1" bg="success">
+                {client.hours_per_day} hours
+              </Badge>
             </div>
           </Card.Text>
           <Card.Text>
             <div className="d-flex">
               <span>Total Hours Worked:</span>
-              <strong>{totalHours}</strong>
+              <strong className="ms-1">{totalHours}</strong>
             </div>
           </Card.Text>
           <hr />

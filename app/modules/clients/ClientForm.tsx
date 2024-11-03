@@ -94,7 +94,6 @@ const ClientForm: React.FC<ClientFormProps> = ({
 
   return (
     <Container className="">
-      {JSON.stringify(formik.errors)}
       <Form onSubmit={formik.handleSubmit}>
         <FormGroup>
           <FormLabel htmlFor="name">Name</FormLabel>

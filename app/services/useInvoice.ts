@@ -19,7 +19,21 @@ const useInvoice = () => {
     return client.post(`/invoice/${invoiceId}/generate`);
   };
 
-  return { fetchInvoices, fetchInvoiceById, writeInvoice, generateInvoice };
+  const releaseInvoice = (invoiceId: number, referenceNumber: number) => {
+    return client.patch(`/invoice/${invoiceId}/release`, null, {
+      params: {
+        referrenceNumber: referenceNumber,
+      },
+    });
+  };
+
+  return {
+    fetchInvoices,
+    fetchInvoiceById,
+    writeInvoice,
+    generateInvoice,
+    releaseInvoice,
+  };
 };
 
 export default useInvoice;

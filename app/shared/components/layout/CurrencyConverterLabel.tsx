@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { Button, Spinner } from "react-bootstrap";
+import { Button, Placeholder, Spinner } from "react-bootstrap";
 import { FaSync } from "react-icons/fa"; // Import the refresh icon from FontAwesome
 
 interface ExchangeRateResponse {
@@ -45,14 +45,21 @@ const CurrencyConverterLabel: React.FC<CurrencyConverterLabelProps> = ({
     fetchExchangeRate();
   }, [fetchExchangeRate]);
 
+  const formatAmount = (value: number) => {
+    // Fix the number to 2 decimal places and format with commas
+    return value.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  };
+
   const convertCurrency = () => {
-    return exchangeRate ? (amount * exchangeRate).toFixed(2) : "Loading...";
+    return exchangeRate
+      ? formatAmount(amount * exchangeRate) // Format the converted amount
+      : `${targetCurrency} 0.00`;
   };
 
   return (
     <>
       <div className="d-flex align-content-between align-items-center">
-        <strong>{`${targetCurrency} ${convertCurrency()}`}</strong>
+        <span className="ms-1">{`${targetCurrency} ${convertCurrency()}`}</span>
         <Button
           variant="light"
           size="sm"

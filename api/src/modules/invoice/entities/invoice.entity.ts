@@ -34,6 +34,9 @@ export class Invoice {
   @UpdateDateColumn()
   updatedAt?: Date;
 
+  @Column({ default: "", nullable: false })
+  referrenceNumber: string;
+
   @Column()
   clientId: number;
 

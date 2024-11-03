@@ -4,16 +4,7 @@ interface Props {
   value: string;
 }
 const QRCodeComponent: React.FC<Props> = ({ value }) => {
-  return (
-    <div>
-      <QRCode
-        size={100}
-        style={{ height: "auto", maxWidth: "100%", width: "100%" }}
-        value={value}
-        viewBox={`0 0 256 256`}
-      />
-    </div>
-  );
+  return <QRCode size={150} value={value} viewBox={`300 300 300 300`} />;
 };
 
 export default QRCodeComponent;

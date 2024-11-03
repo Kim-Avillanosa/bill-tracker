@@ -7,6 +7,8 @@ import {
   UseInterceptors,
   Param,
   Get,
+  Patch,
+  Query,
 } from "@nestjs/common";
 import { JWTUtil } from "../../jwt/jwt.service";
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
@@ -36,6 +38,14 @@ export class InvoiceController {
   @Get(":id")
   findOne(@Param("id") id: number) {
     return this.invoiceService.findOne(id);
+  }
+
+  @Patch(":id/release")
+  releaseInvoice(
+    @Param("id") id: number,
+    @Query("referrenceNumber") referrenceNumber: string,
+  ) {
+    return this.invoiceService.releaseInvoice(id, referrenceNumber);
   }
 
   @Post("write")
