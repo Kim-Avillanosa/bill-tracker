@@ -11,7 +11,7 @@ services:
     environment:
       - NODE_ENV=development
       - "NEXT_PUBLIC_API=http://srv596601.hstgr.cloud:3005"
-    command: sh -c "npm install && npm run build && npm run start -- -p 3004"
+    command: sh -c "npm run vps-deploy"
 networks:
   default:
     name: bill-tracker-network
