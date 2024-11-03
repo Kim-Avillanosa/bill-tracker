@@ -13,6 +13,7 @@ import {
 import TimesheetForm from "./TimesheetForm";
 import useInvoice from "@/services/useInvoice";
 import toast from "react-hot-toast";
+import CurrencyConverterLabel from "@/shared/components/layout/CurrencyConverterLabel";
 
 interface Props {
   timesheets: Models.Timesheet[];
@@ -143,14 +144,22 @@ const TimesheetCheckout: React.FC<Props> = ({ timesheets, client }) => {
           </Card.Text>
           <hr />
           <Card.Text>
-            <div className="d-flex justify-content-between">
-              <span>Total:</span>
-              <h3>
+            <span>Total:</span>
+
+            <div className="d-flex justify-content-end">
+              <h4>
                 <strong>
                   {client.symbol}
                   {total.toFixed(2)}
                 </strong>
-              </h3>
+                <strong>
+                  <CurrencyConverterLabel
+                    initialAmount={total}
+                    initialCurrency={"AUD"}
+                    targetCurrency={"PHP"}
+                  />
+                </strong>
+              </h4>
             </div>
           </Card.Text>
         </Card.Body>
@@ -184,7 +193,7 @@ const TimesheetCheckout: React.FC<Props> = ({ timesheets, client }) => {
                   disabled={!checkedItems[timesheet.id]}
                 />
               </td>
-              <td>
+              <td className=" align-content-center">
                 <Form.Check
                   type="switch"
                   checked={checkedItems[timesheet.id] || false}

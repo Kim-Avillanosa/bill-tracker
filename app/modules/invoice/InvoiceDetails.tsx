@@ -1,4 +1,5 @@
 import useInvoice from "@/services/useInvoice";
+import CurrencyConverterLabel from "@/shared/components/layout/CurrencyConverterLabel";
 import React, { useCallback, useEffect, useState } from "react";
 import { Card, Spinner, Alert, Row, Col, Badge } from "react-bootstrap";
 import { FaDollarSign, FaCalendarAlt, FaInfoCircle } from "react-icons/fa";
@@ -55,6 +56,8 @@ const InvoiceDetails: React.FC<InvoiceDetailsProps> = ({
     );
   };
 
+  const totalAmount = calculateTotalAmount(invoice.workItems);
+
   return (
     <Card className="mt-3 shadow-sm rounded border-0">
       <Card.Header className="bg-success text-white d-flex justify-content-between align-items-center">
@@ -73,8 +76,16 @@ const InvoiceDetails: React.FC<InvoiceDetailsProps> = ({
           <Col>
             <Card.Text>
               <FaDollarSign className="me-2 text-success" />
-              <strong>Amount:</strong> $
-              {calculateTotalAmount(invoice.workItems)}
+              <strong>Converted amount:</strong>{" "}
+              <CurrencyConverterLabel
+                initialAmount={totalAmount}
+                initialCurrency={"AUD"}
+                targetCurrency={"PHP"}
+              />
+            </Card.Text>
+            <Card.Text>
+              <FaDollarSign className="me-2 text-success" />
+              <strong>Amount:</strong> ${totalAmount}
             </Card.Text>
           </Col>
         </Row>
