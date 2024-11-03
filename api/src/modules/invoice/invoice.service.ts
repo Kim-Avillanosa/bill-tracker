@@ -166,7 +166,9 @@ export class InvoiceService {
         "status",
         "updatedAt",
         "workItems",
+        "client",
       ],
+      relations: ["client"],
       where: {
         id: invoiceId,
       },

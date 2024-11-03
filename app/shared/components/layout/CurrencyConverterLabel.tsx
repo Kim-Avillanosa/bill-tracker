@@ -50,18 +50,20 @@ const CurrencyConverterLabel: React.FC<CurrencyConverterLabelProps> = ({
   };
 
   return (
-    <div className="d-flex align-content-between align-items-center">
-      {`${targetCurrency} ${convertCurrency()}`}
-      <Button
-        variant="light"
-        size="sm"
-        onClick={fetchExchangeRate}
-        disabled={loading}
-        className="d-flex align-items-center"
-      >
-        {loading ? <Spinner animation="border" size="sm" /> : <FaSync />}
-      </Button>
-    </div>
+    <>
+      <div className="d-flex align-content-between align-items-center">
+        <strong>{`${targetCurrency} ${convertCurrency()}`}</strong>
+        <Button
+          variant="light"
+          size="sm"
+          onClick={fetchExchangeRate}
+          disabled={loading}
+          className="d-flex align-items-center"
+        >
+          {loading ? <Spinner animation="border" size="sm" /> : <FaSync />}
+        </Button>
+      </div>
+    </>
   );
 };
 

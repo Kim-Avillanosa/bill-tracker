@@ -149,14 +149,13 @@ const TimesheetCheckout: React.FC<Props> = ({ timesheets, client }) => {
             <div className="d-flex justify-content-end">
               <h4>
                 <strong>
-                  {client.symbol}
-                  {total.toFixed(2)}
+                  {`${client.current_currency_code} ${total.toFixed(2)}`}
                 </strong>
                 <strong>
                   <CurrencyConverterLabel
                     initialAmount={total}
-                    initialCurrency={client.current_currency_symbol}
-                    targetCurrency={client.convert_currency_symbol}
+                    initialCurrency={client.current_currency_code}
+                    targetCurrency={client.convert_currency_code}
                   />
                 </strong>
               </h4>

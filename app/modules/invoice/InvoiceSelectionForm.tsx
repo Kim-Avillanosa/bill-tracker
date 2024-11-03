@@ -54,17 +54,9 @@ const InvoiceSelectionForm = () => {
           />
         </Col>
       </Row>
-      <Row>
-        {currentClient && selectedInvoiceId && (
-          <Col>
-            <InvoiceDetails
-              invoiceId={selectedInvoiceId}
-              client={currentClient}
-            />
-          </Col>
-        )}
-      </Row>
-
+      {currentClient && selectedInvoiceId && (
+        <InvoiceDetails invoiceId={selectedInvoiceId} client={currentClient} />
+      )}
       {selectedInvoiceId && (
         <Button
           onClick={() => {

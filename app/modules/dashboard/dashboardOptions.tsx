@@ -43,14 +43,15 @@ const DashboardOptions: React.FC<DashboardOptionsProps> = ({ setStatus }) => {
           onClick={() =>
             openModal({
               size: "lg",
-              title: "Generate Invoice",
+              title: "Generate Invoice & Timesheet",
               content: <InvoiceSelectionForm />,
             })
           }
-          variant="success"
+          variant="warning"
+          size="lg"
           className="m-1"
         >
-          Generate invoice 🧾
+          ⚡Invoice and Timesheet
         </Button>
       </div>
     </div>
