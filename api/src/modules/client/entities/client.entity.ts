@@ -23,16 +23,22 @@ export class Client {
   @PrimaryGeneratedColumn()
   id?: number;
 
-  @Column({ default : "", nullable: false })
+  @Column({ default: "", nullable: false })
   email: string;
 
-  @Column({ default : "", nullable: false })
+  @Column({ default: "", nullable: false })
   name: string;
 
-  @Column({ default : "", nullable: false })
+  @Column({ default: "", nullable: false })
   symbol: string;
 
-  @Column({ default : "", nullable: false })
+  @Column({ default: "USD", nullable: false })
+  current_currency_code: string;
+
+  @Column({ default: "PHP", nullable: false })
+  convert_currency_code: string;
+
+  @Column({ default: "", nullable: false })
   code: string;
 
   @Column({ type: "decimal", precision: 10, scale: 2 })
@@ -44,13 +50,13 @@ export class Client {
   @Column({ nullable: true })
   address: string;
 
-  @Column({ default : "#1e90ff", nullable: true })
+  @Column({ default: "#1e90ff", nullable: true })
   banner_color: string;
 
-  @Column({ default : "#ffffff", nullable: true })
+  @Column({ default: "#ffffff", nullable: true })
   headline_color: string;
 
-  @Column({ default : "#1e272e", nullable: true })
+  @Column({ default: "#1e272e", nullable: true })
   text_color: string;
 
   @CreateDateColumn()

@@ -155,8 +155,8 @@ const TimesheetCheckout: React.FC<Props> = ({ timesheets, client }) => {
                 <strong>
                   <CurrencyConverterLabel
                     initialAmount={total}
-                    initialCurrency={"AUD"}
-                    targetCurrency={"PHP"}
+                    initialCurrency={client.current_currency_symbol}
+                    targetCurrency={client.convert_currency_symbol}
                   />
                 </strong>
               </h4>

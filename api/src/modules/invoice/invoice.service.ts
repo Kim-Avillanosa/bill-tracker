@@ -110,6 +110,8 @@ export class InvoiceService {
         "updated_at",
         "userId",
         "user",
+        "convert_currency_code",
+        "current_currency_code",
       ],
       where: {
         id: invoice.clientId,
@@ -190,6 +192,8 @@ export class InvoiceService {
         "symbol",
         "userId",
         "user",
+        "convert_currency_code",
+        "current_currency_code",
       ],
       where: {
         id: invoice.clientId,

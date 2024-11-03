@@ -79,8 +79,8 @@ const InvoiceDetails: React.FC<InvoiceDetailsProps> = ({
               <strong>Converted amount:</strong>{" "}
               <CurrencyConverterLabel
                 initialAmount={totalAmount}
-                initialCurrency={"AUD"}
-                targetCurrency={"PHP"}
+                initialCurrency={client.current_currency_symbol}
+                targetCurrency={client.convert_currency_symbol}
               />
             </Card.Text>
             <Card.Text>

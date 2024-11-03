@@ -11,6 +11,8 @@ type ClientData = {
   banner_color: string;
   headline_color: string;
   text_color: string;
+  current_currency_code: string;
+  convert_currency_code: string;
 };
 
 const useClient = () => {

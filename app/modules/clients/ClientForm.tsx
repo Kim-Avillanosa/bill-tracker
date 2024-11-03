@@ -12,21 +12,25 @@ import {
 import { toast } from "react-hot-toast";
 import useClient from "@/services/useClient";
 import useModalStore from "@/shared/store/useModal";
+import CurrencySelect from "@/shared/components/layout/CurrencySelect";
 
+export type ClientFormType = {
+  id?: number;
+  name: string;
+  code: string;
+  symbol: string;
+  address: string;
+  hourly_rate: number;
+  hours_per_day: number;
+  category: string;
+  banner_color: string;
+  headline_color: string;
+  text_color: string;
+  current_currency_code: string;
+  convert_currency_code: string;
+};
 type ClientFormProps = {
-  initialData?: {
-    id?: number;
-    name: string;
-    code: string;
-    symbol: string;
-    address: string;
-    hourly_rate: number;
-    hours_per_day: number;
-    category: string;
-    banner_color: string;
-    headline_color: string;
-    text_color: string;
-  };
+  initialData?: ClientFormType;
   isUpdate?: boolean;
 };
 
@@ -50,6 +54,8 @@ const ClientForm: React.FC<ClientFormProps> = ({
       banner_color: initialData?.banner_color || "",
       headline_color: initialData?.headline_color || "",
       text_color: initialData?.text_color || "",
+      current_currency_code: initialData?.current_currency_code || "", // Initialize new field
+      convert_currency_code: initialData?.convert_currency_code || "", // Initialize new field
     },
     validationSchema: Yup.object({
       name: Yup.string().required("Name is required"),
@@ -62,6 +68,12 @@ const ClientForm: React.FC<ClientFormProps> = ({
       banner_color: Yup.string().required("Banner color is required"),
       headline_color: Yup.string().required("Headline color is required"),
       text_color: Yup.string().required("Text color is required"),
+      current_currency_code: Yup.string().required(
+        "Current currency symbol is required"
+      ), // Validate new field
+      convert_currency_code: Yup.string().required(
+        "Convert currency symbol is required"
+      ), // Validate new field
     }),
     onSubmit: async (values) => {
       try {
@@ -82,6 +94,7 @@ const ClientForm: React.FC<ClientFormProps> = ({
 
   return (
     <Container className="">
+      {JSON.stringify(formik.errors)}
       <Form onSubmit={formik.handleSubmit}>
         <FormGroup>
           <FormLabel htmlFor="name">Name</FormLabel>
@@ -257,11 +270,23 @@ const ClientForm: React.FC<ClientFormProps> = ({
             <div className="text-danger">{formik.errors.text_color}</div>
           )}
         </FormGroup>
-        <div className="text-center m-3">
-          <Button variant="success" className="w-100" type="submit">
-            {isUpdate ? "Update Client" : "Add Client"}
-          </Button>
-        </div>
+        <CurrencySelect
+          id="current_currency_code"
+          name="current_currency_code"
+          label="Client's Currency"
+          formik={formik}
+        />
+
+        <CurrencySelect
+          id="convert_currency_code"
+          name="convert_currency_code"
+          label="Desired currency to convert"
+          formik={formik}
+        />
+
+        <Button type="submit" className="mt-3">
+          {isUpdate ? "Update Client" : "Add Client"}
+        </Button>
       </Form>
     </Container>
   );

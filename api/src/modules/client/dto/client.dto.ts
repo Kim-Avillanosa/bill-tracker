@@ -1,5 +1,5 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { ClientCategory } from '../entities/client.entity';
+import { ApiProperty } from "@nestjs/swagger";
+import { ClientCategory } from "../entities/client.entity";
 
 export class ClientDto {
   @ApiProperty({ required: true })
@@ -15,6 +15,12 @@ export class ClientDto {
   address: string;
 
   @ApiProperty({ required: true })
+  current_currency_code: string;
+
+  @ApiProperty({ required: true })
+  convert_currency_code: string;
+
+  @ApiProperty({ required: true })
   hourly_rate: number;
 
   @ApiProperty({ required: true })
@@ -22,7 +28,6 @@ export class ClientDto {
 
   @ApiProperty({ required: true })
   category: ClientCategory;
-
 
   @ApiProperty({ required: false })
   banner_color: string;

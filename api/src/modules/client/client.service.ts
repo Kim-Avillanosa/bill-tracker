@@ -49,6 +49,8 @@ export class ClientService {
         "userId",
         "user",
         "category",
+        "convert_currency_code",
+        "current_currency_code",
       ],
       where: {
         userId: id,
@@ -75,6 +77,8 @@ export class ClientService {
         "userId",
         "user",
         "category",
+        "convert_currency_code",
+        "current_currency_code",
       ],
       where: {
         id: id,

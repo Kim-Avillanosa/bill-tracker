@@ -56,6 +56,8 @@ declare global {
       created_at: string; // Alternatively, you could use Date if you prefer
       updated_at: string; // Alternatively, you could use Date if you prefer
       userId: number;
+      current_currency_symbol: string;
+      convert_currency_symbol: string;
     }
 
     interface WorkItem {
