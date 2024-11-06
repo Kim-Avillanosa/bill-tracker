@@ -3,7 +3,7 @@ version: "3.8"
 services:
   api:
     image: node:18
-    container_name: nestjs-api
+    container_name: bill-tracker-api
     working_dir: /app
     volumes:
       - .:/app
