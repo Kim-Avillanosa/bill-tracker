@@ -1,6 +1,6 @@
 import useInvoice from "@/services/useInvoice";
 import React, { useCallback, useEffect, useState } from "react";
-import { Button, Form } from "react-bootstrap";
+import { Badge, Button, Form } from "react-bootstrap";
 
 interface InvoiceSelectProps {
   onChange: (selectedInvoiceId: number, selectedClient: Models.Client) => void;
@@ -27,42 +27,64 @@ const InvoiceSelect: React.FC<InvoiceSelectProps> = ({
     } finally {
       setLoading(false);
     }
-  }, [fetchInvoices, setLoading, setInvoices]);
+  }, [fetchInvoices]);
 
   useEffect(() => {
     loadInvoices();
   }, []);
 
+
+  // Function to determine badge color based on status
+  const getStatusVariant = (status: string) => {
+    switch (status.toLowerCase()) {
+      case "paid":
+        return "success";
+      case "pending":
+        return "warning";
+      case "overdue":
+        return "danger";
+      default:
+        return "secondary";
+    }
+  };
+
   return (
     <Form.Group controlId="invoiceSelect">
-      <Form.Label>Select Invoice</Form.Label>
-      <div className="d-flex align-items-center">
+      <div className="d-flex">
         <Form.Select
-          value={selectedInvoiceId}
+          size="lg"
+          defaultValue={selectedInvoiceId}
           onChange={(e) => {
             const invoiceId = Number(e.target.value);
             const currentInvoice = invoices.find(
               (invoice) => invoice.id === invoiceId
             );
             if (currentInvoice) {
-              onChange(invoiceId, currentInvoice?.client);
+              onChange(invoiceId, currentInvoice.client);
             }
           }}
-          disabled={loading}
         >
-          <option value="">Select an invoice...</option>
+          <option value={undefined}>Select an invoice...</option>
           {invoices.map((invoice) => (
             <option key={invoice.id} value={invoice.id}>
-              {`${invoice.status.toUpperCase()} | ${new Date(
-                invoice.date
-              ).toDateString()} |  ${invoice.client.name} - ${
-                invoice.invoiceNumber
-              }`}
+              <Badge bg={getStatusVariant(invoice.status)}>
+                {invoice.status.toUpperCase()}
+              </Badge>{" "}
+              | {new Date(invoice.date).toDateString()} | {invoice.client.name} -{" "}
+              {invoice.invoiceNumber}
             </option>
           ))}
         </Form.Select>
-        <Button variant="dark" onClick={onReset} className="ms-2">
-          Reset
+        <Button
+          size="lg"
+          variant="dark"
+          onClick={() => {
+            loadInvoices();
+            onReset();
+          }}
+          className="ms-2"
+        >
+          ↻ Reset
         </Button>
       </div>
     </Form.Group>

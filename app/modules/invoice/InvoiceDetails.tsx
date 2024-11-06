@@ -2,7 +2,7 @@ import useInvoice from "@/services/useInvoice";
 import CurrencyConverterLabel from "@/shared/components/layout/CurrencyConverterLabel";
 import QRCodeComponent from "@/shared/components/layout/QRCodeContainer";
 import React, { useCallback, useEffect, useState } from "react";
-import { Card, Spinner, Alert, Row, Col, Badge } from "react-bootstrap";
+import { Card, Spinner, Alert, Row, Col, Badge, Container } from "react-bootstrap";
 import {
   FaDollarSign,
   FaCalendarAlt,
@@ -47,16 +47,17 @@ const InvoiceDetails: React.FC<InvoiceDetailsProps> = ({
     }
   }, [invoiceId, loadInvoiceDetails]);
 
-  if (loading) {
-    return <Spinner animation="border" />;
-  }
 
   if (error) {
     return <Alert variant="danger">{error}</Alert>;
   }
 
   if (!invoice) {
-    return <Alert variant="warning">No invoice selected.</Alert>;
+    return <Container className="text-center mt-5">
+      <Spinner animation="border" role="status">
+        <span className="visually-hidden">Loading...</span>
+      </Spinner>
+    </Container>
   }
 
   const getStatusIcon = (status: string) => {
@@ -96,10 +97,10 @@ const InvoiceDetails: React.FC<InvoiceDetailsProps> = ({
 
   return (
     <>
-      <Row className="mt-3">
+      <Row className="mt-3 mb-3">
         <Col>
-          <Card className="shadow-lg rounded border-0">
-            <Card.Header className="bg-dark text-white d-flex justify-content-between align-items-center">
+          <Card className="shadow-sm">
+            <Card.Header className=" text-white d-flex justify-content-between align-items-center">
               <strong>Invoice Details</strong>
               <Badge bg={getBadgeColor(invoice.status)}>
                 {getStatusIcon(invoice.status)} {invoice.status.toUpperCase()}
