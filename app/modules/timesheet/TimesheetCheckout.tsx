@@ -103,7 +103,7 @@ const TimesheetCheckout: React.FC<Props> = ({ timesheets, client }) => {
       writeInvoice({
         clientId: client.id,
         date: new Date().toDateString(),
-        note: "This is an auto generated invoice for assistance please contact me at careers.kmavillanosa@gmail.com",
+        note: '',
         workItems: generatedData,
       }),
       {

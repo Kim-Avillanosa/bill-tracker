@@ -28,7 +28,7 @@ export class InvoiceService {
     private invoiceRepository: Repository<Invoice>,
     @InjectRepository(WorkItem)
     private workItemRepository: Repository<WorkItem>,
-  ) {}
+  ) { }
 
   async releaseInvoice(id: number, referrenceNumber: string) {
     const invoice = await this.invoiceRepository.findOne({
@@ -321,7 +321,7 @@ export class InvoiceService {
       .text(currentClient.name);
 
     doc.fontSize(10).font("Helvetica").text(currentClient.address);
-    doc.fontSize(10).text(`Note: ${invoice.note}`);
+    doc.fontSize(10).text(`Note: This is a monthly auto-generated invoice from ${user.name}, Software Developer. For any questions or assistance, please reach out to me directly at ${user.email}. Thank you for the ongoing collaboration!`);
 
     doc.moveDown();
 
