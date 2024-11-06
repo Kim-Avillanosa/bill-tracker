@@ -1,0 +1,1 @@
+[![Deploy to VPS](https://github.com/Kim-Avillanosa/bill-tracker/actions/workflows/deploy.yml/badge.svg)](https://github.com/Kim-Avillanosa/bill-tracker/actions/workflows/deploy.yml)
