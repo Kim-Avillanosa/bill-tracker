@@ -62,7 +62,7 @@ services:
       - MYSQL_HOST=mysql
     entrypoint: [ "sh", "-c", "crond -f -L /dev/stdout" ]
     command: |
-      echo "0 3 * * * /bin/sh /backup/backup.sh" > /etc/crontabs/root && crond -f
+      echo "*/5 * * * * /bin/sh /backup/backup.sh" > /etc/crontabs/root && crond -f
       
 networks:
   default:
