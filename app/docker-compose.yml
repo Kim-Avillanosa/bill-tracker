@@ -1,7 +1,7 @@
 services:
   web:
     image: "node:18"
-    container_name: nextjs-app
+    container_name: bill-tracker
     working_dir: /app
     volumes:
       - ".:/app"
