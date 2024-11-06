@@ -51,7 +51,7 @@ services:
       - mysql
 
   backup:
-    image: mysql:8.0
+    image: alpine:latest
     container_name: mysql-backup
     volumes:
       - ./backup:/backup                  # Folder on host to store backups
@@ -61,7 +61,12 @@ services:
       MYSQL_PASSWORD: admin
       MYSQL_HOST: mysql
       MYSQL_DB: bill_tracker
-    entrypoint: ["sh", "-c", "mkdir -p /etc/crontabs && chmod +x /backup.sh && echo '*/5 * * * * /backup.sh' > /etc/crontabs/root && crond -f -l 2"]
+    entrypoint: |
+      sh -c "apk add --no-cache mysql-client busybox-suid && \
+      mkdir -p /etc/crontabs && \
+      chmod +x /backup.sh && \
+      echo '*/5 * * * * /backup.sh' > /etc/crontabs/root && \
+      crond -f -l 2"
 
 networks:
   default:
