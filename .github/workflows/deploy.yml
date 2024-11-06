@@ -31,8 +31,8 @@ jobs:
 
             # Deploy API
             cd /bill-tracker/api
-            docker-compose down || true  # Ignore errors from down
-            docker-compose up -d --build
+            docker-compose down bill-tracker-api bill-tracker || true  # Ignore errors from down
+            docker-compose up bill-tracker-api bill-tracker -d --build
           EOF
 
   deploy-app:
