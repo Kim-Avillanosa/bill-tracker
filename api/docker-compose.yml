@@ -50,24 +50,20 @@ services:
     depends_on:
       - mysql
 
-backup:
-  image: alpine:latest
-  container_name: mysql-backup
-  volumes:
-    - ./backup:/backup                 # Folder on host to store backups
-    - ./backup.sh:/backup.sh           # Ensure the script is correctly mounted
-  environment:
-    MYSQL_USER: user
-    MYSQL_PASSWORD: admin
-    MYSQL_HOST: mysql
-    MYSQL_DB: bill_tracker
-  entrypoint: |
-    sh -c "apk add --no-cache mysql-client busybox-suid && \
-    mkdir -p /etc/crontabs && \
-    chmod +x /backup.sh && \
-    echo '*/5 * * * * /backup.sh' > /etc/crontabs/root && \
-    crond -f -l 2"
-
+  backup:
+    image: alpine:latest
+    container_name: mysql-backup
+    volumes:
+      - ./backup:/backup
+      - mysql_data:/var/lib/mysql
+    environment:
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=admin
+      - MYSQL_HOST=mysql
+    entrypoint: [ "sh", "-c", "crond -f -L /dev/stdout" ]
+    command: |
+      echo "0 3 * * * /bin/sh /backup/backup.sh" > /etc/crontabs/root && crond -f
+      
 networks:
   default:
     name: bill-tracker-network
