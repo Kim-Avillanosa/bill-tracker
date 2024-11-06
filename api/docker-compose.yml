@@ -51,18 +51,17 @@ services:
       - mysql
 
   backup:
-    image: alpine:latest
+    build: .
     container_name: mysql-backup
     volumes:
       - ./backup:/backup
-      - mysql_data:/var/lib/mysql
     environment:
-      - MYSQL_USER=user
-      - MYSQL_PASSWORD=admin
-      - MYSQL_HOST=mysql
-    entrypoint: [ "sh", "-c", "crond -f -L /dev/stdout" ]
+      MYSQL_USER: user
+      MYSQL_PASSWORD: admin
+      MYSQL_HOST: mysql
+      MYSQL_DB: bill_tracker
     command: |
-      echo "*/5 * * * * /bin/sh /backup/backup.sh" > /etc/crontabs/root && crond -f
+      echo "*/5 * * * * /bin/sh /backup/backup.sh >> /backup/backup.log 2>&1" > /etc/crontabs/root && crond -f
       
 networks:
   default:
