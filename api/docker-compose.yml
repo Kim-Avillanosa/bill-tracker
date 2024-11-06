@@ -67,7 +67,7 @@ backup:
     chmod +x /backup.sh && \
     echo '*/5 * * * * /backup.sh' > /etc/crontabs/root && \
     crond -f -l 2"
-    
+
 networks:
   default:
     name: bill-tracker-network
