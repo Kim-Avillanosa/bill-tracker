@@ -26,9 +26,7 @@ jobs:
               git clone https://github.com/Kim-Avillanosa/bill-tracker.git /bill-tracker  # Replace with your repo URL
             else
               cd /bill-tracker
-              git stash || true  # Stash local changes if any
               git pull origin main
-              git stash pop || true  # Apply the stashed changes back if any
             fi
 
             # Deploy API

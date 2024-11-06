@@ -3,7 +3,7 @@ version: "3.8"
 services:
   api:
     image: node:18
-    container_name: bill-tracker-api
+    container_name: nestjs-api
     working_dir: /app
     volumes:
       - .:/app
@@ -50,19 +50,6 @@ services:
     depends_on:
       - mysql
 
-  backup:
-    build: .
-    container_name: mysql-backup
-    volumes:
-      - ./backup:/backup
-    environment:
-      MYSQL_USER: user
-      MYSQL_PASSWORD: admin
-      MYSQL_HOST: mysql
-      MYSQL_DB: bill_tracker
-    command: |
-      echo "*/5 * * * * /bin/sh /backup/backup.sh >> /backup/backup.log 2>&1" > /etc/crontabs/root && crond -f
-      
 networks:
   default:
     name: bill-tracker-network
