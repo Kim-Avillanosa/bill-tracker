@@ -33,7 +33,7 @@ const InvoiceSelectionForm = () => {
     if (newTab) {
       newTab.focus(); // Focus the new tab
     } else {
-      alert("Please allow popups for this site");
+      alert("Please allow popups for this site ");
     }
   };
 
