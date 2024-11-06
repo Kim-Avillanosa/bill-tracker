@@ -50,6 +50,19 @@ services:
     depends_on:
       - mysql
 
+  backup:
+    image: mysql:8.0
+    container_name: mysql-backup
+    volumes:
+      - ./backup:/backup                  # Folder on host to store backups
+      - ./backup.sh:/backup.sh             # Backup script
+    environment:
+      MYSQL_USER: user
+      MYSQL_PASSWORD: admin
+      MYSQL_HOST: mysql
+      MYSQL_DB: bill_tracker
+    entrypoint: ["sh", "-c", "chmod +x /backup.sh && echo '*/5 * * * * /backup.sh' > /etc/crontabs/root && crond -f -l 2"]
+
 networks:
   default:
     name: bill-tracker-network
