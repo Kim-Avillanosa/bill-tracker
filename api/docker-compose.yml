@@ -61,7 +61,7 @@ services:
       MYSQL_PASSWORD: admin
       MYSQL_HOST: mysql
       MYSQL_DB: bill_tracker
-    entrypoint: ["sh", "-c", "chmod +x /backup.sh && echo '*/5 * * * * /backup.sh' > /etc/crontabs/root && crond -f -l 2"]
+    entrypoint: ["sh", "-c", "mkdir -p /etc/crontabs && chmod +x /backup.sh && echo '*/5 * * * * /backup.sh' > /etc/crontabs/root && crond -f -l 2"]
 
 networks:
   default:
