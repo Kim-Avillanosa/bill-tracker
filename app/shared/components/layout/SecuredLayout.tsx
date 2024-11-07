@@ -30,6 +30,7 @@ const SecuredLayout: React.FC<SecuredLayoutProps> = ({ children }) => {
     >
       <AppBar />
       <Container className="mt-3">
+        <hr />
         <ErrorBoundary>
           <OnLoadAnimator>{children}</OnLoadAnimator>
         </ErrorBoundary>

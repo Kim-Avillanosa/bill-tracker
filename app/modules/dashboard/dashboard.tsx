@@ -28,9 +28,6 @@ const Dashboard: React.FC = () => {
   return (
     <Page title="Bill Tracker">
       <SecuredLayout>
-        <h1>
-          <strong>Dashboard</strong>
-        </h1>
         <DashboardOptions setStatus={(status) => setStatus(status)} />{" "}
         {renderCurrentView()}
       </SecuredLayout>

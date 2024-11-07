@@ -66,9 +66,11 @@ const RegistrationForm = () => {
 
   return (
     <div className="container mt-5 w-50 pb-5">
-      <h1 className="text-center">
-        <strong style={{ fontSize: 60 }}>Bill tracker 💸</strong>
-      </h1>
+
+      <div className=" d-flex justify-content-center">
+        <img src="/logo.png" className="w-50" />
+      </div>
+
       <h1 className="mt-5">
         <strong>Register</strong>
       </h1>
