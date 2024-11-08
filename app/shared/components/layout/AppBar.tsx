@@ -13,7 +13,7 @@ const AppBar: React.FC = () => {
       <Container>
         <Navbar.Brand>
           <div >
-            <img src="/logo.png" className="w-50" />
+            <img src="/logo.png" style={{ height: "70px" }} />
           </div>
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
@@ -21,9 +21,9 @@ const AppBar: React.FC = () => {
           <Nav className="me-auto" />
           <Nav className="justify-content-end">
             <Nav.Item>
-              <Button 
+              <Button
                 className="m-1 text-start w-100"
-                variant="light"
+                variant="outline-dark"
                 onClick={() => {
                   router.push("/");
                   dismiss();
