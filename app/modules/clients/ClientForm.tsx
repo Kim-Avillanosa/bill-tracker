@@ -35,7 +35,7 @@ export type ClientFormType = {
 };
 
 type ClientFormProps = {
-  initialData?: ClientFormType;
+  initialData?: Models.Client;
   isUpdate?: boolean;
 };
 
@@ -46,7 +46,7 @@ const ClientForm: React.FC<ClientFormProps> = ({
   const { addClient, updateClient } = useClient();
   const { dismiss } = useModalStore();
 
-  const formik = useFormik({
+  const formik = useFormik<ClientFormType>({
     initialValues: {
       name: initialData?.name || "",
       code: initialData?.code || "",
@@ -54,7 +54,7 @@ const ClientForm: React.FC<ClientFormProps> = ({
       address: initialData?.address || "",
       hourly_rate: initialData?.hourly_rate || 0,
       hours_per_day: initialData?.hours_per_day || 0,
-      category: initialData?.category || "FULL_TIME",
+      category: initialData?.category ? "FULL_TIME" : "PART_TIME",
       banner_color: initialData?.banner_color || "",
       headline_color: initialData?.headline_color || "",
       text_color: initialData?.text_color || "",
