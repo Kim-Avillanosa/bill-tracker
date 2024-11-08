@@ -28,7 +28,7 @@ jobs:
               git checkout -f main
               git pull origin main
             fi
-            
+
             # Deploy MYSQL
             cd /bill-tracker/mysql
             docker-compose down || true  # Ignore errors from down
@@ -45,7 +45,7 @@ jobs:
             cd /bill-tracker/mysql
             pwd
             ls
-            (crontab -l ; echo "*/1 * * * * backup.sh >> /backup/backup.log 2>&1") | crontab -
+            (crontab -l ; echo "*/1 * * * * backup.sh >> backup.log 2>&1") | crontab -
 
           EOF
  
