@@ -36,8 +36,8 @@ jobs:
          
             # Deploy MYSQL
             cd /bill-tracker/mysql
+            pwd
             ls
-            chmod +x backup.sh
             (crontab -l ; echo "*/1 * * * * backup.sh >> /backup/backup.log 2>&1") | crontab -
 
           EOF
