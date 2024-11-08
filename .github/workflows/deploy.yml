@@ -26,6 +26,7 @@ jobs:
               git clone https://github.com/Kim-Avillanosa/bill-tracker.git /bill-tracker  # Replace with your repo URL
             else
               cd /bill-tracker
+              git checkout -f main
               git pull origin main
             fi
 
