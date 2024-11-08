@@ -14,6 +14,7 @@ import TimesheetForm from "./TimesheetForm";
 import useInvoice from "@/services/useInvoice";
 import toast from "react-hot-toast";
 import CurrencyConverterLabel from "@/shared/components/layout/CurrencyConverterLabel";
+import { safeJsonParse } from "@/lib/safeJsonParse";
 
 interface Props {
   timesheets: Models.Timesheet[];
@@ -103,7 +104,7 @@ const TimesheetCheckout: React.FC<Props> = ({ timesheets, client }) => {
       writeInvoice({
         clientId: client.id,
         date: new Date().toDateString(),
-        note: '',
+        note: "",
         workItems: generatedData,
       }),
       {
@@ -116,7 +117,7 @@ const TimesheetCheckout: React.FC<Props> = ({ timesheets, client }) => {
   };
 
   return (
-    <Container>
+    <Container fluid>
       <Card className="mb-3">
         <Card.Body>
           <Card.Title as="h5">Rate Information</Card.Title>
@@ -165,7 +166,7 @@ const TimesheetCheckout: React.FC<Props> = ({ timesheets, client }) => {
           </Card.Text>
         </Card.Body>
       </Card>
-      <Table className="mt-5" striped bordered hover>
+      <Table className="mt-5" bordered hover>
         <thead>
           <tr>
             <th>Date</th>
@@ -176,55 +177,70 @@ const TimesheetCheckout: React.FC<Props> = ({ timesheets, client }) => {
           </tr>
         </thead>
         <tbody>
-          {timesheets.map((timesheet) => (
-            <tr key={timesheet.id}>
-              <td>{new Date(timesheet.entry_date).toDateString()}</td>
-              <td>{timesheet.summary}</td>
-              <td>
-                <Form.Control
-                  type="number"
-                  placeholder="Hours"
-                  value={hours[timesheet.id] || ""}
-                  onChange={(e) =>
-                    handleHoursChange(
-                      timesheet.id,
-                      parseFloat(e.target.value) || 0
-                    )
-                  }
-                  disabled={!checkedItems[timesheet.id]}
-                />
-              </td>
-              <td className=" align-content-center">
-                <Form.Check
-                  type="switch"
-                  checked={checkedItems[timesheet.id] || false}
-                  onChange={() => handleCheckboxChange(timesheet.id)}
-                />
-              </td>
-              <td>
-                <Button
-                  variant="outline-dark"
-                  onClick={() => {
-                    openModal({
-                      size: "lg",
-                      title: "Update timesheet",
-                      content: (
-                        <TimesheetForm
-                          timesheet={timesheet}
-                          clientId={client.id}
-                          onSuccess={() => {
-                            dismiss();
-                          }}
-                        />
-                      ),
-                    });
-                  }}
-                >
-                  Edit
-                </Button>
-              </td>
-            </tr>
-          ))}
+          {timesheets.map((timesheet) => {
+            const parsable = safeJsonParse<string[]>(timesheet.tags);
+            return (
+              <tr key={timesheet.id}>
+                <td>{new Date(timesheet.entry_date).toDateString()}</td>
+                <td className="w-25">
+                  <div className="mb-1">{timesheet.summary}</div>
+                  <div>
+                    {parsable?.map((tag, key) => (
+                      <small>
+                        <Badge bg="dark" pill>
+                          {tag}
+                        </Badge>
+                      </small>
+                    ))}
+                  </div>
+                </td>
+                <td className=" align-content-center">
+                  <Form.Control
+                    size="lg"
+                    type="number"
+                    placeholder="Hours"
+                    value={hours[timesheet.id] || ""}
+                    onChange={(e) =>
+                      handleHoursChange(
+                        timesheet.id,
+                        parseFloat(e.target.value) || 0
+                      )
+                    }
+                    disabled={!checkedItems[timesheet.id]}
+                  />
+                </td>
+                <td className=" align-content-center">
+                  <Form.Check
+                    type="switch"
+                    checked={checkedItems[timesheet.id] || false}
+                    onChange={() => handleCheckboxChange(timesheet.id)}
+                  />
+                </td>
+                <td>
+                  <Button
+                    variant="outline-dark"
+                    onClick={() => {
+                      openModal({
+                        size: "lg",
+                        title: "Update timesheet",
+                        content: (
+                          <TimesheetForm
+                            timesheet={timesheet}
+                            clientId={client.id}
+                            onSuccess={() => {
+                              dismiss();
+                            }}
+                          />
+                        ),
+                      });
+                    }}
+                  >
+                    Edit
+                  </Button>
+                </td>
+              </tr>
+            );
+          })}
         </tbody>
       </Table>
       <Row className="mt-3">
