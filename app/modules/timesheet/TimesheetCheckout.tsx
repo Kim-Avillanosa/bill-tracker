@@ -117,7 +117,7 @@ const TimesheetCheckout: React.FC<Props> = ({ timesheets, client }) => {
   };
 
   return (
-    <Container fluid>
+    <Container >
       <Card className="mb-3">
         <Card.Body>
           <Card.Title as="h5">Rate Information</Card.Title>
