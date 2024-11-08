@@ -27,15 +27,19 @@ jobs:
             docker-compose down || true  # Ignore errors from down
             docker-compose up -d --build
 
-          # Make backup script executable
-          chmod +x backup.sh
+          EOF
 
-          # Run the backup script once
-          backup.sh
-
-          # Set up cron job to run the backup every 5 minutes
-          (crontab -l ; echo "*/5 * * * * backup.sh >> /backup/backup.log 2>&1") | crontab -
-
+      - name: Deploy MYSQL
+        run: |
+          ssh -o StrictHostKeyChecking=no root@88.222.245.88 << 'EOF'
+            set -e  # Exit immediately if a command exits with a non-zero status
+         
+            # Deploy MYSQL
+            cd /bill-tracker/mysql
+            chmod +x backup.sh
+            backup.sh
+            (crontab -l ; echo "*/5 * * * * backup.sh >> /backup/backup.log 2>&1") | crontab -
+            
           EOF
  
   deploy-api:
