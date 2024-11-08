@@ -6,9 +6,36 @@ on:
       - main
 
 jobs:
+  deploy-dependencies:
+      - name: Checkout code
+        uses: actions/checkout@v3 # Use a specific version
+
+      - name: Install SSH key
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.VPS_SSH_KEY }}
+     - name: Deploy Mysql Dependencies
+        run: |
+          ssh -o StrictHostKeyChecking=no root@88.222.245.88 << 'EOF'
+            set -e  # Exit immediately if a command exits with a non-zero status
+            if [ ! -d "/bill-tracker/.git" ]; then
+              git clone https://github.com/Kim-Avillanosa/bill-tracker.git /bill-tracker  # Replace with your repo URL
+            else
+              cd /bill-tracker
+              git checkout -f main
+              git pull origin main
+            fi
+
+            # Deploy API
+            cd /bill-tracker/mysql
+            docker-compose down || true  # Ignore errors from down
+            docker-compose up -d
+          EOF
+
+   runs-on: ubuntu-latest
   deploy-api:
     runs-on: ubuntu-latest
-
+    needs : deploy-dependencies
     steps:
       - name: Checkout code
         uses: actions/checkout@v3 # Use a specific version
