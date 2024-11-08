@@ -7,6 +7,7 @@ on:
 
 jobs:
   deploy-dependencies:
+    runs-on: ubuntu-latest
       - name: Checkout code
         uses: actions/checkout@v3 # Use a specific version
 
@@ -32,7 +33,7 @@ jobs:
             docker-compose up -d
           EOF
 
-   runs-on: ubuntu-latest
+ 
   deploy-api:
     runs-on: ubuntu-latest
     needs : deploy-dependencies
