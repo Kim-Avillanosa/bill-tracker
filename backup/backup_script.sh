@@ -1,7 +1,7 @@
 #!/bin/bash
 
 TIMESTAMP=$(date +"%F_%H-%M")
-BACKUP_DIR="/backup"
+BACKUP_DIR="/"
 MYSQL_USER="user"
 MYSQL_PASSWORD="admin"
 MYSQL_HOST="mysql"
