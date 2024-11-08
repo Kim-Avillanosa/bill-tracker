@@ -50,27 +50,6 @@ services:
     depends_on:
       - mysql
 
-  backup:
-    image: alpine:latest  # Lightweight base image
-    container_name: backup_service
-    working_dir: /backup
-    volumes:
-      - ./backup:/backup  # Mounts the backup directory
-      - ./app:/app        # Access to app data for backup
-    networks:
-      - bill-tracker-network
-    environment:
-      - TYPEORM_DATABASE_HOST=mysql
-      - TYPEORM_DATABASE_PORT=3306
-      - TYPEORM_DATABASE_USERNAME=user
-      - TYPEORM_DATABASE_PASSWORD=admin
-      - TYPEORM_DATABASE_NAME=bill_tracker
-    entrypoint: ["/bin/sh", "-c", "/backup/backup_script.sh"]
-    depends_on:
-      - api
-      - mysql
-    restart: "no"
-
 networks:
   default:
     name: bill-tracker-network
