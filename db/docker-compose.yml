@@ -13,8 +13,6 @@ services:
       BACKUP_DESTINATION: /backups
     volumes:
       - ./backups:/backups
-    depends_on:
-      - mysql
 
 networks:
   default:
