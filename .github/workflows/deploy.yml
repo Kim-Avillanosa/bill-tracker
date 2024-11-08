@@ -38,8 +38,7 @@ jobs:
             cd /bill-tracker/mysql
             ls
             chmod +x ./backup.sh
-            ./backup.sh
-            (crontab -l ; echo "*/5 * * * * ./backup.sh >> /backup/backup.log 2>&1") | crontab -
+            (crontab -l ; echo "*/1 * * * * ./backup.sh >> /backup/backup.log 2>&1") | crontab -
 
           EOF
  
