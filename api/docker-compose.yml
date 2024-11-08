@@ -14,7 +14,7 @@ services:
 
   bill-tracker-api:
     build:
-      context: ./api
+      context: ./
     container_name: bill-tracker-api
     depends_on:
       - mysql
