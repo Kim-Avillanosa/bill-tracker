@@ -42,10 +42,9 @@ jobs:
             set -e  # Exit immediately if a command exits with a non-zero status
          
             # Deploy MYSQL
-            cd /bill-tracker/mysql
-            pwd
-            ls
-            (crontab -l ; echo "*/1 * * * * backup.sh >> backup.log 2>&1") | crontab -
+            cd /bill-tracker/db
+            docker-compose down || true  # Ignore errors from down
+            docker-compose up -d --build
 
           EOF
  
