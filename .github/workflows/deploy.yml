@@ -29,17 +29,17 @@ jobs:
 
           EOF
 
-      - name: Deploy MYSQL
+      - name: Deploy Auto Dumper
         run: |
           ssh -o StrictHostKeyChecking=no root@88.222.245.88 << 'EOF'
             set -e  # Exit immediately if a command exits with a non-zero status
          
             # Deploy MYSQL
             cd /bill-tracker/mysql
-            chmod +x backup.sh
-            backup.sh
-            (crontab -l ; echo "*/5 * * * * backup.sh >> /backup/backup.log 2>&1") | crontab -
-            
+            chmod +x ./backup.sh
+            ./backup.sh
+            (crontab -l ; echo "*/5 * * * * ./backup.sh >> /backup/backup.log 2>&1") | crontab -
+
           EOF
  
   deploy-api:
