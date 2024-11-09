@@ -15,6 +15,9 @@ import TimesheetForm from "./TimesheetForm";
 import { safeJsonParse } from "@/lib/safeJsonParse";
 import TimesheetCheckout from "./TimesheetCheckout";
 import useClient from "@/services/useClient";
+import ClientForm from "../clients/ClientForm";
+import { FaPencil } from "react-icons/fa6";
+import { FaPencilAlt } from "react-icons/fa";
 
 interface Props {
   clientId: number;
@@ -104,14 +107,12 @@ const TimesheetTable: React.FC<Props> = ({ clientId, startDate, endDate }) => {
   return (
     <Container>
       <Row className="my-3">
-        <Col />
         <Col xs={"auto"}>
           <div className="float-end">
             <Button
-              className="ml-3"
               hidden={!clientId}
-              variant="dark"
-              size="lg"
+              variant="outline-warning"
+              className="text-dark"
               onClick={() => {
                 openModal({
                   size: "lg",
@@ -125,7 +126,26 @@ const TimesheetTable: React.FC<Props> = ({ clientId, startDate, endDate }) => {
                 });
               }}
             >
-              🏷️ Prepare invoice
+              ✍️ Write my invoice
+            </Button>
+          </div>
+        </Col>
+        <Col>
+          <div className="float-end">
+            <Button
+              hidden={!clientId}
+              variant="light"
+              onClick={() => {
+                openModal({
+                  size: "lg",
+                  title: `Update Client ${currentClient.name}`,
+                  content: (
+                    <ClientForm isUpdate={true} initialData={currentClient} />
+                  ),
+                });
+              }}
+            >
+              <FaPencilAlt />{" "} Update client information
             </Button>
           </div>
         </Col>
