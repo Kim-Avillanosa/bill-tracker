@@ -38,11 +38,11 @@ const DateRangePicker: React.FC<Props> = ({ onChange }) => {
 
   return (
     <Row className="mt-3">
-      <Col xs={12} xl={"auto"}>
+      <Col xs={12} xl={6}>
         <InputGroup>
           <InputGroup.Text>Start date</InputGroup.Text>
           <DatePicker
-            className=" form-control"
+            className=" form-control form-control-lg"
             selected={startDate}
             onChange={handleStartDateChange}
             selectsStart
@@ -57,7 +57,7 @@ const DateRangePicker: React.FC<Props> = ({ onChange }) => {
         <InputGroup>
           <InputGroup.Text>End date</InputGroup.Text>
           <DatePicker
-            className="form-control"
+            className="form-control  form-control-lg"
             selected={endDate}
             onChange={handleEndDateChange}
             selectsEnd

@@ -1,16 +1,12 @@
 import React, { useState } from "react";
 import { Button, ButtonGroup } from "react-bootstrap";
-import { FaCheck, FaTimes } from "react-icons/fa";
+import { FaCheck, FaTimes, FaTrash } from "react-icons/fa";
 
 type DeleteButtonProps = {
   onDelete: () => void;
-  label?: string;
 };
 
-const DeleteButton: React.FC<DeleteButtonProps> = ({
-  onDelete,
-  label = "Delete",
-}) => {
+const DeleteButton: React.FC<DeleteButtonProps> = ({ onDelete }) => {
   const [isConfirming, setIsConfirming] = useState(false);
 
   const handleDeleteClick = () => {
@@ -29,7 +25,7 @@ const DeleteButton: React.FC<DeleteButtonProps> = ({
   return (
     <div>
       {isConfirming ? (
-        <ButtonGroup className="m-1" size="sm">
+        <ButtonGroup>
           <Button variant="outline-success" onClick={handleConfirm}>
             <FaCheck />
           </Button>
@@ -38,13 +34,8 @@ const DeleteButton: React.FC<DeleteButtonProps> = ({
           </Button>
         </ButtonGroup>
       ) : (
-        <Button
-          size="sm"
-          variant="outline-danger"
-          className="m-1"
-          onClick={handleDeleteClick}
-        >
-          {label}
+        <Button variant="danger" onClick={handleDeleteClick}>
+          <FaTrash />
         </Button>
       )}
     </div>

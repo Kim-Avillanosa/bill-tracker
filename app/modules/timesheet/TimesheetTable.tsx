@@ -145,7 +145,7 @@ const TimesheetTable: React.FC<Props> = ({ clientId, startDate, endDate }) => {
                 });
               }}
             >
-              <FaPencilAlt />{" "} Update client information
+              <FaPencilAlt /> Update client information
             </Button>
           </div>
         </Col>
@@ -158,7 +158,7 @@ const TimesheetTable: React.FC<Props> = ({ clientId, startDate, endDate }) => {
               overflowY: "auto", // Enable vertical scrolling
             }}
           >
-            <Table striped bordered>
+            <Table responsive striped bordered>
               <thead
                 style={{
                   position: "sticky",
@@ -169,12 +169,11 @@ const TimesheetTable: React.FC<Props> = ({ clientId, startDate, endDate }) => {
                 }}
               >
                 <tr>
-                  <th className="border border-gray-300 ">ID</th>
-                  <th className="border border-gray-300 ">Client Name</th>
-                  <th className="border border-gray-300 ">Summary</th>
-                  <th className="border border-gray-300 ">Entry Date</th>
-                  <th className="border border-gray-300 ">Tags</th>
-                  <th className="border border-gray-300 ">Actions</th>
+                  <th className="border border-gray-300">Client Name</th>
+                  <th className="border border-gray-300">Summary</th>
+                  <th className="border border-gray-300">Entry Date</th>
+                  <th className="border border-gray-300">Tags</th>
+                  <th className="border border-gray-300">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -182,59 +181,56 @@ const TimesheetTable: React.FC<Props> = ({ clientId, startDate, endDate }) => {
                   const parsable = safeJsonParse<string[]>(timesheet.tags);
                   return (
                     <tr key={timesheet.id}>
-                      <td className="border border-gray-300 ">
-                        {timesheet.id}
-                      </td>
-                      <td className="border border-gray-300 ">
+                      <td className="border border-gray-300">
                         {timesheet.client.name}
                         <Badge className="ms-1">{timesheet.client.code}</Badge>
                       </td>
-                      <td className="border border-gray-300 ">
+                      <td className="border border-gray-300">
                         {timesheet.summary}
                       </td>
-                      <td className="border border-gray-300 ">
+                      <td className="border border-gray-300">
                         {new Date(timesheet.entry_date).toDateString()}
                       </td>
-                      <td className="border border-gray-300 ">
+                      <td className="border border-gray-300">
                         {parsable?.map((tag, key) => (
                           <Badge bg="dark" pill key={key} className="m-1">
                             {tag}
                           </Badge>
                         ))}
                       </td>
-
-                      <td className="border border-gray-300 ">
-                        <Button
-                          onClick={() => {
-                            openModal({
-                              size: "lg",
-                              title: "Update timesheet",
-                              content: (
-                                <TimesheetForm
-                                  timesheet={timesheet}
-                                  clientId={clientId}
-                                  onSuccess={() => {
-                                    fetchTimesheets();
-                                    dismiss();
-                                  }}
-                                />
-                              ),
-                            });
-                          }}
-                          size="sm"
-                          variant="outline-dark"
-                        >
-                          Edit
-                        </Button>
-                        <DeleteButton
-                          onDelete={() => {
-                            if (timesheet.id) {
-                              deleteTimesheet(timesheet.id).then(() => {
-                                fetchTimesheets();
+                      <td className="border border-gray-300 align-content-center">
+                        <div className="d-flex gap-1  float-end">
+                          <Button
+                            onClick={() => {
+                              openModal({
+                                size: "lg",
+                                title: "Update timesheet",
+                                content: (
+                                  <TimesheetForm
+                                    timesheet={timesheet}
+                                    clientId={clientId}
+                                    onSuccess={() => {
+                                      fetchTimesheets();
+                                      dismiss();
+                                    }}
+                                  />
+                                ),
                               });
-                            }
-                          }}
-                        />
+                            }}
+                            variant="outline-dark"
+                          >
+                            <FaPencilAlt />
+                          </Button>
+                          <DeleteButton
+                            onDelete={() => {
+                              if (timesheet.id) {
+                                deleteTimesheet(timesheet.id).then(() => {
+                                  fetchTimesheets();
+                                });
+                              }
+                            }}
+                          />
+                        </div>
                       </td>
                     </tr>
                   );

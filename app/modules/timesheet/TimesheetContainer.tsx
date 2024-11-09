@@ -30,6 +30,7 @@ const TimesheetContainer: React.FC = () => {
 
           <Col xs={4} xl={6}>
             <Button
+              size="lg"
               variant="dark"
               className="w-100"
               hidden={!clientId}
@@ -52,7 +53,7 @@ const TimesheetContainer: React.FC = () => {
             </Button>
           </Col>
         </Row>
-        <Row   hidden={!clientId}>
+        <Row hidden={!clientId}>
           <Col>
             <DateRangePicker
               onChange={(start, end) =>

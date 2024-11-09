@@ -41,6 +41,7 @@ const ClientSelect: React.FC<ClientSelectProps> = ({ onChange }) => {
         <InputGroup>
           <InputGroup.Text>Client</InputGroup.Text>
           <Form.Control
+            size="lg"
             as="select"
             onChange={(e) => onChange(Number(e.target.value))}
             defaultValue={clients.length > 0 ? clients[0].id : ""} // Set default value if clients exist

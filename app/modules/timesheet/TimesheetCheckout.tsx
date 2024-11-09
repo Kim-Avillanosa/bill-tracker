@@ -185,7 +185,7 @@ const TimesheetCheckout: React.FC<Props> = ({ timesheets, client }) => {
             return (
               <tr key={timesheet.id}>
                 <td>{new Date(timesheet.entry_date).toDateString()}</td>
-                <td className="w-25">
+                <td className="w-50">
                   <div className="mb-1">{timesheet.summary}</div>
                   <div>
                     {parsable?.map((tag, key) => (
@@ -197,7 +197,7 @@ const TimesheetCheckout: React.FC<Props> = ({ timesheets, client }) => {
                     ))}
                   </div>
                 </td>
-                <td className=" align-content-center">
+                <td className=" align-content-center w-25">
                   <Form.Control
                     size="lg"
                     type="number"
@@ -212,14 +212,14 @@ const TimesheetCheckout: React.FC<Props> = ({ timesheets, client }) => {
                     disabled={!checkedItems[timesheet.id]}
                   />
                 </td>
-                <td className=" align-content-center">
+                <td className="align-content-center">
                   <Form.Check
                     type="switch"
                     checked={checkedItems[timesheet.id] || false}
                     onChange={() => handleCheckboxChange(timesheet.id)}
                   />
                 </td>
-                <td>
+                <td className="align-content-center">
                   <Button
                     variant="outline-dark"
                     onClick={() => {

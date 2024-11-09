@@ -18,6 +18,7 @@ const DashboardOptions: React.FC<DashboardOptionsProps> = ({ setStatus }) => {
     <div className="mt-5 d-flex justify-content-between">
       <div>
         <Button
+          size="lg"
           variant={currentStatus == "TIMESHEETS" ? "outline-success" : "light"}
           onClick={() => {
             setStatus("TIMESHEETS");
@@ -28,6 +29,7 @@ const DashboardOptions: React.FC<DashboardOptionsProps> = ({ setStatus }) => {
           🕒 TIMESHEETS
         </Button>
         <Button
+          size="lg"
           variant={currentStatus == "CLIENTS" ? "outline-success" : "light"}
           onClick={() => {
             setlocalStatus("CLIENTS");

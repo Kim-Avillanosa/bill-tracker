@@ -5,6 +5,7 @@ import { Table, Container, Button, Spinner, Alert } from "react-bootstrap";
 import ClientForm from "./ClientForm";
 import DeleteButton from "@/shared/components/layout/DeleteButton";
 import toast from "react-hot-toast";
+import { FaPencil } from "react-icons/fa6";
 
 const ClientTable: React.FC = () => {
   const { getClientList, deleteClient } = useClient();
@@ -94,30 +95,29 @@ const ClientTable: React.FC = () => {
               <td>{client.hours_per_day}</td>
               <td>{client.category}</td>
               <td>
-                <Button
-                  onClick={() => {
-                    openModal({
-                      size: "lg",
-
-                      title: "Update client information",
-                      content: (
-                        <ClientForm initialData={client} isUpdate={true} />
-                      ),
-                    });
-                  }}
-                  size="sm"
-                  variant="outline-dark"
-                  className="m-1"
-                >
-                  Edit
-                </Button>
-                <DeleteButton
-                  onDelete={() => {
-                    if (client.id) {
-                      handleDeleteClient(client.id);
-                    }
-                  }}
-                />
+                <div className="d-flex gap-1 float-end">
+                  <Button
+                    onClick={() => {
+                      openModal({
+                        size: "lg",
+                        title: "Update client information",
+                        content: (
+                          <ClientForm initialData={client} isUpdate={true} />
+                        ),
+                      });
+                    }}
+                    variant="outline-dark"
+                  >
+                    <FaPencil />
+                  </Button>
+                  <DeleteButton
+                    onDelete={() => {
+                      if (client.id) {
+                        handleDeleteClient(client.id);
+                      }
+                    }}
+                  />
+                </div>
               </td>
             </tr>
           ))}
