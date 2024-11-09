@@ -17,9 +17,7 @@ const ModalProvider: React.FC = () => {
       <Modal.Header closeButton>
         <Modal.Title>{properties?.title ?? ""}</Modal.Title>
       </Modal.Header>
-      <Modal.Body className="pt-5">
-        {properties?.content ?? ""}
-      </Modal.Body>
+      <Modal.Body className="pt-5">{properties?.content ?? ""}</Modal.Body>
     </Modal>
   );
 };

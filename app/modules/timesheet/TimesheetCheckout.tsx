@@ -15,6 +15,7 @@ import useInvoice from "@/services/useInvoice";
 import toast from "react-hot-toast";
 import CurrencyConverterLabel from "@/shared/components/layout/CurrencyConverterLabel";
 import { safeJsonParse } from "@/lib/safeJsonParse";
+import { FaCheck } from "react-icons/fa";
 
 interface Props {
   timesheets: Models.Timesheet[];
@@ -117,10 +118,12 @@ const TimesheetCheckout: React.FC<Props> = ({ timesheets, client }) => {
   };
 
   return (
-    <Container >
-      <Card className="mb-3">
+    <Container className="mb-5">
+      <Card className="mb-3" bg="light">
         <Card.Body>
-          <Card.Title as="h5">Rate Information</Card.Title>
+          <Card.Title as="h1">
+            <strong>Rate Information</strong>
+          </Card.Title>
           <Card.Text>
             <div className="d-flex ">
               <span>
@@ -243,9 +246,10 @@ const TimesheetCheckout: React.FC<Props> = ({ timesheets, client }) => {
           })}
         </tbody>
       </Table>
-      <Row className="mt-3">
+      <Row className="my-3">
         <Col className="text-end">
           <Button
+            size="lg"
             variant="success"
             onClick={handleGenerate} // Use the handleGenerate function here
           >

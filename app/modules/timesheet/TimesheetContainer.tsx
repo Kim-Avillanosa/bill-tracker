@@ -21,13 +21,18 @@ const TimesheetContainer: React.FC = () => {
   const { openModal, dismiss } = useModalStore();
 
   return (
-    <div className="mt-5">
+    <div className="mt-5 gap-5">
       <Container>
         <Row>
-          <Col>
+          <Col xs={8} xl={6}>
+            <ClientSelect onChange={(id) => setClientId(id)} />
+          </Col>
+
+          <Col xs={4} xl={6}>
             <Button
+              variant="dark"
+              className="w-100"
               hidden={!clientId}
-              variant="outline-dark"
               onClick={() => {
                 openModal({
                   size: "lg",
@@ -46,10 +51,9 @@ const TimesheetContainer: React.FC = () => {
               📅 New Timesheet entry
             </Button>
           </Col>
-          <Col xs={"auto"}>
-            <ClientSelect onChange={(id) => setClientId(id)} />
-          </Col>
-          <Col xs={"auto"}>
+        </Row>
+        <Row>
+          <Col>
             <DateRangePicker
               onChange={(start, end) =>
                 setRange({

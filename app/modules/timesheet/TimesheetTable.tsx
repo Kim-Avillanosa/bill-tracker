@@ -103,124 +103,127 @@ const TimesheetTable: React.FC<Props> = ({ clientId, startDate, endDate }) => {
 
   return (
     <Container>
-      <div
-        style={{
-          maxHeight: "400px", // Set your desired height
-          overflowY: "auto", // Enable vertical scrolling
-        }}
-      >
-        <Table striped bordered>
-          <thead
+      <Row className="my-3">
+        <Col />
+        <Col xs={"auto"}>
+          <div className="float-end">
+            <Button
+              className="ml-3"
+              hidden={!clientId}
+              variant="dark"
+              size="lg"
+              onClick={() => {
+                openModal({
+                  size: "lg",
+                  title: `Preparing invoice for: ${currentClient.name}`,
+                  content: (
+                    <TimesheetCheckout
+                      client={currentClient}
+                      timesheets={timesheets}
+                    />
+                  ),
+                });
+              }}
+            >
+              🏷️ Prepare invoice
+            </Button>
+          </div>
+        </Col>
+      </Row>
+      <Row>
+        <Col>
+          <div
             style={{
-              position: "sticky",
-              top: 0,
-              padding: 0,
-              backgroundColor: "#fff",
-              zIndex: 0,
+              maxHeight: "1000px", // Set your desired height
+              overflowY: "auto", // Enable vertical scrolling
             }}
           >
-            <tr>
-              <th className="border border-gray-300 p-2">ID</th>
-              <th className="border border-gray-300 p-2">Client Name</th>
-              <th className="border border-gray-300 p-2">Summary</th>
-              <th className="border border-gray-300 p-2">Entry Date</th>
-              <th className="border border-gray-300 p-2">Tags</th>
-              <th className="border border-gray-300 p-2">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {timesheets.map((timesheet) => {
-              const parsable = safeJsonParse<string[]>(timesheet.tags);
-              return (
-                <tr key={timesheet.id}>
-                  <td className="border border-gray-300 p-2">{timesheet.id}</td>
-                  <td className="border border-gray-300 p-2">
-                    {timesheet.client.name}
-                    <Badge className="ms-1">{timesheet.client.code}</Badge>
-                  </td>
-                  <td className="border border-gray-300 p-2">
-                    {timesheet.summary}
-                  </td>
-                  <td className="border border-gray-300 p-2">
-                    {new Date(timesheet.entry_date).toDateString()}
-                  </td>
-                  <td className="border border-gray-300 p-2">
-                    {parsable?.map((tag, key) => (
-                      <Badge bg="dark" pill key={key} className="m-1">
-                        {tag}
-                      </Badge>
-                    ))}
-                  </td>
-
-                  <td className="border border-gray-300 p-2">
-                    <Button
-                      onClick={() => {
-                        openModal({
-                          size: "lg",
-                          title: "Update timesheet",
-                          content: (
-                            <TimesheetForm
-                              timesheet={timesheet}
-                              clientId={clientId}
-                              onSuccess={() => {
-                                fetchTimesheets();
-                                dismiss();
-                              }}
-                            />
-                          ),
-                        });
-                      }}
-                      size="sm"
-                      variant="outline-dark"
-                    >
-                      Edit
-                    </Button>
-                    <DeleteButton
-                      onDelete={() => {
-                        if (timesheet.id) {
-                          deleteTimesheet(timesheet.id).then(() => {
-                            fetchTimesheets();
-                          });
-                        }
-                      }}
-                    />
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </Table>
-      </div>
-
-      <Container>
-        <Row className="mt-3">
-          <Col />
-          <Col xs={"auto"}>
-            <div className="float-end">
-              <Button
-                className="ml-3"
-                hidden={!clientId}
-                variant="dark"
-                size="lg"
-                onClick={() => {
-                  openModal({
-                    size: "lg",
-                    title: `Preparing invoice for: ${currentClient.name}`,
-                    content: (
-                      <TimesheetCheckout
-                        client={currentClient}
-                        timesheets={timesheets}
-                      />
-                    ),
-                  });
+            <Table striped bordered>
+              <thead
+                style={{
+                  position: "sticky",
+                  top: 0,
+                  padding: 0,
+                  backgroundColor: "#fff",
+                  zIndex: 0,
                 }}
               >
-                🏷️ Prepare invoice
-              </Button>
-            </div>
-          </Col>
-        </Row>
-      </Container>
+                <tr>
+                  <th className="border border-gray-300 ">ID</th>
+                  <th className="border border-gray-300 ">Client Name</th>
+                  <th className="border border-gray-300 ">Summary</th>
+                  <th className="border border-gray-300 ">Entry Date</th>
+                  <th className="border border-gray-300 ">Tags</th>
+                  <th className="border border-gray-300 ">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {timesheets.map((timesheet) => {
+                  const parsable = safeJsonParse<string[]>(timesheet.tags);
+                  return (
+                    <tr key={timesheet.id}>
+                      <td className="border border-gray-300 ">
+                        {timesheet.id}
+                      </td>
+                      <td className="border border-gray-300 ">
+                        {timesheet.client.name}
+                        <Badge className="ms-1">{timesheet.client.code}</Badge>
+                      </td>
+                      <td className="border border-gray-300 ">
+                        {timesheet.summary}
+                      </td>
+                      <td className="border border-gray-300 ">
+                        {new Date(timesheet.entry_date).toDateString()}
+                      </td>
+                      <td className="border border-gray-300 ">
+                        {parsable?.map((tag, key) => (
+                          <Badge bg="dark" pill key={key} className="m-1">
+                            {tag}
+                          </Badge>
+                        ))}
+                      </td>
+
+                      <td className="border border-gray-300 ">
+                        <Button
+                          onClick={() => {
+                            openModal({
+                              size: "lg",
+                              title: "Update timesheet",
+                              content: (
+                                <TimesheetForm
+                                  timesheet={timesheet}
+                                  clientId={clientId}
+                                  onSuccess={() => {
+                                    fetchTimesheets();
+                                    dismiss();
+                                  }}
+                                />
+                              ),
+                            });
+                          }}
+                          size="sm"
+                          variant="outline-dark"
+                        >
+                          Edit
+                        </Button>
+                        <DeleteButton
+                          onDelete={() => {
+                            if (timesheet.id) {
+                              deleteTimesheet(timesheet.id).then(() => {
+                                fetchTimesheets();
+                              });
+                            }
+                          }}
+                        />
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </Table>
+          </div>
+        </Col>
+      </Row>
     </Container>
   );
 };

@@ -8,6 +8,7 @@ import {
   FormControl,
   Button,
   Spinner,
+  Container,
 } from "react-bootstrap";
 import useTimesheets from "@/services/useTimesheets";
 import TagInput from "@/shared/components/layout/TagInput";
@@ -87,75 +88,77 @@ const TimesheetForm: React.FC<TimesheetFormProps> = ({
   }, []); // Depend on timesheet to reload data when it changes
 
   return (
-    <Form
-      onSubmit={formik.handleSubmit}
-      className="p-4 bg-white rounded shadow-md"
-    >
-      <FormGroup className="mb-3">
-        <FormLabel>Summary</FormLabel>
-        <FormControl
-          as="textarea"
-          rows={4}
-          {...formik.getFieldProps("summary")}
-          isInvalid={formik.touched.summary && !!formik.errors.summary}
-        />
-        {formik.touched.summary && formik.errors.summary && (
-          <div className="text-danger">{formik.errors.summary}</div>
-        )}
-      </FormGroup>
-
-      <FormGroup className="mb-3">
-        <FormLabel>Entry Date</FormLabel>
-        <FormControl
-          type="date"
-          {...formik.getFieldProps("entryDate")}
-          isInvalid={formik.touched.entryDate && !!formik.errors.entryDate}
-        />
-        {formik.touched.entryDate && formik.errors.entryDate && (
-          <div className="text-danger">{formik.errors.entryDate}</div>
-        )}
-      </FormGroup>
-
-      <FormGroup className="mb-3">
-        <FormLabel>Tags</FormLabel>
-        <TagInput
-          tags={formik.values.tags} // Pass the current tags as a prop
-          onChange={(tags) => {
-            formik.setFieldValue("tags", tags); // Update the tags using setFieldValue
-          }}
-        />
-        {formik.touched.tags && formik.errors.tags && (
-          <div className="text-danger">
-            {Array.isArray(formik.errors.tags)
-              ? formik.errors.tags.join(", ") // Join if it's an array
-              : formik.errors.tags}
-          </div>
-        )}
-      </FormGroup>
-      <Button
-        variant="success"
-        type="submit"
-        disabled={loading}
-        className="w-100" // This class makes the button full-width
+    <Container>
+      <Form
+        onSubmit={formik.handleSubmit}
+        className="p-4 bg-white rounded shadow-md"
       >
-        {loading ? (
-          <>
-            <Spinner
-              as="span"
-              animation="border"
-              size="sm"
-              role="status"
-              aria-hidden="true"
-            />{" "}
-            Saving...
-          </>
-        ) : timesheet ? (
-          "Update Timesheet"
-        ) : (
-          "Add Timesheet"
-        )}
-      </Button>
-    </Form>
+        <FormGroup className="mb-3">
+          <FormLabel>Summary</FormLabel>
+          <FormControl
+            as="textarea"
+            rows={4}
+            {...formik.getFieldProps("summary")}
+            isInvalid={formik.touched.summary && !!formik.errors.summary}
+          />
+          {formik.touched.summary && formik.errors.summary && (
+            <div className="text-danger">{formik.errors.summary}</div>
+          )}
+        </FormGroup>
+
+        <FormGroup className="mb-3">
+          <FormLabel>Entry Date</FormLabel>
+          <FormControl
+            type="date"
+            {...formik.getFieldProps("entryDate")}
+            isInvalid={formik.touched.entryDate && !!formik.errors.entryDate}
+          />
+          {formik.touched.entryDate && formik.errors.entryDate && (
+            <div className="text-danger">{formik.errors.entryDate}</div>
+          )}
+        </FormGroup>
+
+        <FormGroup className="mb-3">
+          <FormLabel>Tags</FormLabel>
+          <TagInput
+            tags={formik.values.tags} // Pass the current tags as a prop
+            onChange={(tags) => {
+              formik.setFieldValue("tags", tags); // Update the tags using setFieldValue
+            }}
+          />
+          {formik.touched.tags && formik.errors.tags && (
+            <div className="text-danger">
+              {Array.isArray(formik.errors.tags)
+                ? formik.errors.tags.join(", ") // Join if it's an array
+                : formik.errors.tags}
+            </div>
+          )}
+        </FormGroup>
+        <Button
+          variant="success"
+          type="submit"
+          disabled={loading}
+          className="w-100" // This class makes the button full-width
+        >
+          {loading ? (
+            <>
+              <Spinner
+                as="span"
+                animation="border"
+                size="sm"
+                role="status"
+                aria-hidden="true"
+              />{" "}
+              Saving...
+            </>
+          ) : timesheet ? (
+            "Update Timesheet"
+          ) : (
+            "Add Timesheet"
+          )}
+        </Button>
+      </Form>
+    </Container>
   );
 };
 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Form, Row, Col } from "react-bootstrap";
+import { Form, Row, Col, Container, InputGroup } from "react-bootstrap";
 import DatePicker from "react-datepicker";
 
 interface Props {
@@ -37,42 +37,39 @@ const DateRangePicker: React.FC<Props> = ({ onChange }) => {
   };
 
   return (
-    <Form>
-      <Form.Group controlId="dateRange">
-        <Row className="float-right">
-          <Col className="align-content-center" xs={"auto"}>
-            <Form.Label>
-              <strong>Entry date: </strong>
-            </Form.Label>
-          </Col>
-          <Col xs="auto">
-            <DatePicker
-              selected={startDate}
-              onChange={handleStartDateChange}
-              selectsStart
-              startDate={startDate}
-              endDate={endDate}
-              dateFormat="yyyy/MM/dd"
-              placeholderText="Start Date"
-              className="form-control float-right"
-            />
-          </Col>
-          <Col xs="auto">
-            <DatePicker
-              selected={endDate}
-              onChange={handleEndDateChange}
-              selectsEnd
-              startDate={startDate}
-              endDate={endDate}
-              minDate={startDate}
-              dateFormat="yyyy/MM/dd"
-              placeholderText="End Date"
-              className="form-control"
-            />
-          </Col>
-        </Row>
-      </Form.Group>
-    </Form>
+    <Row className="mt-3">
+      <Col xs={12} xl={"auto"}>
+        <InputGroup>
+          <InputGroup.Text>Start date</InputGroup.Text>
+          <DatePicker
+            className=" form-control"
+            selected={startDate}
+            onChange={handleStartDateChange}
+            selectsStart
+            startDate={startDate}
+            endDate={endDate}
+            dateFormat="yyyy/MM/dd"
+            placeholderText="Start Date"
+          />
+        </InputGroup>
+      </Col>
+      <Col xs={12} xl={6}>
+        <InputGroup>
+          <InputGroup.Text>End date</InputGroup.Text>
+          <DatePicker
+            className="form-control"
+            selected={endDate}
+            onChange={handleEndDateChange}
+            selectsEnd
+            startDate={startDate}
+            endDate={endDate}
+            minDate={startDate}
+            dateFormat="yyyy/MM/dd"
+            placeholderText="End Date"
+          />
+        </InputGroup>
+      </Col>
+    </Row>
   );
 };
 
