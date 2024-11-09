@@ -14,6 +14,7 @@ services:
     volumes:
       - mysql_data:/var/lib/mysql
       - ./mysql-initdb.d:/docker-entrypoint-initdb.d
+    restart: always  # Ensures the container restarts automatically
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
@@ -26,6 +27,7 @@ services:
       - "8080:80"
     depends_on:
       - mysql
+    restart: always  # Optional, if you want phpMyAdmin to also restart automatically
 
 networks:
   default:
