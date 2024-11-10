@@ -3,11 +3,20 @@ import { ReactNode } from "react";
 
 interface AppModalProps {
   size: "sm" | "lg" | "xl";
+  fullscreen?:
+    | true
+    | string
+    | "sm-down"
+    | "md-down"
+    | "lg-down"
+    | "xl-down"
+    | "xxl-down";
   content?: ReactNode;
   title: string;
 }
 
 const defaultProps: AppModalProps = {
+  fullscreen: undefined,
   size: "lg",
   content: "no content",
   title: "no title",
@@ -15,6 +24,14 @@ const defaultProps: AppModalProps = {
 
 interface ModalStoreProps {
   size: "sm" | "lg" | "xl";
+  fullscreen?:
+    | true
+    | string
+    | "sm-down"
+    | "md-down"
+    | "lg-down"
+    | "xl-down"
+    | "xxl-down";
   properties?: AppModalProps;
   isOpen: boolean;
   dismiss: () => void;
@@ -24,6 +41,7 @@ interface ModalStoreProps {
 const useModalStore = create<ModalStoreProps>()((set) => ({
   isOpen: false,
   size: "lg",
+  fullScreen: false,
   openModal: (options: AppModalProps = defaultProps) => {
     set({
       properties: options,

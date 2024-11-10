@@ -107,32 +107,10 @@ const TimesheetTable: React.FC<Props> = ({ clientId, startDate, endDate }) => {
   return (
     <Container>
       <Row className="my-3">
-        <Col xs={"auto"}>
-          <div className="float-end">
-            <Button
-              hidden={!clientId}
-              variant="outline-warning"
-              className="text-dark"
-              onClick={() => {
-                openModal({
-                  size: "lg",
-                  title: `Preparing invoice for: ${currentClient.name}`,
-                  content: (
-                    <TimesheetCheckout
-                      client={currentClient}
-                      timesheets={timesheets}
-                    />
-                  ),
-                });
-              }}
-            >
-              ✍️ Write my invoice
-            </Button>
-          </div>
-        </Col>
         <Col>
           <div className="float-end">
             <Button
+              size="lg"
               hidden={!clientId}
               variant="light"
               onClick={() => {
@@ -145,7 +123,28 @@ const TimesheetTable: React.FC<Props> = ({ clientId, startDate, endDate }) => {
                 });
               }}
             >
-              <FaPencilAlt /> Update client information
+              Update client information
+            </Button>
+            <Button
+              hidden={!clientId}
+              variant="outline-warning"
+              size="lg"
+              className="text-dark ms-3"
+              onClick={() => {
+                openModal({
+                  fullscreen: true,
+                  size: "lg",
+                  title: `Preparing invoice for: ${currentClient.name}`,
+                  content: (
+                    <TimesheetCheckout
+                      client={currentClient}
+                      timesheets={timesheets}
+                    />
+                  ),
+                });
+              }}
+            >
+              ✍️ Write my invoice
             </Button>
           </div>
         </Col>
