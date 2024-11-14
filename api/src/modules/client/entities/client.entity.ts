@@ -25,61 +25,55 @@ export class Client {
   id?: number;
 
   @Column({
-    default: "", nullable: false, transformer: new EncryptionTransformer({
-      key: 'e41c966f21f9e1577802463f8924e6a3fe3e9751f201304213b2f845d8841d61',
-      algorithm: 'aes-256-cbc',
+    default: "",
+    nullable: false,
+    transformer: new EncryptionTransformer({
+      key: "e41c966f21f9e1577802463f8924e6a3fe3e9751f201304213b2f845d8841d61",
+      algorithm: "aes-256-cbc",
       ivLength: 16,
-      iv: 'ff5ac19190424b1d88f9419ef949ae56',
+      iv: "ff5ac19190424b1d88f9419ef949ae56",
     }),
   })
   email: string;
 
   @Column({
-    default: "", nullable: false, transformer: new EncryptionTransformer({
-      key: 'e41c966f21f9e1577802463f8924e6a3fe3e9751f201304213b2f845d8841d61',
-      algorithm: 'aes-256-cbc',
+    default: "",
+    nullable: false,
+    transformer: new EncryptionTransformer({
+      key: "e41c966f21f9e1577802463f8924e6a3fe3e9751f201304213b2f845d8841d61",
+      algorithm: "aes-256-cbc",
       ivLength: 16,
-      iv: 'ff5ac19190424b1d88f9419ef949ae56',
+      iv: "ff5ac19190424b1d88f9419ef949ae56",
     }),
   })
   name: string;
 
   @Column({
-    default: "", nullable: false, transformer: new EncryptionTransformer({
-      key: 'e41c966f21f9e1577802463f8924e6a3fe3e9751f201304213b2f845d8841d61',
-      algorithm: 'aes-256-cbc',
-      ivLength: 16,
-      iv: 'ff5ac19190424b1d88f9419ef949ae56',
-    }),
+    default: "",
+    nullable: false,
   })
   symbol: string;
 
   @Column({
-    default: "USD", nullable: false, transformer: new EncryptionTransformer({
-      key: 'e41c966f21f9e1577802463f8924e6a3fe3e9751f201304213b2f845d8841d61',
-      algorithm: 'aes-256-cbc',
-      ivLength: 16,
-      iv: 'ff5ac19190424b1d88f9419ef949ae56',
-    }),
+    default: "USD",
+    nullable: false,
   })
   current_currency_code: string;
 
   @Column({
-    default: "PHP", nullable: false, transformer: new EncryptionTransformer({
-      key: 'e41c966f21f9e1577802463f8924e6a3fe3e9751f201304213b2f845d8841d61',
-      algorithm: 'aes-256-cbc',
-      ivLength: 16,
-      iv: 'ff5ac19190424b1d88f9419ef949ae56',
-    }),
+    default: "PHP",
+    nullable: false,
   })
   convert_currency_code: string;
 
   @Column({
-    default: "", nullable: false, transformer: new EncryptionTransformer({
-      key: 'e41c966f21f9e1577802463f8924e6a3fe3e9751f201304213b2f845d8841d61',
-      algorithm: 'aes-256-cbc',
+    default: "",
+    nullable: false,
+    transformer: new EncryptionTransformer({
+      key: "e41c966f21f9e1577802463f8924e6a3fe3e9751f201304213b2f845d8841d61",
+      algorithm: "aes-256-cbc",
       ivLength: 16,
-      iv: 'ff5ac19190424b1d88f9419ef949ae56',
+      iv: "ff5ac19190424b1d88f9419ef949ae56",
     }),
   })
   code: string;
@@ -91,11 +85,12 @@ export class Client {
   hours_per_day: number;
 
   @Column({
-    nullable: true, transformer: new EncryptionTransformer({
-      key: 'e41c966f21f9e1577802463f8924e6a3fe3e9751f201304213b2f845d8841d61',
-      algorithm: 'aes-256-cbc',
+    nullable: true,
+    transformer: new EncryptionTransformer({
+      key: "e41c966f21f9e1577802463f8924e6a3fe3e9751f201304213b2f845d8841d61",
+      algorithm: "aes-256-cbc",
       ivLength: 16,
-      iv: 'ff5ac19190424b1d88f9419ef949ae56',
+      iv: "ff5ac19190424b1d88f9419ef949ae56",
     }),
   })
   address: string;
