@@ -9,7 +9,7 @@ services:
     ports:
       - "3004:3004"
     environment:
-      - "NEXT_PUBLIC_API=http://srv596601.hstgr.cloud:3005"
+      - "NEXT_PUBLIC_API=http://localhost:3005"
     command: sh -c "npm run vps-deploy"
 networks:
   default:

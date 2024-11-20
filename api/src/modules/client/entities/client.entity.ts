@@ -1,4 +1,3 @@
-import { EncryptionTransformer } from "typeorm-encrypted";
 import { Invoice } from "../../invoice/entities/invoice.entity";
 import { TimeSheet } from "../../timesheet/entities/timesheet.entity";
 import { User } from "../../users/entities/user.entity";
@@ -24,58 +23,22 @@ export class Client {
   @PrimaryGeneratedColumn()
   id?: number;
 
-  @Column({
-    default: "",
-    nullable: false,
-    transformer: new EncryptionTransformer({
-      key: "e41c966f21f9e1577802463f8924e6a3fe3e9751f201304213b2f845d8841d61",
-      algorithm: "aes-256-cbc",
-      ivLength: 16,
-      iv: "ff5ac19190424b1d88f9419ef949ae56",
-    }),
-  })
+  @Column({ default: "", nullable: false })
   email: string;
 
-  @Column({
-    default: "",
-    nullable: false,
-    transformer: new EncryptionTransformer({
-      key: "e41c966f21f9e1577802463f8924e6a3fe3e9751f201304213b2f845d8841d61",
-      algorithm: "aes-256-cbc",
-      ivLength: 16,
-      iv: "ff5ac19190424b1d88f9419ef949ae56",
-    }),
-  })
+  @Column({ default: "", nullable: false })
   name: string;
 
-  @Column({
-    default: "",
-    nullable: false,
-  })
+  @Column({ default: "", nullable: false })
   symbol: string;
 
-  @Column({
-    default: "USD",
-    nullable: false,
-  })
+  @Column({ default: "USD", nullable: false })
   current_currency_code: string;
 
-  @Column({
-    default: "PHP",
-    nullable: false,
-  })
+  @Column({ default: "PHP", nullable: false })
   convert_currency_code: string;
 
-  @Column({
-    default: "",
-    nullable: false,
-    transformer: new EncryptionTransformer({
-      key: "e41c966f21f9e1577802463f8924e6a3fe3e9751f201304213b2f845d8841d61",
-      algorithm: "aes-256-cbc",
-      ivLength: 16,
-      iv: "ff5ac19190424b1d88f9419ef949ae56",
-    }),
-  })
+  @Column({ default: "", nullable: false })
   code: string;
 
   @Column({ type: "decimal", precision: 10, scale: 2 })
@@ -84,15 +47,7 @@ export class Client {
   @Column()
   hours_per_day: number;
 
-  @Column({
-    nullable: true,
-    transformer: new EncryptionTransformer({
-      key: "e41c966f21f9e1577802463f8924e6a3fe3e9751f201304213b2f845d8841d61",
-      algorithm: "aes-256-cbc",
-      ivLength: 16,
-      iv: "ff5ac19190424b1d88f9419ef949ae56",
-    }),
-  })
+  @Column({ nullable: true })
   address: string;
 
   @Column({ default: "#1e90ff", nullable: true })
