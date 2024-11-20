@@ -29,8 +29,12 @@ jobs:
               git pull origin main
             fi
 
-            # Deploy MYSQL
+            # Deploy MYSQL with environment variables
             cd /bill-tracker/mysql
+            export MYSQL_ROOT_PASSWORD="${{ secrets.MYSQL_ROOT_PASSWORD }}"
+            export MYSQL_DATABASE="${{ secrets.MYSQL_DATABASE }}"
+            export MYSQL_USER="${{ secrets.MYSQL_USER }}"
+            export MYSQL_PASSWORD="${{ secrets.MYSQL_PASSWORD }}"
             docker-compose down || true  # Ignore errors from down
             docker-compose up -d --build
 
@@ -38,7 +42,7 @@ jobs:
 
   deploy-api:
     runs-on: ubuntu-latest
-    needs : deploy-dependencies
+    needs: deploy-dependencies
     steps:
       - name: Checkout code
         uses: actions/checkout@v3 # Use a specific version
@@ -60,8 +64,10 @@ jobs:
               git pull origin main
             fi
 
-            # Deploy API
+            # Deploy API with environment variables
             cd /bill-tracker/api
+            export MYSQL_USER="${{ secrets.MYSQL_USER }}"
+            export MYSQL_PASSWORD="${{ secrets.MYSQL_PASSWORD }}"
             docker-compose down || true  # Ignore errors from down
             docker-compose up -d --build
           EOF
@@ -69,7 +75,6 @@ jobs:
   deploy-app:
     runs-on: ubuntu-latest
     needs: deploy-api # Ensure this job runs after deploy-api
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v3 # Use a specific version
