@@ -2,10 +2,10 @@
 
 TIMESTAMP=$(date +"%F")  # Only include the date (YYYY-MM-DD)
 BACKUP_DIR="/backup"
-MYSQL_USER="user"
-MYSQL_PASSWORD="admin"
+MYSQL_USER=${MYSQL_USER}
+MYSQL_PASSWORD=${MYSQL_PASSWORD}
 MYSQL_HOST="88.222.245.88"
-MYSQL_DB="bill_tracker"
+MYSQL_DB=${MYSQL_DB}
 LOG_FILE="/backup.log"
 
 # Create the backup directory if it doesn't exist
