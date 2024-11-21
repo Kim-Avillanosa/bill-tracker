@@ -22,7 +22,8 @@ services:
     environment:
       PMA_HOST: mysql
       PMA_USER: ${MYSQL_USER}
-      PMA_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      PMA_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
     ports:
       - "8080:80"
     depends_on:
