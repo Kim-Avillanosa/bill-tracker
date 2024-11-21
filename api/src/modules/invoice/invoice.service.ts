@@ -320,8 +320,7 @@ export class InvoiceService {
       .font("Helvetica")
       .text(currentClient.name);
 
-    doc.fontSize(10).font("Helvetica").text(currentClient.address);
-    doc.fontSize(10).text(`Note: This is a monthly auto-generated invoice from ${user.name}, Software Developer. For any questions or assistance, please reach out to me directly at ${user.email}. Thank you for the ongoing collaboration!`);
+    doc.fontSize(12).font("Helvetica").text(currentClient.address);
 
     doc.moveDown();
 
@@ -355,6 +354,11 @@ export class InvoiceService {
     });
 
     doc.moveDown(3);
+
+    doc.fontSize(10).text(`Note: This is a monthly auto-generated invoice from ${user.name}. For any questions or assistance, please reach out to me directly at ${user.email}. Thank you for the ongoing collaboration!`);
+    
+    doc.moveDown(3);
+
 
     const totalAmount = workItems.reduce((sum, item) => {
       return sum + item.hours * currentClient.hourly_rate;
@@ -416,11 +420,11 @@ export class InvoiceService {
 
     doc.moveDown(3);
 
-    doc
-      .rect(0, doc.page.height - 120, doc.page.width, 120) // Rectangle from the bottom-left corner spanning the full width of the page
-      .fill(bannerColor); // Change to your desired footer color
+    // doc
+    //   .rect(0, doc.page.height - 120, doc.page.width, 120) // Rectangle from the bottom-left corner spanning the full width of the page
+    //   .fill(bannerColor); // Change to your desired footer color
 
-    doc.moveDown();
+    // doc.moveDown();
 
     doc.end();
 
