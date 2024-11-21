@@ -186,6 +186,7 @@ export class InvoiceService {
   }
 
   async generatePdfInvoice(invoiceId: number, host: string): Promise<string> {
+    const baseFont = "Helvetica"
     const invoice = await this.invoiceRepository.findOne({
       select: [
         "client",
@@ -289,20 +290,20 @@ export class InvoiceService {
 
     doc
       .fontSize(55)
-      .font("Helvetica-Bold")
+      .font(`${baseFont}-Bold`)
       .fillColor(headlineColor)
       .text(`INVOICE`, 20, 20, { align: "left" }); // Position within the header
 
     doc
       .fontSize(12)
       .fillColor(headlineColor)
-      .font("Helvetica-Bold")
+      .font(`${baseFont}-Bold`)
       .text(`Invoice #: ${invoice.invoiceNumber}`);
 
     doc
       .fontSize(12)
       .fillColor(headlineColor)
-      .font("Helvetica-Bold")
+      .font(`${baseFont}-Bold`)
       .text(`Date: ${formatDate(invoice.date)}`);
 
     doc.moveDown(3);
@@ -311,25 +312,25 @@ export class InvoiceService {
     doc
       .fontSize(18)
       .fillColor(textColor)
-      .font("Helvetica-Bold")
+      .font(`${baseFont}-Bold`)
       .text(`Billed to:`);
 
     doc
       .fontSize(14)
-      .font("Helvetica-Bold")
-      .font("Helvetica")
+      .font(`${baseFont}-Bold`)
+      .font(`${baseFont}`)
       .text(currentClient.name);
 
-    doc.fontSize(12).font("Helvetica").text(currentClient.address);
+    doc.fontSize(12).font(`${baseFont}`).text(currentClient.address);
 
     doc.moveDown();
 
     // Developer section
-    doc.fontSize(18).font("Helvetica-Bold").text(`From:`);
+    doc.fontSize(18).font(`${baseFont}-Bold`).text(`From:`);
 
-    doc.fontSize(14).font("Helvetica-Bold").font("Helvetica").text(user.name);
-    doc.fontSize(10).font("Helvetica").text(user.address);
-    doc.fontSize(10).font("Helvetica").text(user.email);
+    doc.fontSize(14).font(`${baseFont}-Bold`).font(`${baseFont}`).text(user.name);
+    doc.fontSize(10).font(`${baseFont}`).text(user.address);
+    doc.fontSize(10).font(`${baseFont}`).text(user.email);
 
     doc.moveDown(3);
 
@@ -355,8 +356,9 @@ export class InvoiceService {
 
     doc.moveDown(3);
 
-    doc.fontSize(10).text(`Note: This is a monthly auto-generated invoice from ${user.name}. For any questions or assistance, please reach out to me directly at ${user.email}. Thank you for the ongoing collaboration!`);
-    
+    doc.fontSize(10).font(`${baseFont}-Oblique`)
+    .text(`Note: This is a monthly auto-generated invoice from ${user.name}. For any questions or assistance, please reach out to me directly at ${user.email}. Thank you for the ongoing collaboration!`);
+
     doc.moveDown(3);
 
 
