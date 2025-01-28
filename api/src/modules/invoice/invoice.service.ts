@@ -28,7 +28,7 @@ export class InvoiceService {
     private invoiceRepository: Repository<Invoice>,
     @InjectRepository(WorkItem)
     private workItemRepository: Repository<WorkItem>,
-  ) { }
+  ) {}
 
   async releaseInvoice(id: number, referrenceNumber: string) {
     const invoice = await this.invoiceRepository.findOne({
@@ -42,6 +42,7 @@ export class InvoiceService {
         "workItems",
         "updatedAt",
         "client",
+        "referrenceNumber",
       ],
       relations: ["client", "workItems"],
       where: {
@@ -186,7 +187,7 @@ export class InvoiceService {
   }
 
   async generatePdfInvoice(invoiceId: number, host: string): Promise<string> {
-    const baseFont = "Helvetica"
+    const baseFont = "Helvetica";
     const invoice = await this.invoiceRepository.findOne({
       select: [
         "client",
@@ -328,7 +329,11 @@ export class InvoiceService {
     // Developer section
     doc.fontSize(18).font(`${baseFont}-Bold`).text(`From:`);
 
-    doc.fontSize(14).font(`${baseFont}-Bold`).font(`${baseFont}`).text(user.name);
+    doc
+      .fontSize(14)
+      .font(`${baseFont}-Bold`)
+      .font(`${baseFont}`)
+      .text(user.name);
     doc.fontSize(10).font(`${baseFont}`).text(user.address);
     doc.fontSize(10).font(`${baseFont}`).text(user.email);
 
@@ -356,11 +361,14 @@ export class InvoiceService {
 
     doc.moveDown(3);
 
-    doc.fontSize(10).font(`${baseFont}-Oblique`)
-    .text(`Note: This is a monthly auto-generated invoice from ${user.name}. For any questions or assistance, please reach out to me directly at ${user.email}. Thank you for the ongoing collaboration!`);
+    doc
+      .fontSize(10)
+      .font(`${baseFont}-Oblique`)
+      .text(
+        `Note: This is a monthly auto-generated invoice from ${user.name}. For any questions or assistance, please reach out to me directly at ${user.email}. Thank you for the ongoing collaboration!`,
+      );
 
     doc.moveDown(3);
-
 
     const totalAmount = workItems.reduce((sum, item) => {
       return sum + item.hours * currentClient.hourly_rate;
