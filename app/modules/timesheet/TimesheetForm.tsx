@@ -13,6 +13,7 @@ import {
 import useTimesheets from "@/services/useTimesheets";
 import TagInput from "@/shared/components/layout/TagInput";
 import { safeJsonParse } from "@/lib/safeJsonParse";
+import ChipsList from "./ChipList";
 
 interface TimesheetFormProps {
   clientId: number;

@@ -1,3 +1,4 @@
+import ChipsList from "@/modules/timesheet/ChipList";
 import React, { useState } from "react";
 import { InputGroup, FormControl, Badge, Button } from "react-bootstrap";
 import { FaTimes } from "react-icons/fa"; // Ensure you have react-icons installed
@@ -39,6 +40,7 @@ const TagInput: React.FC<TagInputProps> = ({ tags, onChange }) => {
           aria-label="Tag input"
           className="rounded"
         />
+
         <Button
           variant="light"
           onClick={handleClearAllTags}
@@ -48,7 +50,27 @@ const TagInput: React.FC<TagInputProps> = ({ tags, onChange }) => {
           Clear
         </Button>
       </InputGroup>
-      <div className="mt-2 d-flex flex-wrap">
+      <ChipsList
+        selectedChips={tags}
+        chips={[
+          "Attend huddle",
+          "Attend DEV meeting",
+          "Collaboration with",
+          "Code improvement",
+        ]}
+        onChipUnclick={(chip) => {
+          // const newTags = tags.filter((tag) => tag !== chip);
+          handleRemoveTag(chip);
+        }}
+        onChipClick={(chip) => {
+          if (!tags.includes(chip)) {
+            setInputValue(chip);
+            const newTags = [...tags, chip];
+            onChange(newTags);
+          }
+        }}
+      />
+      <div className="mt-2 d-flex flex-wrap b-1">
         {tags.map((tag, index) => (
           <Badge
             key={index}
@@ -61,7 +83,9 @@ const TagInput: React.FC<TagInputProps> = ({ tags, onChange }) => {
               size="sm"
               variant="light"
               className="ml-1 p-0"
-              onClick={() => handleRemoveTag(tag)}
+              onClick={() => {
+                handleRemoveTag(tag);
+              }}
               aria-label={`Remove ${tag}`}
             >
               <FaTimes />
