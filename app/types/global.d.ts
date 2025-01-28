@@ -1,6 +1,5 @@
 declare global {
   namespace Models {
-
     type Currency = {
       name: string;
       symbol: string;
@@ -8,7 +7,6 @@ declare global {
       currencySymbol: string; // Added currencySymbol property
     };
 
-    
     interface ApiBadRequest {
       message: string;
     }
@@ -89,19 +87,9 @@ declare global {
       workItems: WorkItem[];
       status: string;
       updatedAt: string; // Alternatively, you could use Date if you prefer
+      referrenceNumber: string;
     }
-    interface Invoice {
-      id: number;
-      note: string;
-      clientId: number;
-      client: Client;
-      invoiceNumber: string;
-      date: string; // Alternatively, you could use Date if you prefer
-      workItems: WorkItem[];
-      status: string;
-      updatedAt: string; // Alternatively, you could use Date if you prefer
-    }
-
+    
     interface Client {
       id: number;
       email: string;

@@ -50,7 +50,7 @@ const InvoiceSelect: React.FC<InvoiceSelectProps> = ({
 
   return (
     <Form.Group controlId="invoiceSelect">
-      <div className="d-flex">
+      <div className="flex d-flex">
         <Form.Select
           size="lg"
           defaultValue={selectedInvoiceId}
@@ -76,7 +76,7 @@ const InvoiceSelect: React.FC<InvoiceSelectProps> = ({
           ))}
         </Form.Select>
         <Button
-          size="lg"
+          size="sm"
           variant="dark"
           onClick={() => {
             loadInvoices();

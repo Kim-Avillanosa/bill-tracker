@@ -63,9 +63,7 @@ const InvoiceSelectionForm = () => {
             toast.promise(
               generateInvoice(selectedInvoiceId).then((p) => {
                 const result: FileResults = p.data;
-
                 dismiss();
-
                 openFileImmediately(result.invoice);
                 openFileImmediately(result.timesheet);
                 openModal({

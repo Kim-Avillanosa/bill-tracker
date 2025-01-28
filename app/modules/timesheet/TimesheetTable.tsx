@@ -180,9 +180,9 @@ const TimesheetTable: React.FC<Props> = ({ clientId, startDate, endDate }) => {
                   const parsable = safeJsonParse<string[]>(timesheet.tags);
                   return (
                     <tr key={timesheet.id}>
-                      <td className="border border-gray-300">
+                      <td className="border border-gray-300 w-25">
                         {timesheet.client.name}
-                        <Badge className="ms-1">{timesheet.client.code}</Badge>
+                        <Badge pill className="ms-1" bg="primary">{timesheet.client.code}</Badge>
                       </td>
                       <td className="border border-gray-300">
                         {timesheet.summary}
