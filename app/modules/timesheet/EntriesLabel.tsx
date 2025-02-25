@@ -33,7 +33,7 @@ const EntriesLabel: React.FC<EntriesLabelProps> = ({
     <Card className="text-center p-4">
       <Card.Body>
         <Card.Title className="display-4">{`${total_entries}/${totalDays}`}</Card.Title>
-        <ProgressBar now={progress} label={`${progress.toFixed(2)}%`} />
+        <ProgressBar striped now={progress} label={`${progress.toFixed(2)}%`} />
       </Card.Body>
     </Card>
   );
