@@ -108,11 +108,11 @@ const TimesheetTable: React.FC<Props> = ({ clientId, startDate, endDate }) => {
 
   return (
     <Container>
-      <Row>
+      {/* <Row>
         <Col>
           <InvoiceChecker startDate={startDate} endDate={endDate} />
         </Col>
-      </Row>
+      </Row> */}
       <Row className="my-3">
         <Col>
           <div>
