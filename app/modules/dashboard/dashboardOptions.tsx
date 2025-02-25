@@ -3,7 +3,7 @@ import useModalStore from "@/shared/store/useModal";
 import { useState } from "react";
 import InvoiceSelectionForm from "../invoice/InvoiceSelectionForm";
 
-type OfferStatuses = "TIMESHEETS" | "CLIENTS";
+type OfferStatuses = "TIMESHEETS" | "CLIENTS" | "EARNINGS";
 
 interface DashboardOptionsProps {
   setStatus: (status: OfferStatuses) => void;

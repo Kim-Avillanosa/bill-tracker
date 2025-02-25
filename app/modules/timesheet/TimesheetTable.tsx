@@ -18,6 +18,7 @@ import useClient from "@/services/useClient";
 import ClientForm from "../clients/ClientForm";
 import { FaPencil } from "react-icons/fa6";
 import { FaPencilAlt } from "react-icons/fa";
+import EntriesLabel from "./EntriesLabel";
 
 interface Props {
   clientId: number;
@@ -108,6 +109,14 @@ const TimesheetTable: React.FC<Props> = ({ clientId, startDate, endDate }) => {
     <Container>
       <Row className="my-3">
         <Col>
+          <EntriesLabel
+            total_entries={timesheets.length}
+            days_per_week={currentClient.days_per_week}
+          />
+        </Col>
+      </Row>
+      <Row className="my-3">
+        <Col>
           <div className="float-end">
             <Button
               size="lg"
@@ -149,6 +158,7 @@ const TimesheetTable: React.FC<Props> = ({ clientId, startDate, endDate }) => {
           </div>
         </Col>
       </Row>
+
       <Row>
         <Col>
           <div
@@ -182,7 +192,9 @@ const TimesheetTable: React.FC<Props> = ({ clientId, startDate, endDate }) => {
                     <tr key={timesheet.id}>
                       <td className="border border-gray-300 w-25">
                         {timesheet.client.name}
-                        <Badge pill className="ms-1" bg="primary">{timesheet.client.code}</Badge>
+                        <Badge pill className="ms-1" bg="primary">
+                          {timesheet.client.code}
+                        </Badge>
                       </td>
                       <td className="border border-gray-300">
                         {timesheet.summary}

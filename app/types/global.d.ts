@@ -59,6 +59,7 @@ declare global {
       code: string;
       hourly_rate: number;
       hours_per_day: number;
+      days_per_week: number;
       address: string;
       created_at: string; // Alternatively, you could use Date if you prefer
       updated_at: string; // Alternatively, you could use Date if you prefer
@@ -89,7 +90,7 @@ declare global {
       updatedAt: string; // Alternatively, you could use Date if you prefer
       referrenceNumber: string;
     }
-    
+
     interface Client {
       id: number;
       email: string;

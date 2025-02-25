@@ -4,7 +4,7 @@ import { useState } from "react";
 import ClientTable from "../clients/ClientTable";
 import TimesheetContainer from "../timesheet/TimesheetContainer";
 
-type OfferStatuses = "TIMESHEETS" | "CLIENTS" | "INVOICE";
+type OfferStatuses = "TIMESHEETS" | "CLIENTS" | "EARNINGS";
 
 const Dashboard: React.FC = () => {
   const [currentStatus, setStatus] = useState<OfferStatuses>("TIMESHEETS");
@@ -14,8 +14,8 @@ const Dashboard: React.FC = () => {
       case "TIMESHEETS":
         return <TimesheetContainer />;
 
-      case "INVOICE":
-        return <>Invoice</>;
+      case "EARNINGS":
+        return <>Earnings</>;
 
       case "CLIENTS":
         return <ClientTable />;

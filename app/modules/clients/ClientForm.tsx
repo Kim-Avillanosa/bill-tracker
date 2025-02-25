@@ -26,6 +26,7 @@ export type ClientFormType = {
   address: string;
   hourly_rate: number;
   hours_per_day: number;
+  days_per_week: number;
   category: "FULL_TIME" | "PART_TIME";
   banner_color: string;
   headline_color: string;
@@ -54,6 +55,7 @@ const ClientForm: React.FC<ClientFormProps> = ({
       address: initialData?.address || "",
       hourly_rate: initialData?.hourly_rate || 0,
       hours_per_day: initialData?.hours_per_day || 0,
+      days_per_week: initialData?.days_per_week || 0,
       category: initialData?.category ? "FULL_TIME" : "PART_TIME",
       banner_color: initialData?.banner_color || "",
       headline_color: initialData?.headline_color || "",
@@ -68,6 +70,7 @@ const ClientForm: React.FC<ClientFormProps> = ({
       address: Yup.string().required("Address is required"),
       hourly_rate: Yup.number().required("Hourly rate is required"),
       hours_per_day: Yup.number().required("Hours per day is required"),
+      days_per_week: Yup.number().required("Days per week is required"),
       category: Yup.string().required("Category is required"),
       banner_color: Yup.string().required("Banner color is required"),
       headline_color: Yup.string().required("Headline color is required"),
@@ -199,6 +202,25 @@ const ClientForm: React.FC<ClientFormProps> = ({
               />
               {formik.touched.hours_per_day && (
                 <div className="text-danger">{formik.errors.hours_per_day}</div>
+              )}
+            </Col>
+            <Col md={4}>
+              <FormLabel htmlFor="days_per_week">Days per week</FormLabel>
+              <FormControl
+                type="number"
+                name="days_per_week"
+                id="days_per_week"
+                placeholder="Enter hours per day"
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                value={formik.values.days_per_week}
+                isInvalid={
+                  formik.touched.days_per_week &&
+                  Boolean(formik.errors.days_per_week)
+                }
+              />
+              {formik.touched.days_per_week && (
+                <div className="text-danger">{formik.errors.days_per_week}</div>
               )}
             </Col>
           </Row>

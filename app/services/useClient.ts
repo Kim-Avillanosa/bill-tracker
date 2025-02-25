@@ -7,6 +7,7 @@ type ClientData = {
   address: string;
   hourly_rate: number;
   hours_per_day: number;
+  days_per_week: number;
   category: string;
   banner_color: string;
   headline_color: string;

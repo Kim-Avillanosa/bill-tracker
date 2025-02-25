@@ -27,6 +27,9 @@ export class ClientDto {
   hours_per_day: number;
 
   @ApiProperty({ required: true })
+  days_per_week: number;
+
+  @ApiProperty({ required: true })
   category: ClientCategory;
 
   @ApiProperty({ required: false })

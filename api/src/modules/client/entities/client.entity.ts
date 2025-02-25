@@ -47,6 +47,9 @@ export class Client {
   @Column()
   hours_per_day: number;
 
+  @Column({ default: 5 })
+  days_per_week: number;
+
   @Column({ nullable: true })
   address: string;
 
