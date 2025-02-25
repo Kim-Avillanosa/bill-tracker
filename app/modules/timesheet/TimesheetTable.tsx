@@ -19,6 +19,7 @@ import ClientForm from "../clients/ClientForm";
 import { FaPencil } from "react-icons/fa6";
 import { FaPencilAlt } from "react-icons/fa";
 import EntriesLabel from "./EntriesLabel";
+import InvoiceChecker from "../invoice/InvoiceChecker";
 
 interface Props {
   clientId: number;
@@ -107,16 +108,21 @@ const TimesheetTable: React.FC<Props> = ({ clientId, startDate, endDate }) => {
 
   return (
     <Container>
-      <Row className="my-3">
+      <Row>
         <Col>
-          <EntriesLabel
-            total_entries={timesheets.length}
-            days_per_week={currentClient.days_per_week}
-          />
+          <InvoiceChecker startDate={startDate} endDate={endDate} />
         </Col>
       </Row>
       <Row className="my-3">
         <Col>
+          <div>
+            <EntriesLabel
+              start_date={startDate}
+              end_date={endDate}
+              total_entries={timesheets.length}
+              days_per_week={currentClient.days_per_week}
+            />
+          </div>
           <div className="float-end">
             <Button
               size="lg"
