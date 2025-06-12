@@ -77,7 +77,7 @@ export class InvoiceService {
     });
   }
 
-  async findAll() {
+  async findByUser(userId: number) {
     return await this.invoiceRepository.find({
       select: [
         "client",
@@ -92,6 +92,11 @@ export class InvoiceService {
         "client",
       ],
       relations: ["client", "workItems"],
+      where: {
+        client: {
+          userId: userId,
+        },
+      },
       order: {
         id: "DESC",
       },

@@ -27,7 +27,6 @@ const TimesheetContainer: React.FC = () => {
           <Col xs={8} xl={6}>
             <ClientSelect onChange={(id) => setClientId(id)} />
           </Col>
-
           <Col xs={4} xl={6}>
             <Button
               size="lg"

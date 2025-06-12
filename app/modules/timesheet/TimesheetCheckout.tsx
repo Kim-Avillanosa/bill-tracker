@@ -9,6 +9,7 @@ import {
   Table,
   Card,
   Badge,
+  Accordion,
 } from "react-bootstrap";
 import TimesheetForm from "./TimesheetForm";
 import useInvoice from "@/services/useInvoice";
@@ -20,6 +21,15 @@ import { FaCheck } from "react-icons/fa";
 interface Props {
   timesheets: Models.Timesheet[];
   client: Models.Client;
+}
+
+interface InvoiceItem {
+  id: number;
+  title: string;
+  description: string;
+  entryDate: string;
+  amount: number | "";
+  hours: number;
 }
 
 const TimesheetCheckout: React.FC<Props> = ({ timesheets, client }) => {
@@ -36,6 +46,17 @@ const TimesheetCheckout: React.FC<Props> = ({ timesheets, client }) => {
 
   const [total, setTotal] = useState<number>(0);
   const [totalHours, setTotalHours] = useState<number>(0);
+  const [extraItems, setExtraItems] = useState<InvoiceItem[]>([]);
+
+  // Compute totals
+  const extraTotalAmount = extraItems.reduce(
+    (sum, item) => sum + (typeof item.amount === "number" ? item.amount : 0),
+    0
+  );
+  const extraTotalHours = extraItems.reduce((sum, item) => sum + item.hours, 0);
+
+  const overallHours = totalHours + extraTotalHours;
+  const overallAmount = total + extraTotalAmount;
 
   const [checkedItems, setCheckedItems] = useState<{ [key: number]: boolean }>(
     timesheets.reduce((acc, timesheet) => {
@@ -101,12 +122,22 @@ const TimesheetCheckout: React.FC<Props> = ({ timesheets, client }) => {
         hours: hours[timesheet.id] || 0,
       }));
 
+    const extraGeneratedData: Models.WorkItem[] = extraItems.map(
+      (timesheet) => ({
+        entry_date: timesheet.entryDate,
+        title: timesheet.title,
+        description: timesheet.description,
+        tags: [timesheet.description],
+        hours: timesheet.hours,
+      })
+    );
+
     toast.promise(
       writeInvoice({
         clientId: client.id,
         date: new Date().toDateString(),
         note: "",
-        workItems: generatedData,
+        workItems: generatedData.concat(extraGeneratedData),
       }),
       {
         loading: "Please wait we are generating your invoice",
@@ -116,6 +147,43 @@ const TimesheetCheckout: React.FC<Props> = ({ timesheets, client }) => {
     );
     dismiss();
   };
+
+  const updateItem = (
+    id: number,
+    field: keyof InvoiceItem,
+    value: string | number | ""
+  ) => {
+    setExtraItems((prev) =>
+      prev.map((item) => {
+        if (item.id !== id) return item;
+        const updated = { ...item, [field]: value } as InvoiceItem;
+        if (field === "amount") {
+          const amt =
+            typeof updated.amount === "number"
+              ? updated.amount
+              : parseFloat(updated.amount) || 0;
+          updated.hours = client.hourly_rate > 0 ? amt / client.hourly_rate : 0;
+        }
+        return updated;
+      })
+    );
+  };
+
+  const addItem = () =>
+    setExtraItems((prev) => [
+      ...prev,
+      {
+        id: Date.now(),
+        title: "",
+        description: "",
+        entryDate: new Date().toISOString().split("T")[0],
+        amount: "",
+        hours: 0,
+      },
+    ]);
+
+  const removeItem = (id: number) =>
+    setExtraItems((prev) => prev.filter((i) => i.id !== id));
 
   return (
     <Container className="mb-5">
@@ -145,7 +213,7 @@ const TimesheetCheckout: React.FC<Props> = ({ timesheets, client }) => {
           <Card.Text>
             <div className="d-flex">
               <span>Total Hours Worked:</span>
-              <strong className="ms-1">{totalHours}</strong>
+              <strong className="ms-1">{overallHours.toFixed(2)}</strong>
             </div>
           </Card.Text>
           <hr />
@@ -155,11 +223,13 @@ const TimesheetCheckout: React.FC<Props> = ({ timesheets, client }) => {
             <div className="d-flex justify-content-end">
               <h4>
                 <strong>
-                  {`${client.current_currency_code} ${total.toFixed(2)}`}
+                  {`${client.current_currency_code} ${overallAmount.toFixed(
+                    2
+                  )}`}
                 </strong>
                 <strong>
                   <CurrencyConverterLabel
-                    initialAmount={total}
+                    initialAmount={overallAmount}
                     initialCurrency={client.current_currency_code}
                     targetCurrency={client.convert_currency_code}
                   />
@@ -169,7 +239,7 @@ const TimesheetCheckout: React.FC<Props> = ({ timesheets, client }) => {
           </Card.Text>
         </Card.Body>
       </Card>
-      <Table className="mt-5" bordered hover>
+      <Table className="my-5" bordered hover>
         <thead>
           <tr>
             <th>Date</th>
@@ -246,6 +316,125 @@ const TimesheetCheckout: React.FC<Props> = ({ timesheets, client }) => {
           })}
         </tbody>
       </Table>
+
+      <Row>
+        <Col>
+          <Accordion flush className="mb-5">
+            <Accordion.Header>Additional fees</Accordion.Header>
+            <Accordion.Body>
+              <Container>
+                <Row>
+                  <Col>
+                    <Button
+                      variant="dark"
+                      className="float-end"
+                      onClick={addItem}
+                    >
+                      ➕ Add entry
+                    </Button>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col>
+                    <Table responsive striped bordered>
+                      <colgroup>
+                        <col style={{ width: "20%" }} />
+                        <col style={{ width: "25%" }} />
+                        <col style={{ width: "15%" }} />
+                        <col style={{ width: "20%" }} />
+                        <col style={{ width: "15%" }} />
+                        <col />
+                      </colgroup>
+                      <thead>
+                        <tr>
+                          <th>Title</th>
+                          <th>Description</th>
+                          <th>Entry Date</th>
+                          <th>Amount</th>
+                          <th>Equivalent Hours</th>
+                          <th />
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {extraItems.map((item) => (
+                          <tr key={item.id}>
+                            <td>
+                              <Form.Control
+                                type="text"
+                                value={item.title}
+                                onChange={(e) =>
+                                  updateItem(item.id, "title", e.target.value)
+                                }
+                                placeholder="Title"
+                              />
+                            </td>
+                            <td>
+                              <Form.Control
+                                as="textarea"
+                                rows={2}
+                                value={item.description}
+                                onChange={(e) =>
+                                  updateItem(
+                                    item.id,
+                                    "description",
+                                    e.target.value
+                                  )
+                                }
+                                placeholder="Description"
+                              />
+                            </td>
+                            <td>
+                              <Form.Control
+                                type="date"
+                                value={item.entryDate}
+                                onChange={(e) =>
+                                  updateItem(
+                                    item.id,
+                                    "entryDate",
+                                    e.target.value
+                                  )
+                                }
+                              />
+                            </td>
+                            <td>
+                              <Form.Control
+                                type="number"
+                                value={item.amount}
+                                onChange={(e) =>
+                                  updateItem(
+                                    item.id,
+                                    "amount",
+                                    e.target.value === ""
+                                      ? ""
+                                      : parseFloat(e.target.value)
+                                  )
+                                }
+                                placeholder="Amount"
+                                min={0}
+                              />
+                            </td>
+                            <td>{item.hours.toFixed(2)}</td>
+                            <td>
+                              <Button
+                                variant="danger"
+                                size="sm"
+                                onClick={() => removeItem(item.id)}
+                              >
+                                Remove
+                              </Button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </Table>
+                  </Col>
+                </Row>
+              </Container>
+            </Accordion.Body>
+          </Accordion>
+        </Col>
+      </Row>
+
       <Row className="my-3">
         <Col className="text-end">
           <Button

@@ -30,9 +30,9 @@ export class InvoiceController {
     private readonly jwtUtil: JWTUtil,
   ) {}
 
-  @Get("list")
-  findAll() {
-    return this.invoiceService.findAll();
+  @Get("list/:userId")
+  findAll(@Param("userId") userId: number) {
+    return this.invoiceService.findByUser(userId);
   }
 
   @Get(":id")

@@ -1,4 +1,5 @@
 import useInvoice from "@/services/useInvoice";
+import useAuthStore from "@/shared/store/useAuthStore";
 import React, { useCallback, useEffect, useState } from "react";
 import { Badge, Button, Form } from "react-bootstrap";
 
@@ -14,25 +15,27 @@ const InvoiceSelect: React.FC<InvoiceSelectProps> = ({
   selectedInvoiceId,
 }) => {
   const { fetchInvoices } = useInvoice();
+  const { currentAccount } = useAuthStore();
   const [invoices, setInvoices] = useState<Models.Invoice[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
   const loadInvoices = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await fetchInvoices();
-      setInvoices(response.data);
+      if (currentAccount?.id) {
+        const response = await fetchInvoices(currentAccount?.id);
+        setInvoices(response.data);
+      }
     } catch (error) {
       console.error("Error fetching invoices:", error);
     } finally {
       setLoading(false);
     }
-  }, [fetchInvoices]);
+  }, [fetchInvoices, currentAccount]);
 
   useEffect(() => {
     loadInvoices();
   }, []);
-
 
   // Function to determine badge color based on status
   const getStatusVariant = (status: string) => {
@@ -70,8 +73,8 @@ const InvoiceSelect: React.FC<InvoiceSelectProps> = ({
               <Badge bg={getStatusVariant(invoice.status)}>
                 {invoice.status.toUpperCase()}
               </Badge>{" "}
-              | {new Date(invoice.date).toDateString()} | {invoice.client.name} -{" "}
-              {invoice.invoiceNumber}
+              | {new Date(invoice.date).toDateString()} | {invoice.client.name}{" "}
+              - {invoice.invoiceNumber}
             </option>
           ))}
         </Form.Select>

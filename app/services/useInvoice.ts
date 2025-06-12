@@ -3,8 +3,8 @@ import useAxiosClient from "./useAxiosClient";
 const useInvoice = () => {
   const { client } = useAxiosClient();
 
-  const fetchInvoices = () => {
-    return client.get<Models.Invoice[]>("/invoice/list");
+  const fetchInvoices = (userId: number) => {
+    return client.get<Models.Invoice[]>(`/invoice/list/${userId}`);
   };
 
   const fetchInvoiceById = (invoiceId: number) => {
