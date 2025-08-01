@@ -3,20 +3,31 @@ import useModalStore from "@/shared/store/useModal";
 import { useState } from "react";
 import InvoiceSelectionForm from "../invoice/InvoiceSelectionForm";
 
-type OfferStatuses = "TIMESHEETS" | "CLIENTS" | "EARNINGS" | "CHARTS";
+type OfferStatuses = "TIMESHEETS" | "CLIENTS" | "CHARTS";
 
 interface DashboardOptionsProps {
   setStatus: (status: OfferStatuses) => void;
 }
 
 const DashboardOptions: React.FC<DashboardOptionsProps> = ({ setStatus }) => {
-  const [currentStatus, setlocalStatus] = useState<OfferStatuses>("TIMESHEETS");
+  const [currentStatus, setlocalStatus] = useState<OfferStatuses>("CHARTS");
 
   const { openModal } = useModalStore();
 
   return (
     <div className="mt-5 d-flex justify-content-between">
       <div>
+        <Button
+          size="lg"
+          variant={currentStatus == "CHARTS" ? "outline-success" : "light"}
+          onClick={() => {
+            setlocalStatus("CHARTS");
+            setStatus("CHARTS");
+          }}
+          className="m-1"
+        >
+          📊 CHARTS
+        </Button>
         <Button
           size="lg"
           variant={currentStatus == "TIMESHEETS" ? "outline-success" : "light"}
@@ -38,17 +49,6 @@ const DashboardOptions: React.FC<DashboardOptionsProps> = ({ setStatus }) => {
           className="m-1"
         >
           👨‍💼 CLIENTS
-        </Button>
-        <Button
-          size="lg"
-          variant={currentStatus == "CHARTS" ? "outline-success" : "light"}
-          onClick={() => {
-            setlocalStatus("CHARTS");
-            setStatus("CHARTS");
-          }}
-          className="m-1"
-        >
-          📊 CHARTS
         </Button>
       </div>
       <div>

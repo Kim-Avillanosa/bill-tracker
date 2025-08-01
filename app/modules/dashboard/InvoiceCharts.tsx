@@ -31,13 +31,32 @@ const COLORS = [
   "#b71540",
 ];
 
+const status = {
+  pending: "#fa983a",
+  released: "#1e90ff",
+  received: "#2ed573",
+};
+
 const InvoiceCharts: React.FC = () => {
   const { currentAccount: user } = useAuthStore();
   const { client: axiosClient } = useAxiosClient();
   const [selectedClient, setSelectedClient] = useState<string>("");
-  const [clients, setClients] = useState<Array<{ id: number; name: string, banner_color : string }>>(
-    []
-  );
+  const [currentClient, setCurrentClient] = useState<{
+    id: number;
+    name: string;
+    banner_color: string;
+    convert_currency_code: string;
+    current_currency_code: string;
+  }>();
+  const [clients, setClients] = useState<
+    Array<{
+      id: number;
+      name: string;
+      banner_color: string;
+      convert_currency_code: string;
+      current_currency_code: string;
+    }>
+  >([]);
   const [selectedClientId, setSelectedClientId] = useState<number | undefined>(
     undefined
   );
@@ -55,14 +74,20 @@ const InvoiceCharts: React.FC = () => {
         console.error("Failed to fetch clients:", err);
       }
     };
-    fetchClients();
-  }, [user?.id, axiosClient]);
+
+    if (user?.id) {
+      fetchClients();
+    }
+  }, [user?.id]);
 
   const handleClientChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const clientId = event.target.value;
     setSelectedClient(clientId);
     if (clientId) {
       setSelectedClientId(parseInt(clientId));
+      setCurrentClient(
+        clients.find((client) => client.id === parseInt(clientId))
+      );
     } else {
       setSelectedClientId(undefined);
     }
@@ -206,7 +231,7 @@ const InvoiceCharts: React.FC = () => {
       </Row>
 
       {/* Currency Breakdown */}
-      <Row>
+      <Row className="mb-4">
         <Col>
           <Card>
             <Card.Header>
@@ -247,26 +272,52 @@ const InvoiceCharts: React.FC = () => {
             </Card.Header>
             <Card.Body>
               <ResponsiveContainer width="100%" height={400}>
-                <ComposedChart data={chartData.monthlyIncome}>
+                <ComposedChart
+                  data={chartData.monthlyIncome}
+                  margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+                >
                   <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="month" />
-                  <YAxis />
+                  <XAxis dataKey="month" axisLine={false} tickLine={false} />
+                  <YAxis axisLine={false} tickLine={false} />
                   <Tooltip
                     formatter={(value: number, name: string) => [
                       `${value.toLocaleString()}`,
                       name.charAt(0).toUpperCase() + name.slice(1),
                     ]}
                     labelFormatter={(label) => `Month: ${label}`}
+                    contentStyle={{
+                      backgroundColor: "rgba(255, 255, 255, 0.95)",
+                      border: "1px solid #ccc",
+                      borderRadius: "4px",
+                    }}
                   />
                   <Legend />
-                  <Bar dataKey="pending" fill="#FFC107" stackId="a" />
-                  <Bar dataKey="released" fill="#17A2B8" stackId="a" />
-                  <Bar dataKey="received" fill="#28A745" stackId="a" />
-                  <Line
-                    type="monotone"
-                    dataKey="total"
-                    stroke="#FF6B6B"
-                    strokeWidth={2}
+                  <Bar
+                    dataKey="pending"
+                    stackId="a"
+                    fill="#ffd32a"
+                    radius={[4, 4, 0, 0]}
+                    isAnimationActive={true}
+                    animationDuration={1000}
+                    animationBegin={0}
+                  />
+                  <Bar
+                    dataKey="released"
+                    stackId="a"
+                    fill="#3742fa"
+                    radius={[4, 4, 0, 0]}
+                    isAnimationActive={true}
+                    animationDuration={1000}
+                    animationBegin={200}
+                  />
+                  <Bar
+                    dataKey="received"
+                    stackId="a"
+                    fill="#1dd1a1"
+                    radius={[4, 4, 0, 0]}
+                    isAnimationActive={true}
+                    animationDuration={1000}
+                    animationBegin={400}
                   />
                 </ComposedChart>
               </ResponsiveContainer>
@@ -321,20 +372,49 @@ const InvoiceCharts: React.FC = () => {
             </Card.Header>
             <Card.Body>
               <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={chartData.statusSummary}>
+                <BarChart
+                  data={chartData.statusSummary}
+                  margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+                >
                   <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="currency" />
-                  <YAxis />
+                  <XAxis dataKey="currency" axisLine={false} tickLine={false} />
+                  <YAxis axisLine={false} tickLine={false} />
                   <Tooltip
                     formatter={(value: number, name: string, props: any) => [
                       formatCurrency(value, props.payload.symbol),
                       name.charAt(0).toUpperCase() + name.slice(1),
                     ]}
+                    contentStyle={{
+                      backgroundColor: "rgba(255, 255, 255, 0.95)",
+                      border: "1px solid #ccc",
+                      borderRadius: "4px",
+                    }}
                   />
                   <Legend />
-                  <Bar dataKey="pending" fill="#FFC107" />
-                  <Bar dataKey="released" fill="#17A2B8" />
-                  <Bar dataKey="received" fill="#28A745" />
+                  <Bar
+                    dataKey="pending"
+                    fill="#ffd32a"
+                    radius={[4, 4, 0, 0]}
+                    isAnimationActive={true}
+                    animationDuration={1000}
+                    animationBegin={0}
+                  />
+                  <Bar
+                    dataKey="released"
+                    fill="#3742fa"
+                    radius={[4, 4, 0, 0]}
+                    isAnimationActive={true}
+                    animationDuration={1000}
+                    animationBegin={200}
+                  />
+                  <Bar
+                    dataKey="received"
+                    fill="#1dd1a1"
+                    radius={[4, 4, 0, 0]}
+                    isAnimationActive={true}
+                    animationDuration={1000}
+                    animationBegin={400}
+                  />
                 </BarChart>
               </ResponsiveContainer>
             </Card.Body>

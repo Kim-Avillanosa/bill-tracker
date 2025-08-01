@@ -15,9 +15,6 @@ const Dashboard: React.FC = () => {
       case "TIMESHEETS":
         return <TimesheetContainer />;
 
-      case "EARNINGS":
-        return <>Earnings</>;
-
       case "CLIENTS":
         return <ClientTable />;
 
