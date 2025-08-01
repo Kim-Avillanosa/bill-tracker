@@ -3,8 +3,9 @@ import DashboardOptions from "./dashboardOptions";
 import { useState } from "react";
 import ClientTable from "../clients/ClientTable";
 import TimesheetContainer from "../timesheet/TimesheetContainer";
+import InvoiceCharts from "./InvoiceCharts";
 
-type OfferStatuses = "TIMESHEETS" | "CLIENTS" | "EARNINGS";
+type OfferStatuses = "TIMESHEETS" | "CLIENTS" | "EARNINGS" | "CHARTS";
 
 const Dashboard: React.FC = () => {
   const [currentStatus, setStatus] = useState<OfferStatuses>("TIMESHEETS");
@@ -19,6 +20,9 @@ const Dashboard: React.FC = () => {
 
       case "CLIENTS":
         return <ClientTable />;
+
+      case "CHARTS":
+        return <InvoiceCharts />;
 
       default:
         return <>Timesheets</>;

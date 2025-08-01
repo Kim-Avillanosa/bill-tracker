@@ -191,6 +191,235 @@ export class InvoiceService {
     return this.invoiceRepository.save(payload);
   }
 
+  async getChartSummary(userId: number, clientId?: number) {
+    // Use raw SQL queries for better performance with database-level aggregation
+    const manager = this.invoiceRepository.manager;
+
+    // Base query parameters - always filter by userId
+    const baseParams = [userId];
+    
+    // Build additional WHERE conditions for client filtering
+    let clientFilter = '';
+    if (clientId) {
+      clientFilter = 'AND c.id = ?';
+      baseParams.push(clientId);
+    }
+
+    // 1. Monthly income aggregation with raw SQL
+    const monthlyIncomeQuery = `
+      SELECT 
+        DATE_FORMAT(i.date, '%Y-%m') as month,
+        c.current_currency_code as currency,
+        c.symbol,
+        i.status,
+        SUM(w.hours * w.rate) as amount,
+        SUM(w.hours) as hours
+      FROM invoice i
+      INNER JOIN client c ON i.clientId = c.id
+      INNER JOIN work_item w ON w.invoiceId = i.id
+      WHERE c.userId = ? ${clientFilter}
+      GROUP BY DATE_FORMAT(i.date, '%Y-%m'), c.current_currency_code, c.symbol, i.status
+      ORDER BY month ASC
+    `;
+
+    // 2. Client income aggregation
+    const clientIncomeQuery = `
+      SELECT 
+        c.name as client,
+        c.current_currency_code as currency,
+        c.symbol,
+        i.status,
+        SUM(w.hours * w.rate) as amount,
+        SUM(w.hours) as hours
+      FROM invoice i
+      INNER JOIN client c ON i.clientId = c.id
+      INNER JOIN work_item w ON w.invoiceId = i.id
+      WHERE c.userId = ? ${clientFilter}
+      GROUP BY c.id, c.name, c.current_currency_code, c.symbol, i.status
+      ORDER BY c.name
+    `;
+
+    // 3. Status summary by currency
+    const statusSummaryQuery = `
+      SELECT 
+        c.current_currency_code as currency,
+        c.symbol,
+        i.status,
+        SUM(w.hours * w.rate) as amount
+      FROM invoice i
+      INNER JOIN client c ON i.clientId = c.id
+      INNER JOIN work_item w ON w.invoiceId = i.id
+      WHERE c.userId = ? ${clientFilter}
+      GROUP BY c.current_currency_code, c.symbol, i.status
+    `;
+
+    // 4. Currency breakdown
+    const currencyBreakdownQuery = `
+      SELECT 
+        c.current_currency_code as currency,
+        c.symbol,
+        SUM(w.hours * w.rate) as totalAmount,
+        COUNT(DISTINCT i.id) as invoiceCount
+      FROM invoice i
+      INNER JOIN client c ON i.clientId = c.id
+      INNER JOIN work_item w ON w.invoiceId = i.id
+      WHERE c.userId = ? ${clientFilter}
+      GROUP BY c.current_currency_code, c.symbol
+    `;
+
+    // 5. Total hours (simple and fast)
+    const totalHoursQuery = `
+      SELECT SUM(w.hours) as totalHours
+      FROM invoice i
+      INNER JOIN client c ON i.clientId = c.id
+      INNER JOIN work_item w ON w.invoiceId = i.id
+      WHERE c.userId = ? ${clientFilter}
+    `;
+
+    // 6. Recent invoices (optimized - only last 10)
+    const recentInvoicesQuery = `
+      SELECT 
+        i.id,
+        i.date,
+        c.name as client,
+        i.status,
+        c.current_currency_code as currency,
+        c.symbol,
+        SUM(w.hours * w.rate) as amount,
+        SUM(w.hours) as hours
+      FROM invoice i
+      INNER JOIN client c ON i.clientId = c.id
+      INNER JOIN work_item w ON w.invoiceId = i.id
+      WHERE c.userId = ? ${clientFilter}
+      GROUP BY i.id, i.date, c.name, i.status, c.current_currency_code, c.symbol
+      ORDER BY i.date DESC, i.id DESC
+      LIMIT 10
+    `;
+
+    // 7. Total invoice count
+    const totalInvoicesQuery = `
+      SELECT COUNT(DISTINCT i.id) as totalInvoices
+      FROM invoice i
+      INNER JOIN client c ON i.clientId = c.id
+      WHERE c.userId = ? ${clientFilter}
+    `;
+
+    // Execute all queries in parallel for maximum performance
+    const [
+      monthlyIncomeRaw,
+      clientIncomeRaw,
+      statusSummaryRaw,
+      currencyBreakdownRaw,
+      totalHoursRaw,
+      recentInvoicesRaw,
+      totalInvoicesRaw
+    ] = await Promise.all([
+      manager.query(monthlyIncomeQuery, baseParams),
+      manager.query(clientIncomeQuery, baseParams),
+      manager.query(statusSummaryQuery, baseParams),
+      manager.query(currencyBreakdownQuery, baseParams),
+      manager.query(totalHoursQuery, baseParams),
+      manager.query(recentInvoicesQuery, baseParams),
+      manager.query(totalInvoicesQuery, baseParams)
+    ]);
+
+    // Transform monthly income data
+    const monthlyIncomeMap = {};
+    monthlyIncomeRaw.forEach(row => {
+      const key = `${row.month}-${row.currency}`;
+      if (!monthlyIncomeMap[key]) {
+        monthlyIncomeMap[key] = {
+          month: row.month,
+          currency: row.currency,
+          symbol: row.symbol,
+          pending: 0,
+          released: 0,
+          received: 0,
+          total: 0,
+          hours: 0
+        };
+      }
+      const amount = parseFloat(row.amount);
+      const hours = parseInt(row.hours);
+      monthlyIncomeMap[key][row.status] = amount;
+      monthlyIncomeMap[key].total += amount;
+      monthlyIncomeMap[key].hours += hours;
+    });
+
+    // Transform client income data
+    const clientIncomeMap = {};
+    clientIncomeRaw.forEach(row => {
+      const key = `${row.client}-${row.currency}`;
+      if (!clientIncomeMap[key]) {
+        clientIncomeMap[key] = {
+          client: row.client,
+          currency: row.currency,
+          symbol: row.symbol,
+          pending: 0,
+          released: 0,
+          received: 0,
+          total: 0,
+          hours: 0
+        };
+      }
+      const amount = parseFloat(row.amount);
+      const hours = parseInt(row.hours);
+      clientIncomeMap[key][row.status] = amount;
+      clientIncomeMap[key].total += amount;
+      clientIncomeMap[key].hours += hours;
+    });
+
+    // Transform status summary data
+    const statusSummaryMap = {};
+    statusSummaryRaw.forEach(row => {
+      if (!statusSummaryMap[row.currency]) {
+        statusSummaryMap[row.currency] = {
+          currency: row.currency,
+          symbol: row.symbol,
+          pending: 0,
+          released: 0,
+          received: 0,
+          total: 0
+        };
+      }
+      const amount = parseFloat(row.amount);
+      statusSummaryMap[row.currency][row.status] = amount;
+      statusSummaryMap[row.currency].total += amount;
+    });
+
+    // Transform currency breakdown (already aggregated)
+    const currencyBreakdown = currencyBreakdownRaw.map(row => ({
+      currency: row.currency,
+      symbol: row.symbol,
+      totalAmount: parseFloat(row.totalAmount),
+      invoiceCount: parseInt(row.invoiceCount)
+    }));
+
+    // Transform recent invoices (already aggregated)
+    const recentInvoices = recentInvoicesRaw.map(row => ({
+      id: row.id,
+      date: row.date,
+      client: row.client,
+      status: row.status,
+      amount: parseFloat(row.amount),
+      currency: row.currency,
+      symbol: row.symbol,
+      hours: parseInt(row.hours)
+    }));
+
+    return {
+      monthlyIncome: Object.values(monthlyIncomeMap),
+      clientIncome: Object.values(clientIncomeMap),
+      statusSummary: Object.values(statusSummaryMap),
+      currencyBreakdown,
+      totalHours: parseInt(totalHoursRaw[0]?.totalHours) || 0,
+      recentInvoices,
+      totalInvoices: parseInt(totalInvoicesRaw[0]?.totalInvoices) || 0,
+      note: "Amounts are shown in their original currencies. Optimized with database-level aggregation.",
+      filteredBy: clientId ? { clientId } : { userId }
+    };
+  }
+
   async generatePdfInvoice(invoiceId: number, host: string): Promise<string> {
     const baseFont = "Helvetica";
     const invoice = await this.invoiceRepository.findOne({

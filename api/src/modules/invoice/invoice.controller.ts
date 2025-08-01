@@ -35,6 +35,14 @@ export class InvoiceController {
     return this.invoiceService.findByUser(userId);
   }
 
+  @Get("chart-summary/:userId")
+  getChartSummary(
+    @Param("userId") userId: number,
+    @Query("clientId") clientId?: number
+  ) {
+    return this.invoiceService.getChartSummary(userId, clientId);
+  }
+
   @Get(":id")
   findOne(@Param("id") id: number) {
     return this.invoiceService.findOne(id);
