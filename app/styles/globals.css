@@ -1,12 +1,12 @@
 :root {
-	--bg: #f5f7fb;
-	--surface: #ffffff;
-	--surface-muted: #f8fafc;
-	--border: #e5eaf2;
-	--text-primary: #0f172a;
-	--text-secondary: #475569;
-	--brand: #2563eb;
-	--brand-soft: #eff6ff;
+	--bg: #f7f3ea;
+	--surface: #fffdf8;
+	--surface-muted: #f5efe2;
+	--border: #e4dbc9;
+	--text-primary: #2f261a;
+	--text-secondary: #6a5a46;
+	--brand: #6a5a46;
+	--brand-soft: #efe7d8;
 	--success-soft: #ecfdf3;
 	--warning-soft: #fffbeb;
 	--danger-soft: #fef2f2;
@@ -18,7 +18,7 @@
 
 html,
 body {
-	background: var(--bg);
+	background-color: var(--bg);
 	color: var(--text-primary);
 }
 
@@ -32,6 +32,11 @@ body {
 		Arial,
 		sans-serif;
 	line-height: 1.45;
+	background-image:
+		linear-gradient(rgba(47, 38, 26, 0.035) 1px, transparent 1px),
+		linear-gradient(90deg, rgba(47, 38, 26, 0.035) 1px, transparent 1px);
+	background-size: 28px 28px;
+	background-position: -1px -1px;
 }
 
 .page-shell {
@@ -180,14 +185,75 @@ body {
 
 .btn {
 	border-radius: 10px;
+	font-weight: 600;
+}
+
+.btn-primary,
+.btn-success,
+.btn-info,
+.btn-warning,
+.btn-danger,
+.btn-dark {
+	background: #6a5a46;
+	border-color: #6a5a46;
+	color: #fffdf8;
+}
+
+.btn-primary:hover,
+.btn-success:hover,
+.btn-info:hover,
+.btn-warning:hover,
+.btn-danger:hover,
+.btn-dark:hover {
+	background: #574835;
+	border-color: #574835;
+	color: #fffdf8;
+}
+
+.btn-light,
+.btn-secondary {
+	background: #f5efe2;
+	border-color: #ddd1bb;
+	color: #2f261a;
+}
+
+.btn-light:hover,
+.btn-secondary:hover {
+	background: #ede3d1;
+	border-color: #cfbea2;
+	color: #2f261a;
+}
+
+.btn-outline-primary,
+.btn-outline-success,
+.btn-outline-info,
+.btn-outline-warning,
+.btn-outline-danger,
+.btn-outline-dark,
+.btn-outline-secondary {
+	border-color: #bca98a;
+	color: #5b4b37;
+	background: transparent;
+}
+
+.btn-outline-primary:hover,
+.btn-outline-success:hover,
+.btn-outline-info:hover,
+.btn-outline-warning:hover,
+.btn-outline-danger:hover,
+.btn-outline-dark:hover,
+.btn-outline-secondary:hover {
+	background: #5b4b37;
+	border-color: #5b4b37;
+	color: #fffdf8;
 }
 
 .btn-outline-dark {
-	border-color: #cbd5e1;
-	color: #0f172a;
+	border-color: #bca98a;
+	color: #5b4b37;
 }
 
 .btn-outline-dark:hover {
-	background: #0f172a;
-	border-color: #0f172a;
+	background: #5b4b37;
+	border-color: #5b4b37;
 }
