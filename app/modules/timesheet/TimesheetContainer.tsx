@@ -44,42 +44,49 @@ const TimesheetContainer: React.FC = () => {
     <div className="my-2 gap-4">
       <Container>
         <div className="toolbar-surface">
-        <Row>
-          <Col xs={12} xl={6}>
+        <Row className="align-items-center g-2">
+          <Col xs={12} md={5} xl={4}>
             <ClientSelect onChange={(id) => setClientId(id)} />
           </Col>
-          <Col xs={12} xl={6} className="d-flex gap-2 flex-wrap mt-2 mt-xl-0">
-            <Button
-              size="lg"
-              variant="dark"
-              className="flex-grow-1 flex-xl-grow-0"
-              hidden={!clientId}
-              onClick={() => {
-                openModal({
-                  size: "lg",
-                  title: "New timesheet entry",
-                  content: (
-                    <TimesheetForm
-                      clientId={clientId}
-                      onSuccess={() => {
-                        dismiss();
-                      }}
-                    />
-                  ),
-                });
-              }}
+          <Col xs={12} md={7} xl={8}>
+            <div
+              className="d-flex flex-nowrap gap-2 align-items-stretch"
+              style={{ minHeight: "38px" }}
             >
-              📅 New Timesheet entry
-            </Button>
-            <Button
-              size="lg"
-              variant="outline-dark"
-              className="flex-grow-1 flex-xl-grow-0"
-              hidden={!clientId}
-              onClick={handleCustomInvoice}
-            >
-              🎫 Custom invoice
-            </Button>
+              <Button
+                size="lg"
+                variant="dark"
+                className="flex-fill"
+                style={{ minWidth: 0 }}
+                hidden={!clientId}
+                onClick={() => {
+                  openModal({
+                    size: "lg",
+                    title: "New timesheet entry",
+                    content: (
+                      <TimesheetForm
+                        clientId={clientId}
+                        onSuccess={() => {
+                          dismiss();
+                        }}
+                      />
+                    ),
+                  });
+                }}
+              >
+                📅 New Timesheet entry
+              </Button>
+              <Button
+                size="lg"
+                variant="outline-dark"
+                className="flex-fill"
+                style={{ minWidth: 0 }}
+                hidden={!clientId}
+                onClick={handleCustomInvoice}
+              >
+                🎫 Custom invoice
+              </Button>
+            </div>
           </Col>
         </Row>
         <Row hidden={!clientId}>
