@@ -5,10 +5,12 @@ import DateRangePicker from "@/shared/components/layout/DateRangePicker";
 import { Button, Col, Container, Row } from "react-bootstrap";
 import useModalStore from "@/shared/store/useModal";
 import TimesheetForm from "./TimesheetForm";
+import useClient from "@/services/useClient";
+import InvoiceHoursTableForm from "../invoice/InvoiceHoursTableForm";
 
 interface DateRangeProps {
-  startDate: string | null; // Changed to Date | null
-  endDate: string | null; // Changed to Date | null
+  startDate: string | null;
+  endDate: string | null;
 }
 
 const TimesheetContainer: React.FC = () => {
@@ -19,20 +21,38 @@ const TimesheetContainer: React.FC = () => {
   });
 
   const { openModal, dismiss } = useModalStore();
+  const { getClient } = useClient();
+
+  const handleCustomInvoice = async () => {
+    if (!clientId) return;
+    try {
+      const response = await getClient(clientId);
+      const client = response.data;
+      if (!client) return;
+      openModal({
+        fullscreen: true,
+        size: "xl",
+        title: `Custom invoice – ${client.name}`,
+        content: <InvoiceHoursTableForm client={client} />,
+      });
+    } catch {
+      // ignore
+    }
+  };
 
   return (
     <div className="my-2 gap-4">
       <Container>
         <div className="toolbar-surface">
         <Row>
-          <Col xs={8} xl={6}>
+          <Col xs={12} xl={6}>
             <ClientSelect onChange={(id) => setClientId(id)} />
           </Col>
-          <Col xs={4} xl={6}>
+          <Col xs={12} xl={6} className="d-flex gap-2 flex-wrap mt-2 mt-xl-0">
             <Button
               size="lg"
               variant="dark"
-              className="w-100"
+              className="flex-grow-1 flex-xl-grow-0"
               hidden={!clientId}
               onClick={() => {
                 openModal({
@@ -50,6 +70,15 @@ const TimesheetContainer: React.FC = () => {
               }}
             >
               📅 New Timesheet entry
+            </Button>
+            <Button
+              size="lg"
+              variant="outline-dark"
+              className="flex-grow-1 flex-xl-grow-0"
+              hidden={!clientId}
+              onClick={handleCustomInvoice}
+            >
+              🎫 Custom invoice
             </Button>
           </Col>
         </Row>

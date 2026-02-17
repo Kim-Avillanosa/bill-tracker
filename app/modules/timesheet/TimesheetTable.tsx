@@ -19,7 +19,6 @@ import ClientForm from "../clients/ClientForm";
 import { FaPencil } from "react-icons/fa6";
 import { FaPencilAlt } from "react-icons/fa";
 import EntriesLabel from "./EntriesLabel";
-import InvoiceHoursTableForm from "../invoice/InvoiceHoursTableForm";
 
 interface Props {
   clientId: number;
@@ -160,22 +159,6 @@ const TimesheetTable: React.FC<Props> = ({ clientId, startDate, endDate }) => {
               }}
             >
               ✍️ Write my invoice
-            </Button>
-            <Button
-              size="lg"
-              hidden={!clientId}
-              variant="outline-success"
-              className="text-dark ms-3"
-              onClick={() => {
-                openModal({
-                  fullscreen: true,
-                  size: "xl",
-                  title: `Custom invoice ${currentClient.name}`,
-                  content: <InvoiceHoursTableForm client={currentClient} />,
-                });
-              }}
-            >
-              🎫 Custom invoice
             </Button>
           </div>
             </div>
