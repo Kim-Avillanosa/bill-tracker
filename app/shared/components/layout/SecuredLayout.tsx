@@ -28,16 +28,18 @@ const SecuredLayout: React.FC<SecuredLayoutProps> = ({ children }) => {
           fetch(resource, init).then((res) => res.json()),
       }}
     >
-      <AppBar />
-      <Container className="mt-3 mb-4">
-        <ErrorBoundary>
-          <OnLoadAnimator>
-            <div className="page-shell">{children}</div>
-          </OnLoadAnimator>
-        </ErrorBoundary>
-      </Container>
-      <AuthVerify />
-      <ModalProvider />
+      <div className="min-vh-100 d-flex flex-column">
+        <AppBar />
+        <Container className="mt-3 mb-4 flex-grow-1 d-flex">
+          <ErrorBoundary>
+            <OnLoadAnimator>
+              <div className="page-shell w-100 h-100">{children}</div>
+            </OnLoadAnimator>
+          </ErrorBoundary>
+        </Container>
+        <AuthVerify />
+        <ModalProvider />
+      </div>
     </SWRConfig>
   );
 };

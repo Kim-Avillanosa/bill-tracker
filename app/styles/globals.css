@@ -45,6 +45,7 @@ body {
 	border-radius: var(--radius-lg);
 	box-shadow: var(--shadow-sm);
 	padding: 1.25rem;
+	min-height: calc(100vh - 124px);
 }
 
 .section-title {
