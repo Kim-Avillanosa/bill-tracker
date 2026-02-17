@@ -8,9 +8,20 @@ import { InvoiceController } from "./invoice.controller";
 import { InvoiceService } from "./invoice.service";
 import { Client } from "../client/entities/client.entity";
 import { WorkItem } from "./entities/workitem.entity";
+import { InvoiceSequence } from "./entities/invoice-sequence.entity";
+import { AuditLog } from "../audit/entities/audit-log.entity";
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User, Invoice, Client, WorkItem])],
+  imports: [
+    TypeOrmModule.forFeature([
+      User,
+      Invoice,
+      Client,
+      WorkItem,
+      InvoiceSequence,
+      AuditLog,
+    ]),
+  ],
   controllers: [InvoiceController],
   providers: [InvoiceService, JWTUtil],
 })

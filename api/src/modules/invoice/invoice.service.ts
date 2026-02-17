@@ -7,29 +7,17 @@ import { Client } from "../client/entities/client.entity";
 import { Invoice } from "./entities/invoice.entity";
 import { User } from "../users/entities/user.entity";
 import { WorkItem } from "./entities/workitem.entity";
+import { AuditLog } from "../audit/entities/audit-log.entity";
 import * as fs from "fs";
 const PDFDocument = require("pdfkit-table");
-import { formatDate } from "src/lib/formatDate";
+import { formatDate } from "../../lib/formatDate";
+import { roundCurrency, toNumber } from "../../lib/currency";
 import * as path from "path";
 
 type FileResults = {
   invoice: string;
   timesheet: string;
 };
-
-const toNumber = (value: number | string | null | undefined): number => {
-  if (typeof value === "number") {
-    return Number.isFinite(value) ? value : 0;
-  }
-  if (typeof value === "string") {
-    const parsed = Number.parseFloat(value);
-    return Number.isFinite(parsed) ? parsed : 0;
-  }
-  return 0;
-};
-
-const roundCurrency = (value: number): number =>
-  Math.round((value + Number.EPSILON) * 100) / 100;
 
 @Injectable()
 export class InvoiceService {
@@ -42,9 +30,11 @@ export class InvoiceService {
     private invoiceRepository: Repository<Invoice>,
     @InjectRepository(WorkItem)
     private workItemRepository: Repository<WorkItem>,
+    @InjectRepository(AuditLog)
+    private auditLogRepository: Repository<AuditLog>,
   ) {}
 
-  async releaseInvoice(id: number, referrenceNumber: string) {
+  async releaseInvoice(id: number, userId: number, referrenceNumber: string) {
     const invoice = await this.invoiceRepository.findOne({
       select: [
         "id",
@@ -61,16 +51,32 @@ export class InvoiceService {
       relations: ["client", "workItems"],
       where: {
         id,
+        client: {
+          userId,
+        },
       },
     });
 
+    if (!invoice) {
+      throw new NotFoundException(`Invoice with id ${id} not found`);
+    }
+
     invoice.status = "received";
     invoice.referrenceNumber = referrenceNumber;
-
-    return this.invoiceRepository.save(invoice);
+    const saved = await this.invoiceRepository.save(invoice);
+    await this.auditLogRepository.save(
+      this.auditLogRepository.create({
+        userId,
+        action: "INVOICE_RECEIVED",
+        resourceType: "invoice",
+        resourceId: id,
+        metadata: JSON.stringify({ referrenceNumber }),
+      }),
+    );
+    return saved;
   }
 
-  findOne(id: number): Promise<Invoice> {
+  findOne(id: number, userId: number): Promise<Invoice> {
     return this.invoiceRepository.findOne({
       select: [
         "id",
@@ -87,59 +93,117 @@ export class InvoiceService {
       relations: ["client", "workItems"],
       where: {
         id,
+        client: {
+          userId,
+        },
       },
     });
   }
 
-  async updateInvoice(id: number, invoiceDTO: UpdateInvoiceDTO): Promise<Invoice> {
-    const invoice = await this.invoiceRepository.findOne({
-      relations: ["client", "workItems"],
-      where: { id },
+  async updateInvoice(
+    id: number,
+    userId: number,
+    invoiceDTO: UpdateInvoiceDTO,
+  ): Promise<Invoice> {
+    return this.invoiceRepository.manager.transaction(async (manager) => {
+      const invoiceRepo = manager.getRepository(Invoice);
+      const workItemRepo = manager.getRepository(WorkItem);
+      const clientRepo = manager.getRepository(Client);
+
+      const invoice = await invoiceRepo.findOne({
+        relations: ["client", "workItems"],
+        where: {
+          id,
+          client: {
+            userId,
+          },
+        },
+      });
+      if (!invoice) {
+        throw new NotFoundException(`Invoice with id ${id} not found`);
+      }
+
+      const currentClient = await clientRepo.findOne({
+        where: { id: invoice.clientId },
+      });
+      if (!currentClient) {
+        throw new BadRequestException(`Client not available.`);
+      }
+
+      if (invoiceDTO.note !== undefined) invoice.note = invoiceDTO.note;
+      if (invoiceDTO.date !== undefined) {
+        invoice.date =
+          invoiceDTO.date instanceof Date
+            ? invoiceDTO.date
+            : new Date(invoiceDTO.date as string);
+      }
+
+      if (invoiceDTO.workItems?.length !== undefined) {
+        await workItemRepo.delete({ invoiceId: id });
+        const newWorkItems = invoiceDTO.workItems.map((item) =>
+          workItemRepo.create({
+            entry_date: item.entry_date,
+            title: item.title,
+            rate: currentClient.hourly_rate,
+            description: item.description,
+            hours: item.hours,
+            tags: JSON.stringify(item.tags),
+            invoiceId: id,
+          }),
+        );
+        await workItemRepo.save(newWorkItems);
+      }
+      const saved = await invoiceRepo.save(invoice);
+      await manager.getRepository(AuditLog).save({
+        userId,
+        action: "INVOICE_UPDATED",
+        resourceType: "invoice",
+        resourceId: id,
+      });
+      return saved;
     });
-    if (!invoice) {
-      throw new NotFoundException(`Invoice with id ${id} not found`);
-    }
-    const currentClient = await this.clientRepository.findOne({
-      where: { id: invoice.clientId },
-    });
-    if (!currentClient) {
-      throw new BadRequestException(`Client not available.`);
-    }
-    if (invoiceDTO.note !== undefined) invoice.note = invoiceDTO.note;
-    if (invoiceDTO.date !== undefined) {
-      invoice.date =
-        invoiceDTO.date instanceof Date
-          ? invoiceDTO.date
-          : new Date(invoiceDTO.date as string);
-    }
-    if (invoiceDTO.workItems?.length !== undefined) {
-      await this.workItemRepository.delete({ invoiceId: id });
-      const newWorkItems = invoiceDTO.workItems.map((item) =>
-        this.workItemRepository.create({
-          entry_date: item.entry_date,
-          title: item.title,
-          rate: currentClient.hourly_rate,
-          description: item.description,
-          hours: item.hours,
-          tags: JSON.stringify(item.tags),
-          invoiceId: id,
-        })
-      );
-      await this.workItemRepository.save(newWorkItems);
-    }
-    return this.invoiceRepository.save(invoice);
   }
 
-  async deleteInvoice(id: number): Promise<void> {
-    const invoice = await this.invoiceRepository.findOne({ where: { id } });
-    if (!invoice) {
-      throw new NotFoundException(`Invoice with id ${id} not found`);
-    }
-    await this.workItemRepository.delete({ invoiceId: id });
-    await this.invoiceRepository.remove(invoice);
+  async deleteInvoice(id: number, userId: number): Promise<void> {
+    await this.invoiceRepository.manager.transaction(async (manager) => {
+      const invoiceRepo = manager.getRepository(Invoice);
+      const workItemRepo = manager.getRepository(WorkItem);
+
+      const invoice = await invoiceRepo.findOne({
+        where: {
+          id,
+          client: {
+            userId,
+          },
+        },
+      });
+      if (!invoice) {
+        throw new NotFoundException(`Invoice with id ${id} not found`);
+      }
+
+      await workItemRepo.delete({ invoiceId: id });
+      await invoiceRepo.remove(invoice);
+      await manager.getRepository(AuditLog).save({
+        userId,
+        action: "INVOICE_DELETED",
+        resourceType: "invoice",
+        resourceId: id,
+      });
+    });
   }
 
-  async findByUser(userId: number) {
+  async findByUser(
+    userId: number,
+    options?: {
+      limit?: number;
+      offset?: number;
+      status?: "pending" | "released" | "received";
+      clientId?: number;
+    },
+  ) {
+    const take = Math.min(Math.max(toNumber(options?.limit) || 50, 1), 200);
+    const skip = Math.max(toNumber(options?.offset) || 0, 0);
+
     return await this.invoiceRepository.find({
       select: [
         "client",
@@ -157,100 +221,123 @@ export class InvoiceService {
       where: {
         client: {
           userId: userId,
+          ...(options?.clientId ? { id: options.clientId } : {}),
         },
+        ...(options?.status ? { status: options.status } : {}),
       },
       order: {
         id: "DESC",
       },
+      take,
+      skip,
     });
   }
 
   async generateInvoice(userId: number, invoice: InvoiceDTO): Promise<Invoice> {
     const currentYear: number = new Date().getFullYear();
 
-    const user = await this.userRepository.findOne({
-      select: [
-        "id",
-        "email",
-        "address",
-        "name",
-        "bank_account_number",
-        "bank_name",
-        "bank_swift_code",
-        "bank_account_name",
-        "created_at",
-        "clients",
-        "updated_at",
-      ],
-      where: {
-        id: userId,
-      },
-    });
+    return this.invoiceRepository.manager.transaction(async (manager) => {
+      const userRepo = manager.getRepository(User);
+      const clientRepo = manager.getRepository(Client);
+      const invoiceRepo = manager.getRepository(Invoice);
 
-    if (!user) {
-      throw new BadRequestException(`Specified user not available.`);
-    }
+      const user = await userRepo.findOne({
+        select: [
+          "id",
+          "email",
+          "address",
+          "name",
+          "bank_account_number",
+          "bank_name",
+          "bank_swift_code",
+          "bank_account_name",
+          "created_at",
+          "clients",
+          "updated_at",
+        ],
+        where: {
+          id: userId,
+        },
+      });
 
-    const currentClient = await this.clientRepository.findOne({
-      select: [
-        "id",
-        "email",
-        "address",
-        "name",
-        "code",
-        "hourly_rate",
-        "hours_per_day",
-        "created_at",
-        "updated_at",
-        "userId",
-        "user",
-        "convert_currency_code",
-        "current_currency_code",
-      ],
-      where: {
-        id: invoice.clientId,
-      },
-    });
+      if (!user) {
+        throw new BadRequestException(`Specified user not available.`);
+      }
 
-    if (!currentClient) {
-      throw new BadRequestException(`Specified client not available.`);
-    }
+      const currentClient = await clientRepo.findOne({
+        select: [
+          "id",
+          "email",
+          "address",
+          "name",
+          "code",
+          "hourly_rate",
+          "hours_per_day",
+          "created_at",
+          "updated_at",
+          "userId",
+          "user",
+          "convert_currency_code",
+          "current_currency_code",
+        ],
+        where: {
+          id: invoice.clientId,
+          userId,
+        },
+      });
 
-    const invoiceCount = await this.invoiceRepository.count({
-      where: {
+      if (!currentClient) {
+        throw new BadRequestException(`Specified client not available.`);
+      }
+
+      await manager.query(
+        "INSERT INTO `invoice_sequence` (`clientId`, `year`, `currentValue`) VALUES (?, ?, 1) ON DUPLICATE KEY UPDATE `currentValue` = `currentValue` + 1",
+        [currentClient.id, currentYear],
+      );
+
+      const [sequence] = await manager.query(
+        "SELECT `currentValue` FROM `invoice_sequence` WHERE `clientId` = ? AND `year` = ?",
+        [currentClient.id, currentYear],
+      );
+
+      const formattedId: string = String(sequence.currentValue).padStart(7, "0");
+
+      const workItemsParsed = invoice.workItems.map((item) => {
+        const workItem: WorkItem = {
+          entry_date: item.entry_date,
+          title: item.title,
+          rate: currentClient.hourly_rate,
+          description: item.description,
+          hours: item.hours,
+          tags: JSON.stringify(item.tags),
+        };
+        return workItem;
+      });
+
+      const payload: Invoice = {
+        id: 0,
+        note: invoice.note,
         clientId: currentClient.id,
-      },
-    });
-
-    const formattedId: string = String(invoiceCount + 1).padStart(7, "0");
-
-    const workItemsParsed = invoice.workItems.map((item) => {
-      const workItem: WorkItem = {
-        entry_date: item.entry_date,
-        title: item.title,
-        rate: currentClient.hourly_rate,
-        description: item.description,
-        hours: item.hours,
-        tags: JSON.stringify(item.tags),
+        client: currentClient,
+        invoiceNumber: `${currentClient.code}${currentYear}-${formattedId}`,
+        date: invoice.date,
+        workItems: workItemsParsed,
+        status: "pending",
+        referrenceNumber: "",
       };
-      return workItem;
+
+      invoiceRepo.create(payload);
+
+      const saved = await invoiceRepo.save(payload);
+      await manager.getRepository(AuditLog).save({
+        userId,
+        action: "INVOICE_CREATED",
+        resourceType: "invoice",
+        resourceId: saved.id,
+      });
+
+      return saved;
     });
-
-    const payload: Invoice = {
-      id: 0,
-      note: invoice.note,
-      clientId: currentClient.id,
-      client: currentClient,
-      invoiceNumber: `${currentClient.code}${currentYear}-${formattedId}`,
-      date: invoice.date,
-      workItems: workItemsParsed,
-      status: "pending",
-      referrenceNumber: "",
-    };
-
-    this.invoiceRepository.create(payload);
-
-    return this.invoiceRepository.save(payload);
   }
 
   async getChartSummary(userId: number, clientId?: number) {
@@ -482,7 +569,11 @@ export class InvoiceService {
     };
   }
 
-  async generatePdfInvoice(invoiceId: number, host: string): Promise<string> {
+  async generatePdfInvoice(
+    invoiceId: number,
+    userId: number,
+    host: string,
+  ): Promise<string> {
     const baseFont = "Helvetica";
     const invoice = await this.invoiceRepository.findOne({
       select: [
@@ -501,6 +592,9 @@ export class InvoiceService {
       relations: ["client"],
       where: {
         id: invoiceId,
+        client: {
+          userId,
+        },
       },
     });
     if (!invoice) {

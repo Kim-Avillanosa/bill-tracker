@@ -20,11 +20,13 @@ import { TimeSheetModule } from "./modules/timesheet/timesheet.module";
 import { InvoiceModule } from "./modules/invoice/invoice.module";
 import { FilesController } from "./modules/files/files.controller";
 import { FilesModule } from "./modules/files/files.module";
+import { AuditModule } from "./modules/audit/audit.module";
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
     FilesModule,
+    AuditModule,
     InvoiceModule,
     ClientModule,
     TimeSheetModule,

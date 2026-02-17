@@ -11,6 +11,7 @@ import {
   ManyToOne,
   JoinColumn,
 } from "typeorm";
+import { decimalTransformer } from "../../../lib/decimalTransformer";
 
 export enum ClientCategory {
   FULL_TIME = "FULL_TIME",
@@ -41,7 +42,12 @@ export class Client {
   @Column({ default: "", nullable: false })
   code: string;
 
-  @Column({ type: "decimal", precision: 10, scale: 2 })
+  @Column({
+    type: "decimal",
+    precision: 10,
+    scale: 2,
+    transformer: decimalTransformer,
+  })
   hourly_rate: number;
 
   @Column()

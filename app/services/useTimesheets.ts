@@ -1,23 +1,5 @@
 import useAxiosClient from "./useAxiosClient";
 
-interface Client {
-  id: number;
-  email: string;
-  name: string;
-  symbol: string;
-  code: string;
-  hourly_rate: string;
-  hours_per_day: number;
-  address: string;
-  banner_color: string;
-  headline_color: string;
-  text_color: string;
-  created_at: string;
-  updated_at: string;
-  userId: number;
-  category: string;
-}
-
 const useTimesheets = () => {
   const { client } = useAxiosClient();
 

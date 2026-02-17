@@ -6,6 +6,7 @@ import {
   JoinColumn,
 } from "typeorm";
 import { Invoice } from "./invoice.entity"; // Adjust the import path as needed
+import { decimalTransformer } from "../../../lib/decimalTransformer";
 
 @Entity()
 export class WorkItem {
@@ -28,10 +29,18 @@ export class WorkItem {
   @Column()
   tags: string;
 
-  @Column("decimal", { precision: 10, scale: 2 })
+  @Column("decimal", {
+    precision: 10,
+    scale: 2,
+    transformer: decimalTransformer,
+  })
   hours: number;
 
-  @Column("decimal", { precision: 10, scale: 2 })
+  @Column("decimal", {
+    precision: 10,
+    scale: 2,
+    transformer: decimalTransformer,
+  })
   rate: number;
 
   @Column()

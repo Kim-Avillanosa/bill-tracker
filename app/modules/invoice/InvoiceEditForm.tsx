@@ -269,6 +269,7 @@ const InvoiceEditForm: React.FC<InvoiceEditFormProps> = ({
 											}
 											placeholder="Amount"
 											min={0}
+											step="0.01"
 										/>
 									</td>
 									<td>{roundTo(item.hours, 2).toFixed(2)}</td>

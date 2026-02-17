@@ -1,12 +1,18 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { isArray, isString } from "class-validator";
+import { ArrayNotEmpty, IsArray, IsDateString, IsNotEmpty, IsString } from "class-validator";
 
 export class TimeSheetDto {
   @ApiProperty({ required: true })
+  @IsString()
+  @IsNotEmpty()
   summary: string;
+
   @ApiProperty({ required: true })
-  entry_date: Date;
+  @IsDateString()
+  entry_date: string;
 
   @ApiProperty({ required: true, type: [String] })
+  @IsArray()
+  @ArrayNotEmpty()
   tags: string[];
 }

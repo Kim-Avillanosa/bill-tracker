@@ -276,6 +276,9 @@ const TimesheetCheckout: React.FC<Props> = ({ timesheets, client }) => {
                     type="number"
                     placeholder="Hours"
                     value={hours[timesheet.id] || ""}
+                    min={0}
+                    max={24}
+                    step="0.25"
                     onChange={(e) =>
                       handleHoursChange(
                         timesheet.id,
@@ -414,6 +417,7 @@ const TimesheetCheckout: React.FC<Props> = ({ timesheets, client }) => {
                                 }
                                 placeholder="Amount"
                                 min={0}
+                                step="0.01"
                               />
                             </td>
                             <td>{roundTo(item.hours, 2).toFixed(2)}</td>

@@ -8,10 +8,18 @@ import { ClientService } from "./client.service";
 import { TimeSheet } from "../timesheet/entities/timesheet.entity";
 import { Invoice } from "../invoice/entities/invoice.entity";
 import { WorkItem } from "../invoice/entities/workitem.entity";
+import { AuditLog } from "../audit/entities/audit-log.entity";
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User, Client, TimeSheet, Invoice, WorkItem]),
+    TypeOrmModule.forFeature([
+      User,
+      Client,
+      TimeSheet,
+      Invoice,
+      WorkItem,
+      AuditLog,
+    ]),
   ],
   controllers: [ClientController],
   providers: [ClientService, JWTUtil],

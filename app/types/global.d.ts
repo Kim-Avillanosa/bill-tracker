@@ -4,7 +4,7 @@ declare global {
       name: string;
       symbol: string;
       iso: string;
-      currencySymbol: string; // Added currencySymbol property
+      currencySymbol: string;
     };
 
     interface ApiBadRequest {
@@ -17,7 +17,7 @@ declare global {
     }
 
     interface JwtResponse {
-      access_token;
+      access_token: string;
     }
 
     interface TokenData {
@@ -31,19 +31,22 @@ declare global {
       id: number;
       tags: string;
       summary: string;
-      entry_date: string; // ISO format date string
+      entry_date: string;
       client: Client;
       created_at: string;
       updated_at: string;
     }
 
-    type WorkItem = {
-      entry_date: string;
+    interface WorkItem {
+      id?: number;
+      entry_date: string | Date;
       title: string;
       description: string;
-      tags: string[];
+      tags: string[] | string;
       hours: number;
-    };
+      rate?: number | string;
+      invoiceId?: number;
+    }
 
     type InvoiceData = {
       clientId: number;
@@ -57,25 +60,20 @@ declare global {
       email: string;
       name: string;
       code: string;
+      symbol: string;
       hourly_rate: number;
       hours_per_day: number;
       days_per_week: number;
       address: string;
-      created_at: string; // Alternatively, you could use Date if you prefer
-      updated_at: string; // Alternatively, you could use Date if you prefer
+      banner_color: string;
+      headline_color: string;
+      text_color: string;
+      created_at: string;
+      updated_at: string;
       userId: number;
+      category: string;
       current_currency_code: string;
       convert_currency_code: string;
-    }
-
-    interface WorkItem {
-      title: string;
-      rate: string;
-      description: string;
-      hours: number;
-      tags: string; // If you want to parse it into an array, consider changing this to string[]
-      invoiceId: number;
-      id: number;
     }
 
     interface Invoice {
@@ -84,29 +82,11 @@ declare global {
       clientId: number;
       client: Client;
       invoiceNumber: string;
-      date: string; // Alternatively, you could use Date if you prefer
+      date: string;
       workItems: WorkItem[];
       status: string;
-      updatedAt: string; // Alternatively, you could use Date if you prefer
+      updatedAt: string;
       referrenceNumber: string;
-    }
-
-    interface Client {
-      id: number;
-      email: string;
-      name: string;
-      symbol: string;
-      code: string;
-      hourly_rate: number;
-      hours_per_day: number;
-      address: string;
-      banner_color: string;
-      headline_color: string;
-      text_color: string;
-      created_at: string; // ISO date string
-      updated_at: string; // ISO date string
-      userId: number;
-      category: string;
     }
   }
 }
