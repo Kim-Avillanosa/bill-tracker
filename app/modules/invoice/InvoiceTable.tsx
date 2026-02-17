@@ -104,7 +104,8 @@ const InvoiceTable: React.FC = () => {
 	}
 
 	return (
-		<Container className="mt-5">
+		<Container className="mt-2">
+			<div className="table-surface">
 			<Table bordered hover responsive>
 				<thead>
 					<tr>
@@ -157,6 +158,7 @@ const InvoiceTable: React.FC = () => {
 					)}
 				</tbody>
 			</Table>
+			</div>
 		</Container>
 	);
 };

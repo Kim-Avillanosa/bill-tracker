@@ -115,14 +115,14 @@ const TimesheetTable: React.FC<Props> = ({ clientId, startDate, endDate }) => {
       </Row> */}
       <Row className="my-3">
         <Col>
-          <div>
+          <div className="toolbar-surface">
+            <div className="d-flex justify-content-between align-items-center flex-wrap gap-3">
             <EntriesLabel
               start_date={startDate}
               end_date={endDate}
               total_entries={timesheets.length}
               days_per_week={currentClient.days_per_week}
             />
-          </div>
           <div className="float-end">
             <Button
               size="lg"
@@ -178,12 +178,15 @@ const TimesheetTable: React.FC<Props> = ({ clientId, startDate, endDate }) => {
               🎫 Custom invoice
             </Button>
           </div>
+            </div>
+          </div>
         </Col>
       </Row>
 
       <Row>
         <Col>
           <div
+            className="table-surface"
             style={{
               maxHeight: "1000px", // Set your desired height
               overflowY: "auto", // Enable vertical scrolling

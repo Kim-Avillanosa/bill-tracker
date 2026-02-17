@@ -9,11 +9,11 @@ const AppBar: React.FC = () => {
   const router = useRouter();
 
   return (
-    <Navbar expand="lg">
+    <Navbar expand="lg" className="app-navbar py-2">
       <Container>
         <Navbar.Brand>
-          <div >
-            <img src="/logo.png" style={{ height: "70px" }} />
+          <div>
+            <img src="/logo.png" alt="Bill Tracker" />
           </div>
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />

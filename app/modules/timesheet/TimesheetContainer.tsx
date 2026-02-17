@@ -21,8 +21,9 @@ const TimesheetContainer: React.FC = () => {
   const { openModal, dismiss } = useModalStore();
 
   return (
-    <div className="my-5 gap-5">
+    <div className="my-2 gap-4">
       <Container>
+        <div className="toolbar-surface">
         <Row>
           <Col xs={8} xl={6}>
             <ClientSelect onChange={(id) => setClientId(id)} />
@@ -64,6 +65,7 @@ const TimesheetContainer: React.FC = () => {
             />
           </Col>
         </Row>
+        </div>
       </Container>
 
       {clientId > 0 && range.startDate && range.endDate && (

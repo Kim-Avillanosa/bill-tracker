@@ -57,11 +57,12 @@ const LoginForm = () => {
     });
 
     return (
-        <Container className="mt-5 w-50">
-            <div className=" d-flex justify-content-center">
-                <img src="/logo.png" className="w-50" />
+        <div className="auth-wrapper">
+        <Container className="auth-card">
+            <div className="auth-logo">
+                <img src="/logo.png" alt="Bill Tracker" />
             </div>
-            <h1 className="mt-5">
+            <h1 className="mt-2 mb-4">
                 <strong>Login</strong>
             </h1>
             <Form onSubmit={formik.handleSubmit}>
@@ -114,6 +115,7 @@ const LoginForm = () => {
                 </div>
             </Form>
         </Container>
+        </div>
     );
 };
 

@@ -15,49 +15,49 @@ const DashboardOptions: React.FC<DashboardOptionsProps> = ({ setStatus }) => {
   const { openModal } = useModalStore();
 
   return (
-    <div className="mt-5 d-flex justify-content-between">
-      <div>
+    <div className="mt-2 mb-4 d-flex flex-wrap gap-3 justify-content-between align-items-center toolbar-surface">
+      <div className="dashboard-actions">
         <Button
-          size="lg"
+          size="sm"
           variant={currentStatus == "CHARTS" ? "outline-success" : "light"}
           onClick={() => {
             setlocalStatus("CHARTS");
             setStatus("CHARTS");
           }}
-          className="m-1"
+          className="m-0"
         >
           📊 CHARTS
         </Button>
         <Button
-          size="lg"
+          size="sm"
           variant={currentStatus == "TIMESHEETS" ? "outline-success" : "light"}
           onClick={() => {
             setStatus("TIMESHEETS");
             setlocalStatus("TIMESHEETS");
           }}
-          className="m-1"
+          className="m-0"
         >
           🕒 TIMESHEETS
         </Button>
         <Button
-          size="lg"
+          size="sm"
           variant={currentStatus == "CLIENTS" ? "outline-success" : "light"}
           onClick={() => {
             setlocalStatus("CLIENTS");
             setStatus("CLIENTS");
           }}
-          className="m-1"
+          className="m-0"
         >
           👨‍💼 CLIENTS
         </Button>
         <Button
-          size="lg"
+          size="sm"
           variant={currentStatus == "INVOICES" ? "outline-success" : "light"}
           onClick={() => {
             setlocalStatus("INVOICES");
             setStatus("INVOICES");
           }}
-          className="m-1"
+          className="m-0"
         >
           📄 INVOICES
         </Button>
@@ -72,8 +72,8 @@ const DashboardOptions: React.FC<DashboardOptionsProps> = ({ setStatus }) => {
             })
           }
           variant="warning"
-          size="lg"
-          className="m-1"
+          size="sm"
+          className="m-0"
         >
           ⚡Invoice and Timesheet
         </Button>

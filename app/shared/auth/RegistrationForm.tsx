@@ -65,13 +65,13 @@ const RegistrationForm = () => {
   });
 
   return (
-    <div className="container mt-5 w-50 pb-5">
-
-      <div className=" d-flex justify-content-center">
-        <img src="/logo.png" className="w-50" />
+    <div className="auth-wrapper">
+    <div className="container auth-card auth-card-lg pb-4">
+      <div className="auth-logo">
+        <img src="/logo.png" alt="Bill Tracker" />
       </div>
 
-      <h1 className="mt-5">
+      <h1 className="mt-2">
         <strong>Register</strong>
       </h1>
 
@@ -288,6 +288,7 @@ const RegistrationForm = () => {
           </Link>
         </div>
       </Form>
+    </div>
     </div>
   );
 };

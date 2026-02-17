@@ -29,10 +29,11 @@ const SecuredLayout: React.FC<SecuredLayoutProps> = ({ children }) => {
       }}
     >
       <AppBar />
-      <Container className="mt-3">
-        <hr />
+      <Container className="mt-3 mb-4">
         <ErrorBoundary>
-          <OnLoadAnimator>{children}</OnLoadAnimator>
+          <OnLoadAnimator>
+            <div className="page-shell">{children}</div>
+          </OnLoadAnimator>
         </ErrorBoundary>
       </Container>
       <AuthVerify />

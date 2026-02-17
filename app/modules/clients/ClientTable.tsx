@@ -59,7 +59,7 @@ const ClientTable: React.FC = () => {
   }
 
   return (
-    <Container className="mt-5">
+    <Container className="mt-2">
       <Button
         className="float-end mb-3"
         variant="outline-dark"
@@ -73,7 +73,8 @@ const ClientTable: React.FC = () => {
       >
         ➕ Add new client
       </Button>
-      <Table className="mt-3" bordered hover>
+      <div className="table-surface">
+      <Table className="mt-0" bordered hover responsive>
         <thead>
           <tr>
             <th>Name</th>
@@ -129,6 +130,7 @@ const ClientTable: React.FC = () => {
           ))}
         </tbody>
       </Table>
+      </div>
     </Container>
   );
 };

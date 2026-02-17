@@ -1,0 +1,193 @@
+:root {
+	--bg: #f5f7fb;
+	--surface: #ffffff;
+	--surface-muted: #f8fafc;
+	--border: #e5eaf2;
+	--text-primary: #0f172a;
+	--text-secondary: #475569;
+	--brand: #2563eb;
+	--brand-soft: #eff6ff;
+	--success-soft: #ecfdf3;
+	--warning-soft: #fffbeb;
+	--danger-soft: #fef2f2;
+	--radius-lg: 14px;
+	--radius-md: 10px;
+	--shadow-sm: 0 4px 12px rgba(15, 23, 42, 0.06);
+	--shadow-md: 0 8px 24px rgba(15, 23, 42, 0.08);
+}
+
+html,
+body {
+	background: var(--bg);
+	color: var(--text-primary);
+}
+
+body {
+	font-family:
+		'Inter',
+		'Segoe UI',
+		-apple-system,
+		BlinkMacSystemFont,
+		'Helvetica Neue',
+		Arial,
+		sans-serif;
+	line-height: 1.45;
+}
+
+.page-shell {
+	background: var(--surface);
+	border: 1px solid var(--border);
+	border-radius: var(--radius-lg);
+	box-shadow: var(--shadow-sm);
+	padding: 1.25rem;
+}
+
+.section-title {
+	font-size: 1.1rem;
+	font-weight: 700;
+	color: var(--text-primary);
+	margin-bottom: 0.75rem;
+}
+
+.soft-card {
+	background: var(--surface);
+	border: 1px solid var(--border);
+	border-radius: var(--radius-lg);
+	box-shadow: var(--shadow-sm);
+}
+
+.app-navbar {
+	background: rgba(255, 255, 255, 0.92);
+	backdrop-filter: blur(10px);
+	border-bottom: 1px solid var(--border);
+	position: sticky;
+	top: 0;
+	z-index: 1030;
+}
+
+.app-navbar .navbar-brand img {
+	height: 56px;
+	width: auto;
+	object-fit: contain;
+}
+
+.dashboard-actions {
+	display: flex;
+	gap: 0.5rem;
+	flex-wrap: wrap;
+}
+
+.dashboard-actions .btn {
+	border-radius: 999px;
+	font-weight: 600;
+	padding-inline: 1rem;
+}
+
+.toolbar-surface {
+	background: var(--surface);
+	border: 1px solid var(--border);
+	border-radius: var(--radius-lg);
+	padding: 0.9rem;
+	box-shadow: var(--shadow-sm);
+}
+
+.table-surface {
+	background: var(--surface);
+	border: 1px solid var(--border);
+	border-radius: var(--radius-lg);
+	overflow: hidden;
+	box-shadow: var(--shadow-sm);
+}
+
+.table-surface .table {
+	margin-bottom: 0;
+}
+
+.table-surface thead th {
+	background: var(--surface-muted);
+	color: var(--text-secondary);
+	font-weight: 600;
+	border-bottom: 1px solid var(--border);
+	white-space: nowrap;
+}
+
+.table-surface td,
+.table-surface th {
+	padding: 0.75rem 0.85rem;
+	vertical-align: middle;
+	border-color: var(--border);
+}
+
+.table-surface tbody tr:hover {
+	background: #f9fbff;
+}
+
+.auth-wrapper {
+	min-height: 100vh;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 2rem 1rem;
+}
+
+.auth-card {
+	background: var(--surface);
+	border: 1px solid var(--border);
+	border-radius: 16px;
+	box-shadow: var(--shadow-md);
+	padding: 1.5rem;
+	width: min(560px, 96vw);
+}
+
+.auth-card.auth-card-lg {
+	width: min(760px, 98vw);
+}
+
+.auth-logo {
+	display: flex;
+	justify-content: center;
+	margin-bottom: 1rem;
+}
+
+.auth-logo img {
+	max-height: 72px;
+	width: auto;
+}
+
+.auth-card h1,
+.auth-card h4 {
+	color: var(--text-primary);
+}
+
+.modern-modal .modal-content {
+	border-radius: 16px;
+	border: 1px solid var(--border);
+	box-shadow: var(--shadow-md);
+}
+
+.modern-modal .modal-header {
+	border-bottom: 1px solid var(--border);
+	background: var(--surface-muted);
+}
+
+.modern-modal .modal-body {
+	background: var(--surface);
+}
+
+.badge {
+	font-weight: 600;
+}
+
+.btn {
+	border-radius: 10px;
+}
+
+.btn-outline-dark {
+	border-color: #cbd5e1;
+	color: #0f172a;
+}
+
+.btn-outline-dark:hover {
+	background: #0f172a;
+	border-color: #0f172a;
+}
