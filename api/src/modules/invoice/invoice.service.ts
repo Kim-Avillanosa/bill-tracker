@@ -1,4 +1,4 @@
-import { InvoiceDTO } from "./dto/invoice.dto";
+import { InvoiceDTO, UpdateInvoiceDTO } from "./dto/invoice.dto";
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
@@ -77,7 +77,7 @@ export class InvoiceService {
     });
   }
 
-  async updateInvoice(id: number, invoiceDTO: InvoiceDTO): Promise<Invoice> {
+  async updateInvoice(id: number, invoiceDTO: UpdateInvoiceDTO): Promise<Invoice> {
     const invoice = await this.invoiceRepository.findOne({
       relations: ["client", "workItems"],
       where: { id },
