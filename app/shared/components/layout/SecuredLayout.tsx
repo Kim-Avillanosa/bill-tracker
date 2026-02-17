@@ -2,7 +2,6 @@ import useAuthStore from "@/shared/store/useAuthStore";
 import AppBar from "./AppBar";
 import { ReactNode } from "react";
 
-import { Container } from "react-bootstrap";
 import ModalProvider from "./ModalProvider";
 import AuthVerify from "@/shared/auth/AuthVerify";
 import OnLoadAnimator from "@/shared/components/layout/OnLoadAnimator";
@@ -30,13 +29,13 @@ const SecuredLayout: React.FC<SecuredLayoutProps> = ({ children }) => {
     >
       <div className="min-vh-100 d-flex flex-column">
         <AppBar />
-        <Container className="mt-3 mb-4 flex-grow-1 d-flex">
+        <div className="main-content-container mt-3 mb-4 flex-grow-1 d-flex px-2 px-md-3">
           <ErrorBoundary>
             <OnLoadAnimator>
               <div className="page-shell w-100 h-100">{children}</div>
             </OnLoadAnimator>
           </ErrorBoundary>
-        </Container>
+        </div>
         <AuthVerify />
         <ModalProvider />
       </div>

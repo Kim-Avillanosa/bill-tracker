@@ -41,8 +41,8 @@ const TimesheetContainer: React.FC = () => {
   };
 
   return (
-    <div className="my-2 gap-4">
-      <Container>
+    <div className="my-2 gap-4 w-100">
+      <Container fluid>
         <div className="toolbar-surface">
         <Row className="align-items-center g-2">
           <Col xs={12} md={5} xl={4}>

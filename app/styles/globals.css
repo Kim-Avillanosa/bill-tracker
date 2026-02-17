@@ -39,6 +39,14 @@ body {
 	background-position: -1px -1px;
 }
 
+/* Main content area: wide, centered */
+.main-content-container {
+	width: 100%;
+	max-width: 1400px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
 .page-shell {
 	background: var(--surface);
 	border: 1px solid var(--border);
