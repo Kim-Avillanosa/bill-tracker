@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "prestart": "next build",
-    "vps-deploy": "npm install && npm run start -- -p 3004",
+    "vps-deploy": "npm install && NEXT_DISABLE_SWC_BINARY=1 npm run start -- -p 3004",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
