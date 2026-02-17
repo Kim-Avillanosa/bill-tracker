@@ -47,6 +47,12 @@ body {
 	margin-right: auto;
 }
 
+.main-content-container > * {
+	flex: 1 1 0;
+	min-width: 0;
+	width: 100%;
+}
+
 .page-shell {
 	background: var(--surface);
 	border: 1px solid var(--border);

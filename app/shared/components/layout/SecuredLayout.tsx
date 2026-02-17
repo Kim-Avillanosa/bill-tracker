@@ -27,7 +27,7 @@ const SecuredLayout: React.FC<SecuredLayoutProps> = ({ children }) => {
           fetch(resource, init).then((res) => res.json()),
       }}
     >
-      <div className="min-vh-100 d-flex flex-column">
+      <div className="min-vh-100 d-flex flex-column w-100">
         <AppBar />
         <div className="main-content-container mt-3 mb-4 flex-grow-1 d-flex px-2 px-md-3">
           <ErrorBoundary>
