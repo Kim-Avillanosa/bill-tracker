@@ -35,7 +35,7 @@ const InvoiceTable: React.FC = () => {
 		} finally {
 			setLoading(false);
 		}
-	}, [fetchInvoices, currentAccount?.id]);
+	}, [currentAccount?.id, fetchInvoices]);
 
 	useEffect(() => {
 		loadInvoices();

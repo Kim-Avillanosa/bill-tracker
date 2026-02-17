@@ -1,37 +1,37 @@
 import useAuthStore from "@/shared/store/useAuthStore";
 import axios from "axios";
+import { useCallback, useMemo } from "react";
 
 const useAxiosClient = () => {
   const { token } = useAuthStore();
 
-  const client = axios.create({
-    baseURL: process.env.NEXT_PUBLIC_API,
-  });
+  const client = useMemo(() => {
+    const instance = axios.create({
+      baseURL: process.env.NEXT_PUBLIC_API,
+    });
 
-  // Request interceptor
-  client.interceptors.request.use(
-    (config) => {
-      // You can set custom headers here
-      config.headers["Authorization"] = `Bearer ${token}`;
-      return config;
-    },
-    (error) => {
-      return Promise.reject(error);
-    }
+    // Request interceptor
+    instance.interceptors.request.use(
+      (config) => {
+        config.headers["Authorization"] = `Bearer ${token}`;
+        return config;
+      },
+      (error) => Promise.reject(error)
+    );
+
+    // Response interceptor
+    instance.interceptors.response.use(
+      (response) => response,
+      (error) => Promise.reject(error)
+    );
+
+    return instance;
+  }, [token]);
+
+  const fetcher = useCallback(
+    (url: string) => client.get(url).then((res) => res.data),
+    [client]
   );
-
-  // Response interceptor
-  client.interceptors.response.use(
-    (response) => {
-      // Handle successful responses here
-      return response;
-    },
-    (error) => {
-      return Promise.reject(error);
-    }
-  );
-
-  const fetcher = (url: string) => client.get(url).then((res) => res.data);
 
   return { client, fetcher };
 };

@@ -1,52 +1,64 @@
 import useAxiosClient from "./useAxiosClient";
+import { useCallback, useMemo } from "react";
 
 const useInvoice = () => {
   const { client } = useAxiosClient();
 
-  const fetchInvoices = (userId: number) => {
+  const fetchInvoices = useCallback((userId: number) => {
     return client.get<Models.Invoice[]>(`/invoice/list/${userId}`);
-  };
+  }, [client]);
 
-  const fetchInvoiceById = (invoiceId: number) => {
+  const fetchInvoiceById = useCallback((invoiceId: number) => {
     return client.get<Models.Invoice>(`/invoice/${invoiceId}`);
-  };
+  }, [client]);
 
-  const writeInvoice = (invoiceData: Models.InvoiceData) => {
+  const writeInvoice = useCallback((invoiceData: Models.InvoiceData) => {
     return client.post<Models.Invoice>("/invoice/write", invoiceData);
-  };
+  }, [client]);
 
-  const generateInvoice = (invoiceId: number) => {
+  const generateInvoice = useCallback((invoiceId: number) => {
     return client.post(`/invoice/${invoiceId}/generate`);
-  };
+  }, [client]);
 
-  const releaseInvoice = (invoiceId: number, referenceNumber: number) => {
+  const releaseInvoice = useCallback((invoiceId: number, referenceNumber: number) => {
     return client.patch(`/invoice/${invoiceId}/release`, null, {
       params: {
         referrenceNumber: referenceNumber,
       },
     });
-  };
+  }, [client]);
 
-  const updateInvoice = (
+  const updateInvoice = useCallback((
     invoiceId: number,
     data: Partial<Models.InvoiceData>
   ) => {
     return client.patch<Models.Invoice>(`/invoice/${invoiceId}`, data);
-  };
+  }, [client]);
 
-  const deleteInvoice = (invoiceId: number) => {
+  const deleteInvoice = useCallback((invoiceId: number) => {
     return client.delete(`/invoice/${invoiceId}`);
-  };
+  }, [client]);
 
-  return {
-    fetchInvoices,
-    fetchInvoiceById,
-    writeInvoice,
-    generateInvoice,
-    releaseInvoice,
-    updateInvoice,
-    deleteInvoice,
-  };
+  return useMemo(
+    () => ({
+      fetchInvoices,
+      fetchInvoiceById,
+      writeInvoice,
+      generateInvoice,
+      releaseInvoice,
+      updateInvoice,
+      deleteInvoice,
+    }),
+    [
+      fetchInvoices,
+      fetchInvoiceById,
+      writeInvoice,
+      generateInvoice,
+      releaseInvoice,
+      updateInvoice,
+      deleteInvoice,
+    ]
+  );
 };
 
 export default useInvoice;
