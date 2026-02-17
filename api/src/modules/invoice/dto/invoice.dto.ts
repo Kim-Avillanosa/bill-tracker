@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString, IsNotEmpty, IsNumber, IsArray, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
+import { PartialType } from '@nestjs/swagger';
 import { WorkItemDTO } from './workitem.dto'; // Adjust the import path as needed
 
 export class InvoiceDTO {
@@ -22,3 +23,5 @@ export class InvoiceDTO {
   workItems: WorkItemDTO[];
 
 }
+
+export class UpdateInvoiceDTO extends PartialType(InvoiceDTO) {}

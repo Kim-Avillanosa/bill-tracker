@@ -1,4 +1,5 @@
 import useInvoice from "@/services/useInvoice";
+import useModalStore from "@/shared/store/useModal";
 import CurrencyConverterLabel from "@/shared/components/layout/CurrencyConverterLabel";
 import QRCodeComponent from "@/shared/components/layout/QRCodeContainer";
 import React, { useCallback, useEffect, useState } from "react";
@@ -10,6 +11,8 @@ import {
   Col,
   Badge,
   Container,
+  Button,
+  ButtonGroup,
 } from "react-bootstrap";
 import {
   FaDollarSign,
@@ -21,21 +24,58 @@ import {
   FaHashtag,
 } from "react-icons/fa";
 import ReceiveInvoiceButton from "./ReceiveInvoiceButton";
-import { FaHashnode } from "react-icons/fa6";
+import DeleteButton from "@/shared/components/layout/DeleteButton";
+import InvoiceEditForm from "./InvoiceEditForm";
+import toast from "react-hot-toast";
+import { FaPencil } from "react-icons/fa6";
 
 interface InvoiceDetailsProps {
   invoiceId: number;
   client: Models.Client;
+  onDeleted?: () => void;
 }
 
 const InvoiceDetails: React.FC<InvoiceDetailsProps> = ({
   client,
   invoiceId,
+  onDeleted,
 }) => {
-  const { fetchInvoiceById } = useInvoice();
+  const { fetchInvoiceById, deleteInvoice } = useInvoice();
+  const { openModal } = useModalStore();
   const [invoice, setInvoice] = useState<Models.Invoice | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+
+  const handleDelete = async () => {
+    try {
+      await deleteInvoice(invoiceId);
+      toast.success("Invoice deleted");
+      onDeleted?.();
+    } catch {
+      toast.error("Failed to delete invoice");
+    }
+  };
+
+  const handleEdit = () => {
+    if (!invoice) return;
+    openModal({
+      size: "xl",
+      title: `Edit invoice ${invoice.invoiceNumber}`,
+      content: (
+        <InvoiceEditForm
+          invoice={invoice}
+          client={client}
+          onSuccess={() => {
+            setLoading(true);
+            fetchInvoiceById(invoiceId).then((res) => {
+              setInvoice(res.data);
+              setLoading(false);
+            });
+          }}
+        />
+      ),
+    });
+  };
 
   const loadInvoiceDetails = useCallback(async () => {
     setLoading(true);
@@ -110,11 +150,19 @@ const InvoiceDetails: React.FC<InvoiceDetailsProps> = ({
     <Row className="my-4">
       <Col>
         <Card className="shadow-sm">
-          <Card.Header className=" text-white d-flex justify-content-between align-items-center">
+          <Card.Header className=" text-white d-flex justify-content-between align-items-center flex-wrap gap-2">
             <strong>Invoice Details</strong>
-            <Badge bg={getBadgeColor(invoice.status)}>
-              {getStatusIcon(invoice.status)} {invoice.status.toUpperCase()}
-            </Badge>
+            <div className="d-flex align-items-center gap-2">
+              <ButtonGroup size="sm">
+                <Button variant="outline-light" onClick={handleEdit}>
+                  <FaPencil /> Edit
+                </Button>
+                <DeleteButton onDelete={handleDelete} />
+              </ButtonGroup>
+              <Badge bg={getBadgeColor(invoice.status)}>
+                {getStatusIcon(invoice.status)} {invoice.status.toUpperCase()}
+              </Badge>
+            </div>
           </Card.Header>
           <Card.Body>
             <Card.Title className=" text-center mb-5">

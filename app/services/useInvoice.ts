@@ -27,12 +27,25 @@ const useInvoice = () => {
     });
   };
 
+  const updateInvoice = (
+    invoiceId: number,
+    data: Partial<Models.InvoiceData>
+  ) => {
+    return client.patch<Models.Invoice>(`/invoice/${invoiceId}`, data);
+  };
+
+  const deleteInvoice = (invoiceId: number) => {
+    return client.delete(`/invoice/${invoiceId}`);
+  };
+
   return {
     fetchInvoices,
     fetchInvoiceById,
     writeInvoice,
     generateInvoice,
     releaseInvoice,
+    updateInvoice,
+    deleteInvoice,
   };
 };
 

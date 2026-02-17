@@ -55,7 +55,14 @@ const InvoiceSelectionForm = () => {
         </Col>
       </Row>
       {currentClient && selectedInvoiceId && (
-        <InvoiceDetails invoiceId={selectedInvoiceId} client={currentClient} />
+        <InvoiceDetails
+          invoiceId={selectedInvoiceId}
+          client={currentClient}
+          onDeleted={() => {
+            setSelectedInvoiceId(undefined);
+            setCurrentClient(undefined);
+          }}
+        />
       )}
       {selectedInvoiceId && (
         <Button

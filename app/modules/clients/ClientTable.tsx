@@ -18,6 +18,7 @@ const ClientTable: React.FC = () => {
     try {
       await deleteClient(id);
       toast.success("Client deleted successfully");
+      fetchClients();
     } catch (error) {
       toast.error("Failed to delete client");
     }

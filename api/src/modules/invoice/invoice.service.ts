@@ -77,6 +77,54 @@ export class InvoiceService {
     });
   }
 
+  async updateInvoice(id: number, invoiceDTO: InvoiceDTO): Promise<Invoice> {
+    const invoice = await this.invoiceRepository.findOne({
+      relations: ["client", "workItems"],
+      where: { id },
+    });
+    if (!invoice) {
+      throw new NotFoundException(`Invoice with id ${id} not found`);
+    }
+    const currentClient = await this.clientRepository.findOne({
+      where: { id: invoice.clientId },
+    });
+    if (!currentClient) {
+      throw new BadRequestException(`Client not available.`);
+    }
+    if (invoiceDTO.note !== undefined) invoice.note = invoiceDTO.note;
+    if (invoiceDTO.date !== undefined) {
+      invoice.date =
+        invoiceDTO.date instanceof Date
+          ? invoiceDTO.date
+          : new Date(invoiceDTO.date as string);
+    }
+    if (invoiceDTO.workItems?.length !== undefined) {
+      await this.workItemRepository.delete({ invoiceId: id });
+      const newWorkItems = invoiceDTO.workItems.map((item) =>
+        this.workItemRepository.create({
+          entry_date: item.entry_date,
+          title: item.title,
+          rate: currentClient.hourly_rate,
+          description: item.description,
+          hours: item.hours,
+          tags: JSON.stringify(item.tags),
+          invoiceId: id,
+        })
+      );
+      await this.workItemRepository.save(newWorkItems);
+    }
+    return this.invoiceRepository.save(invoice);
+  }
+
+  async deleteInvoice(id: number): Promise<void> {
+    const invoice = await this.invoiceRepository.findOne({ where: { id } });
+    if (!invoice) {
+      throw new NotFoundException(`Invoice with id ${id} not found`);
+    }
+    await this.workItemRepository.delete({ invoiceId: id });
+    await this.invoiceRepository.remove(invoice);
+  }
+
   async findByUser(userId: number) {
     return await this.invoiceRepository.find({
       select: [

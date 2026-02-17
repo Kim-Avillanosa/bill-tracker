@@ -9,6 +9,7 @@ import {
   Get,
   Patch,
   Query,
+  Delete,
 } from "@nestjs/common";
 import { JWTUtil } from "../../jwt/jwt.service";
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
@@ -16,7 +17,7 @@ import { AuthGuard } from "../auth/auth.guard";
 import { ClassSerializerInterceptor } from "@nestjs/common";
 import { SkipThrottle } from "@nestjs/throttler";
 import { InvoiceService } from "./invoice.service";
-import { InvoiceDTO } from "./dto/invoice.dto";
+import { InvoiceDTO, UpdateInvoiceDTO } from "./dto/invoice.dto";
 import { Request } from "express";
 @SkipThrottle()
 @UseInterceptors(ClassSerializerInterceptor)
@@ -63,6 +64,16 @@ export class InvoiceController {
     return this.invoiceService.generateInvoice(token.sub, {
       ...invoiceDTO,
     });
+  }
+
+  @Patch(":id")
+  update(@Param("id") id: string, @Body() invoiceDTO: UpdateInvoiceDTO) {
+    return this.invoiceService.updateInvoice(+id, invoiceDTO);
+  }
+
+  @Delete(":id")
+  delete(@Param("id") id: string) {
+    return this.invoiceService.deleteInvoice(+id);
   }
 
   @Post(":id/generate")
