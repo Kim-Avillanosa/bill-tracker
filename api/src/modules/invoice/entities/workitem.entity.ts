@@ -28,7 +28,7 @@ export class WorkItem {
   @Column()
   tags: string;
 
-  @Column("int")
+  @Column("decimal", { precision: 10, scale: 2 })
   hours: number;
 
   @Column("decimal", { precision: 10, scale: 2 })

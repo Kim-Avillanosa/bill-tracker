@@ -97,7 +97,7 @@ declare global {
       name: string;
       symbol: string;
       code: string;
-      hourly_rate: string; // Keeping it as string to match your data structure
+      hourly_rate: number;
       hours_per_day: number;
       address: string;
       banner_color: string;

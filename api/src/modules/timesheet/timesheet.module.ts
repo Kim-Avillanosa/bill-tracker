@@ -6,11 +6,10 @@ import { TimeSheet } from "./entities/timesheet.entity";
 import { TimeSheetController } from "./timesheet.controller";
 import { TimeSheetService } from "./timesheet.service";
 import { Client } from "../client/entities/client.entity";
-import { ClientService } from "../client/client.service";
 
 @Module({
   imports: [TypeOrmModule.forFeature([User, Client, TimeSheet])],
   controllers: [TimeSheetController],
-  providers: [ClientService, TimeSheetService, JWTUtil],
+  providers: [TimeSheetService, JWTUtil],
 })
 export class TimeSheetModule {}

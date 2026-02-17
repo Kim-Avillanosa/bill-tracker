@@ -1,6 +1,7 @@
 import useInvoice from "@/services/useInvoice";
 import useModalStore from "@/shared/store/useModal";
 import React, { useState, useEffect } from "react";
+import { formatCurrency, roundCurrency, roundTo, toNumber } from "@/lib/currency";
 import {
   Form,
   Button,
@@ -31,7 +32,7 @@ const InvoiceItemsForm: React.FC<InvoiceItemsFormProps> = ({
   client,
   onItemsChange,
 }) => {
-  const { hourly_rate: hourlyRate } = client;
+  const hourlyRate = toNumber(client.hourly_rate);
   const { dismiss } = useModalStore();
 
   const { writeInvoice } = useInvoice();
@@ -89,7 +90,7 @@ const InvoiceItemsForm: React.FC<InvoiceItemsFormProps> = ({
             typeof updated.amount === "number"
               ? updated.amount
               : parseFloat(updated.amount) || 0;
-          updated.hours = hourlyRate > 0 ? amt / hourlyRate : 0;
+          updated.hours = hourlyRate > 0 ? roundTo(amt / hourlyRate, 4) : 0;
         }
         return updated;
       })
@@ -113,9 +114,11 @@ const InvoiceItemsForm: React.FC<InvoiceItemsFormProps> = ({
     setItems((prev) => prev.filter((i) => i.id !== id));
 
   // Compute totals
-  const totalAmount = items.reduce(
+  const totalAmount = roundCurrency(
+    items.reduce(
     (sum, item) => sum + (typeof item.amount === "number" ? item.amount : 0),
     0
+    )
   );
   const totalHours = items.reduce((sum, item) => sum + item.hours, 0);
 
@@ -128,7 +131,9 @@ const InvoiceItemsForm: React.FC<InvoiceItemsFormProps> = ({
               <Card.Body>
                 <Card.Title>
                   <strong>Total Amount:</strong>{" "}
-                  {`${totalAmount.toFixed(2)} ${client.current_currency_code}`}
+                  {formatCurrency(totalAmount, {
+                    currencyCode: client.current_currency_code,
+                  })}
                 </Card.Title>
               </Card.Body>
             </Card>
@@ -221,7 +226,7 @@ const InvoiceItemsForm: React.FC<InvoiceItemsFormProps> = ({
                         min={0}
                       />
                     </td>
-                    <td>{item.hours.toFixed(2)}</td>
+                    <td>{roundTo(item.hours, 2).toFixed(2)}</td>
                     <td>
                       <Button
                         variant="danger"

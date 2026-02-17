@@ -1,6 +1,6 @@
 import useInvoice from "@/services/useInvoice";
 import useModalStore from "@/shared/store/useModal";
-import { safeJsonParse } from "@/lib/safeJsonParse";
+import { formatCurrency, roundCurrency, roundTo, toNumber } from "@/lib/currency";
 import React, { useState, useMemo } from "react";
 import {
 	Form,
@@ -35,15 +35,14 @@ const InvoiceEditForm: React.FC<InvoiceEditFormProps> = ({
 }) => {
 	const { updateInvoice } = useInvoice();
 	const { dismiss } = useModalStore();
-	const { hourly_rate: hourlyRate } = client;
+	const hourlyRate = toNumber(client.hourly_rate);
 
 	const initialItems: InvoiceItem[] = useMemo(
 		() =>
 			invoice.workItems?.map((wi, idx) => {
-				const tags = safeJsonParse<string[]>(wi.tags) ?? [];
 				const hours = Number(wi.hours) || 0;
-				const rate = Number(wi.rate) || hourlyRate;
-				const amount = hours * (typeof rate === "number" ? rate : parseFloat(rate));
+				const rate = toNumber(wi.rate) || hourlyRate;
+				const amount = roundCurrency(hours * rate);
 				const entryDate =
 					typeof wi.entry_date === "string"
 						? wi.entry_date.split("T")[0]
@@ -53,7 +52,7 @@ const InvoiceEditForm: React.FC<InvoiceEditFormProps> = ({
 					title: wi.title,
 					description: wi.description,
 					entryDate,
-					amount: amount || "",
+					amount,
 					hours,
 				};
 			}) ?? [],
@@ -121,7 +120,7 @@ const InvoiceEditForm: React.FC<InvoiceEditFormProps> = ({
 						typeof updated.amount === "number"
 							? updated.amount
 							: parseFloat(String(updated.amount)) || 0;
-					updated.hours = hourlyRate > 0 ? amt / hourlyRate : 0;
+					updated.hours = hourlyRate > 0 ? roundTo(amt / hourlyRate, 4) : 0;
 				}
 				return updated;
 			})
@@ -144,9 +143,11 @@ const InvoiceEditForm: React.FC<InvoiceEditFormProps> = ({
 	const removeItem = (id: number) =>
 		setItems((prev) => prev.filter((i) => i.id !== id));
 
-	const totalAmount = items.reduce(
-		(sum, item) => sum + (typeof item.amount === "number" ? item.amount : 0),
-		0
+	const totalAmount = roundCurrency(
+		items.reduce(
+			(sum, item) => sum + (typeof item.amount === "number" ? item.amount : 0),
+			0
+		)
 	);
 	const totalHours = items.reduce((sum, item) => sum + item.hours, 0);
 
@@ -183,7 +184,9 @@ const InvoiceEditForm: React.FC<InvoiceEditFormProps> = ({
 						<Card.Body>
 							<Card.Title>
 								<strong>Total Amount:</strong>{" "}
-								{`${totalAmount.toFixed(2)} ${client.current_currency_code}`}
+								{formatCurrency(totalAmount, {
+									currencyCode: client.current_currency_code,
+								})}
 							</Card.Title>
 						</Card.Body>
 					</Card>
@@ -268,7 +271,7 @@ const InvoiceEditForm: React.FC<InvoiceEditFormProps> = ({
 											min={0}
 										/>
 									</td>
-									<td>{item.hours.toFixed(2)}</td>
+									<td>{roundTo(item.hours, 2).toFixed(2)}</td>
 									<td>
 										<Button
 											variant="danger"

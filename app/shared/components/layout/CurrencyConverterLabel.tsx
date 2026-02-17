@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Button, Placeholder, Spinner } from "react-bootstrap";
 import { FaSync } from "react-icons/fa"; // Import the refresh icon from FontAwesome
+import { formatCurrency, roundCurrency, toNumber } from "@/lib/currency";
 
 interface ExchangeRateResponse {
   data: Record<string, number>;
@@ -45,15 +46,12 @@ const CurrencyConverterLabel: React.FC<CurrencyConverterLabelProps> = ({
     fetchExchangeRate();
   }, [fetchExchangeRate]);
 
-  const formatAmount = (value: number) => {
-    // Fix the number to 2 decimal places and format with commas
-    return value.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  };
-
   const convertCurrency = () => {
-    return exchangeRate
-      ? formatAmount(amount * exchangeRate) // Format the converted amount
-      : `${targetCurrency} 0.00`;
+    if (!exchangeRate) {
+      return formatCurrency(0);
+    }
+
+    return formatCurrency(roundCurrency(toNumber(amount) * exchangeRate));
   };
 
   return (

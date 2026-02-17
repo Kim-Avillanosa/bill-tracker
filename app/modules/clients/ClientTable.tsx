@@ -6,6 +6,7 @@ import ClientForm from "./ClientForm";
 import DeleteButton from "@/shared/components/layout/DeleteButton";
 import toast from "react-hot-toast";
 import { FaPencil } from "react-icons/fa6";
+import { formatCurrency, toNumber } from "@/lib/currency";
 
 const ClientTable: React.FC = () => {
   const { getClientList, deleteClient } = useClient();
@@ -92,7 +93,11 @@ const ClientTable: React.FC = () => {
               <td>{client.code}</td>
               <td>{client.symbol}</td>
               <td>{client.address}</td>
-              <td>{`${client.symbol} ${client.hourly_rate}`}</td>
+              <td>
+                {formatCurrency(toNumber(client.hourly_rate), {
+                  symbol: client.symbol,
+                })}
+              </td>
               <td>{client.hours_per_day}</td>
               <td>{client.category}</td>
               <td>

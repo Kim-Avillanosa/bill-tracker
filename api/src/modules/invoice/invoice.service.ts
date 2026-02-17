@@ -17,6 +17,20 @@ type FileResults = {
   timesheet: string;
 };
 
+const toNumber = (value: number | string | null | undefined): number => {
+  if (typeof value === "number") {
+    return Number.isFinite(value) ? value : 0;
+  }
+  if (typeof value === "string") {
+    const parsed = Number.parseFloat(value);
+    return Number.isFinite(parsed) ? parsed : 0;
+  }
+  return 0;
+};
+
+const roundCurrency = (value: number): number =>
+  Math.round((value + Number.EPSILON) * 100) / 100;
+
 @Injectable()
 export class InvoiceService {
   constructor(
@@ -387,8 +401,8 @@ export class InvoiceService {
           hours: 0
         };
       }
-      const amount = parseFloat(row.amount);
-      const hours = parseInt(row.hours);
+      const amount = roundCurrency(parseFloat(row.amount));
+      const hours = toNumber(row.hours);
       monthlyIncomeMap[key][row.status] = amount;
       monthlyIncomeMap[key].total += amount;
       monthlyIncomeMap[key].hours += hours;
@@ -410,8 +424,8 @@ export class InvoiceService {
           hours: 0
         };
       }
-      const amount = parseFloat(row.amount);
-      const hours = parseInt(row.hours);
+      const amount = roundCurrency(parseFloat(row.amount));
+      const hours = toNumber(row.hours);
       clientIncomeMap[key][row.status] = amount;
       clientIncomeMap[key].total += amount;
       clientIncomeMap[key].hours += hours;
@@ -430,7 +444,7 @@ export class InvoiceService {
           total: 0
         };
       }
-      const amount = parseFloat(row.amount);
+      const amount = roundCurrency(parseFloat(row.amount));
       statusSummaryMap[row.currency][row.status] = amount;
       statusSummaryMap[row.currency].total += amount;
     });
@@ -439,7 +453,7 @@ export class InvoiceService {
     const currencyBreakdown = currencyBreakdownRaw.map(row => ({
       currency: row.currency,
       symbol: row.symbol,
-      totalAmount: parseFloat(row.totalAmount),
+      totalAmount: roundCurrency(parseFloat(row.totalAmount)),
       invoiceCount: parseInt(row.invoiceCount)
     }));
 
@@ -449,10 +463,10 @@ export class InvoiceService {
       date: row.date,
       client: row.client,
       status: row.status,
-      amount: parseFloat(row.amount),
+      amount: roundCurrency(parseFloat(row.amount)),
       currency: row.currency,
       symbol: row.symbol,
-      hours: parseInt(row.hours)
+      hours: toNumber(row.hours)
     }));
 
     return {
@@ -460,7 +474,7 @@ export class InvoiceService {
       clientIncome: Object.values(clientIncomeMap),
       statusSummary: Object.values(statusSummaryMap),
       currencyBreakdown,
-      totalHours: parseInt(totalHoursRaw[0]?.totalHours) || 0,
+      totalHours: toNumber(totalHoursRaw[0]?.totalHours) || 0,
       recentInvoices,
       totalInvoices: parseInt(totalInvoicesRaw[0]?.totalInvoices) || 0,
       note: "Amounts are shown in their original currencies. Optimized with database-level aggregation.",
@@ -652,25 +666,36 @@ export class InvoiceService {
 
     doc.moveDown(3);
 
-    const totalAmount = workItems.reduce((sum, item) => {
-      return sum + item.hours * currentClient.hourly_rate;
-    }, 0);
+    const clientRate = toNumber(currentClient.hourly_rate);
+    const totalAmount = roundCurrency(
+      workItems.reduce((sum, item) => {
+        return sum + toNumber(item.hours) * clientRate;
+      }, 0)
+    );
 
     const totalHours = workItems.reduce((sum, item) => {
       return sum + item.hours;
     }, 0);
 
     const rows = workItems.map((item) => {
+      const itemHours = toNumber(item.hours);
+      const itemTotal = roundCurrency(itemHours * clientRate);
       return [
         item.title,
         item.description,
-        item.hours,
-        `${currentClient.symbol} ${currentClient.hourly_rate}`,
-        `${currentClient.symbol} ${item.hours * currentClient.hourly_rate}`,
+        itemHours,
+        `${currentClient.symbol} ${roundCurrency(clientRate).toFixed(2)}`,
+        `${currentClient.symbol} ${itemTotal.toFixed(2)}`,
       ];
     });
 
-    rows.push(["", "", "", "Total:", `${currentClient.symbol}${totalAmount}`]);
+    rows.push([
+      "",
+      "",
+      "",
+      "Total:",
+      `${currentClient.symbol}${totalAmount.toFixed(2)}`,
+    ]);
 
     // Define CSV headers
     const headers = [
@@ -683,13 +708,14 @@ export class InvoiceService {
     ];
 
     const timesheetRows = workItems.map((item) => {
+      const itemHours = toNumber(item.hours);
       return [
         item.entry_date.toDateString(),
         item.title,
         `"${item.description}"`,
-        item.hours,
-        currentClient.hourly_rate,
-        item.hours * currentClient.hourly_rate,
+        itemHours,
+        roundCurrency(clientRate).toFixed(2),
+        roundCurrency(itemHours * clientRate).toFixed(2),
       ];
     });
 
@@ -701,7 +727,7 @@ export class InvoiceService {
 
     const table = {
       title: "Overview",
-      subtitle: `Total Hours: ${totalHours}, Total Amount ${currentClient.symbol} ${totalAmount}`,
+      subtitle: `Total Hours: ${totalHours}, Total Amount ${currentClient.symbol} ${totalAmount.toFixed(2)}`,
       headers: ["Item", "Description", "Hours", "Rate", "Amount"],
       rows: rows,
     };

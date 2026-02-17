@@ -21,6 +21,7 @@ import {
 import useAuthStore from "../../shared/store/useAuthStore";
 import useAxiosClient from "../../services/useAxiosClient";
 import { useChartData, ChartData } from "../../services/useChartData";
+import { formatCurrency as formatCurrencyValue, roundTo, toNumber } from "@/lib/currency";
 
 const COLORS = [
   "#2ed573",
@@ -94,7 +95,7 @@ const InvoiceCharts: React.FC = () => {
   };
 
   const formatCurrency = (amount: number, symbol: string) => {
-    return `${symbol}${amount.toLocaleString()}`;
+    return formatCurrencyValue(toNumber(amount), { symbol });
   };
 
   const getStatusColor = (status: string) => {
@@ -194,7 +195,13 @@ const InvoiceCharts: React.FC = () => {
             <Card.Body>
               <Card.Title>Total Hours</Card.Title>
               <h2 className="text-success">
-                {chartData.totalHours.toLocaleString()}
+                {roundTo(toNumber(chartData.totalHours), 2).toLocaleString(
+                  undefined,
+                  {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  }
+                )}
               </h2>
             </Card.Body>
           </Card>
@@ -281,7 +288,10 @@ const InvoiceCharts: React.FC = () => {
                   <YAxis axisLine={false} tickLine={false} />
                   <Tooltip
                     formatter={(value: number, name: string) => [
-                      `${value.toLocaleString()}`,
+                      roundTo(toNumber(value), 2).toLocaleString(undefined, {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                      }),
                       name.charAt(0).toUpperCase() + name.slice(1),
                     ]}
                     labelFormatter={(label) => `Month: ${label}`}

@@ -1,5 +1,6 @@
 import useInvoice from "@/services/useInvoice";
 import useModalStore from "@/shared/store/useModal";
+import { formatCurrency, roundCurrency, toNumber } from "@/lib/currency";
 import CurrencyConverterLabel from "@/shared/components/layout/CurrencyConverterLabel";
 import QRCodeComponent from "@/shared/components/layout/QRCodeContainer";
 import React, { useCallback, useEffect, useState } from "react";
@@ -125,10 +126,13 @@ const InvoiceDetails: React.FC<InvoiceDetailsProps> = ({
   };
 
   const calculateTotalAmount = (workitems: Models.WorkItem[]): number => {
-    return workitems.reduce(
-      (total, item) => total + client.hourly_rate * item.hours,
-      0
-    );
+    const fallbackRate = toNumber(client.hourly_rate);
+    const total = workitems.reduce((sum, item) => {
+      const itemRate = toNumber(item.rate) || fallbackRate;
+      const itemHours = toNumber(item.hours);
+      return sum + itemRate * itemHours;
+    }, 0);
+    return roundCurrency(total);
   };
 
   const totalAmount = calculateTotalAmount(invoice.workItems);
@@ -221,7 +225,11 @@ const InvoiceDetails: React.FC<InvoiceDetailsProps> = ({
                 <Card.Text className="d-flex align-items-center">
                   <FaDollarSign className="me-2 text-success" />
                   <strong>Amount:</strong>
-                  <span className="ms-1">{`${client.current_currency_code} ${totalAmount}`}</span>
+                  <span className="ms-1">
+                    {formatCurrency(totalAmount, {
+                      currencyCode: client.current_currency_code,
+                    })}
+                  </span>
                 </Card.Text>
                 <Card.Text className="d-flex align-items-center">
                   <FaCalendarAlt className="me-2 text-info" />

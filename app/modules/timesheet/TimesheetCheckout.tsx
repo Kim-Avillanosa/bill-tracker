@@ -17,6 +17,7 @@ import toast from "react-hot-toast";
 import CurrencyConverterLabel from "@/shared/components/layout/CurrencyConverterLabel";
 import { safeJsonParse } from "@/lib/safeJsonParse";
 import { FaCheck } from "react-icons/fa";
+import { formatCurrency, roundCurrency, roundTo, toNumber } from "@/lib/currency";
 
 interface Props {
   timesheets: Models.Timesheet[];
@@ -33,7 +34,7 @@ interface InvoiceItem {
 }
 
 const TimesheetCheckout: React.FC<Props> = ({ timesheets, client }) => {
-  const ratePerHour = client.hourly_rate;
+  const ratePerHour = toNumber(client.hourly_rate);
 
   const { writeInvoice } = useInvoice();
   const [hours, setHours] = useState<{ [key: number]: number }>(
@@ -56,7 +57,7 @@ const TimesheetCheckout: React.FC<Props> = ({ timesheets, client }) => {
   const extraTotalHours = extraItems.reduce((sum, item) => sum + item.hours, 0);
 
   const overallHours = totalHours + extraTotalHours;
-  const overallAmount = total + extraTotalAmount;
+  const overallAmount = roundCurrency(total + extraTotalAmount);
 
   const [checkedItems, setCheckedItems] = useState<{ [key: number]: boolean }>(
     timesheets.reduce((acc, timesheet) => {
@@ -78,7 +79,7 @@ const TimesheetCheckout: React.FC<Props> = ({ timesheets, client }) => {
             : 0)
         );
       }, 0);
-      setTotal(totalSum);
+      setTotal(roundCurrency(totalSum));
 
       const totalHoursWorked = timesheets.reduce((acc, timesheet) => {
         return (
@@ -162,7 +163,7 @@ const TimesheetCheckout: React.FC<Props> = ({ timesheets, client }) => {
             typeof updated.amount === "number"
               ? updated.amount
               : parseFloat(updated.amount) || 0;
-          updated.hours = client.hourly_rate > 0 ? amt / client.hourly_rate : 0;
+          updated.hours = ratePerHour > 0 ? roundTo(amt / ratePerHour, 4) : 0;
         }
         return updated;
       })
@@ -197,7 +198,9 @@ const TimesheetCheckout: React.FC<Props> = ({ timesheets, client }) => {
               <span>
                 Rate per Hour:{" "}
                 <strong>
-                  {client.current_currency_code} {client.hourly_rate}
+                  {formatCurrency(ratePerHour, {
+                    currencyCode: client.current_currency_code,
+                  })}
                 </strong>
               </span>
             </div>
@@ -223,9 +226,9 @@ const TimesheetCheckout: React.FC<Props> = ({ timesheets, client }) => {
             <div className="d-flex justify-content-end">
               <h4>
                 <strong>
-                  {`${client.current_currency_code} ${overallAmount.toFixed(
-                    2
-                  )}`}
+                  {formatCurrency(overallAmount, {
+                    currencyCode: client.current_currency_code,
+                  })}
                 </strong>
                 <strong>
                   <CurrencyConverterLabel
@@ -413,7 +416,7 @@ const TimesheetCheckout: React.FC<Props> = ({ timesheets, client }) => {
                                 min={0}
                               />
                             </td>
-                            <td>{item.hours.toFixed(2)}</td>
+                            <td>{roundTo(item.hours, 2).toFixed(2)}</td>
                             <td>
                               <Button
                                 variant="danger"
