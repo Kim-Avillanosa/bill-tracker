@@ -316,11 +316,11 @@ export class InvoiceService {
 
       const payload: Invoice = {
         id: 0,
-        note: invoice.note,
+        note: invoice.note ?? "",
         clientId: currentClient.id,
         client: currentClient,
         invoiceNumber: `${currentClient.code}${currentYear}-${formattedId}`,
-        date: invoice.date,
+        date: new Date(invoice.date),
         workItems: workItemsParsed,
         status: "pending",
         referrenceNumber: "",

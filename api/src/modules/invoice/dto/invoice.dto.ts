@@ -1,21 +1,29 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsNotEmpty, IsNumber, IsArray, ValidateNested } from 'class-validator';
+import {
+  IsString,
+  IsNumber,
+  IsArray,
+  IsOptional,
+  IsDateString,
+  ValidateNested,
+} from 'class-validator';
 import { Type } from 'class-transformer';
 import { PartialType } from '@nestjs/swagger';
-import { WorkItemDTO } from './workitem.dto'; // Adjust the import path as needed
+import { WorkItemDTO } from './workitem.dto';
 
 export class InvoiceDTO {
-  @ApiProperty({  required: true })
-  clientId : number
+  @ApiProperty({ required: true })
+  @IsNumber()
+  clientId: number;
 
   @ApiProperty({ required: true, type: String, format: 'date-time' })
-  date: Date; // Use string with a date format and validate if necessary
+  @IsDateString()
+  date: string;
 
-
-  @ApiProperty({ required: true })
+  @ApiProperty({ required: false })
+  @IsOptional()
   @IsString()
-  @IsNotEmpty()
-  note: string;
+  note?: string;
 
   @ApiProperty({ type: [WorkItemDTO], required: true })
   @ValidateNested({ each: true })
